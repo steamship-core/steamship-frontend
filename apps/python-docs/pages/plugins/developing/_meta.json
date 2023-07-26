@@ -1,0 +1,9 @@
+{
+  "project-structure": "Plugin Project Structure",
+  "importers": "File Importers",
+  "blockifiers": "Blockifiers",
+  "generators": "Generators",
+  "taggers": "Taggers",
+  "embedders": "Embedders",
+  "async-plugins": "Writing Async Plugins"
+}

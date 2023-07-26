@@ -1,0 +1,9 @@
+{
+  "importers": "File Importers",
+  "blockifiers": "Blockifiers",
+  "taggers": "Taggers",
+  "generators": "Generators",
+  "embedders": "Embedders",
+  "tasks": "Tasks"
+
+}

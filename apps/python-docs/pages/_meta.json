@@ -1,0 +1,27 @@
+{
+  "index": "Introduction",
+  "configuration": "Configuration",
+  "agents": "Agents",
+  "packages": "Packages",
+  "plugins": "Plugins",
+  "data": "Data",
+  "embedding-search": "Embedding Search Index",
+  "developing": "Developer Reference",
+  "api": {
+    "title": "Python API Reference",
+    "href": "https://docs.steamship.com",
+    "newWindow": true
+  },
+  "license": "License",
+  "authors": "Authors",
+  "about": {
+    "title": "About",
+    "type": "page",
+    "href": "https://www.steamship.com/",
+    "newWindow": true
+  },
+  "Ask": {
+    "title": "Ask",
+    "type": "page"
+  }
+}

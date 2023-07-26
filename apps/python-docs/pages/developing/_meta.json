@@ -1,0 +1,11 @@
+{
+  "project-creation": "Cloning a Starter Project",
+  "steamship-manifest": "The Steamship Manifest file",
+  "environment-setup": "Python Environment Setup",
+  "configuration": "Accepting Configuration",
+  "storing-secrets": "Storing Secrets",
+  "running": "Running on Localhost",
+  "testing": "Writing Tests",
+  "deploying": "Deploying",
+  "monitoring": "Monitoring your instances"
+}

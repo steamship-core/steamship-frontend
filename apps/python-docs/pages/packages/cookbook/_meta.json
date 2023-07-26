@@ -1,0 +1,11 @@
+{
+   "collecting-and-querying-sentiment": "Collect and query sentiment",
+   "how-to-extract-outline-from-markdown": "Extract an outline from markdown",
+   "modifying-an-existing-package": "Modify an existing package",
+   "adding-configuration": "Make a package or plugin user-configurable",
+   "receiving-webhooks": "Receive webhooks from another service",
+   "return-text": "Returning Text",
+   "return-json": "Returning JSON",
+   "return-image": "Returning Images",
+   "return-audio": "Return Audio"
+}
