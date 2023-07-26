@@ -26,6 +26,9 @@ importers:
 
   apps/python-docs:
     dependencies:
+      ai:
+        specifier: ^2.1.22
+        version: 2.1.22(react@18.2.0)(svelte@4.1.1)(vue@3.3.4)
       next:
         specifier: ^13.4.1
         version: 13.4.1(react-dom@18.2.0)(react@18.2.0)

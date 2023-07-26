@@ -11,6 +11,7 @@
   "license": "MIT",
   "homepage": "https://docs.steamship.com/",
   "dependencies": {
+    "ai": "^2.1.22",
     "next": "^13.4.1",
     "nextra": "latest",
     "nextra-theme-docs": "latest",
