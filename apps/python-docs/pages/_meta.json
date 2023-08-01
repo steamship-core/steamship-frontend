@@ -9,7 +9,7 @@
   "developing": "Developer Reference",
   "api": {
     "title": "Python API Reference",
-    "href": "https://docs.steamship.com",
+    "href": "https://python-sdk.docs.steamship.com",
     "newWindow": true
   },
   "license": "License",

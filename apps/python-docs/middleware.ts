@@ -7,5 +7,5 @@ export const config = {
 export function middleware(request: NextRequest) {
   const url = new URL(request.url);
   const path = url.pathname.split('/api-reference')[1];
-  return NextResponse.redirect(new URL('https://docs.steamship.com/api' + path));
+  return NextResponse.redirect(new URL('https://python-sdk.docs.steamship.com/api' + path));
 }
