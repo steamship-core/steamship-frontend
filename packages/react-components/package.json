@@ -23,14 +23,13 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/react": "^18.2.17",
+    "@types/react-dom": "^18.2.7",
     "@types/react-syntax-highlighter": "^15.5.7",
     "@types/uuid": "^9.0.2",
     "eslint": "^7.32.0",
     "eslint-config-custom": "workspace:*",
     "markdown-to-jsx": "^7.2.1",
-    "react": "^17.0.2",
     "react-syntax-highlighter": "^15.5.0",
     "tailwind-config": "workspace:*",
     "tsconfig": "workspace:*",

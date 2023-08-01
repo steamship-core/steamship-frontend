@@ -1,14 +1,6 @@
-# Turborepo starter
+# Steamship Frontend
 
 This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
 
 ## What's inside?
 
@@ -16,13 +8,12 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
+- `python-docs`: Our documentation site built with Nextra
+- `workshop`: A Next.js App integrated with Steamship
+- `react-components`: A React component library for quickly getting started with Steamship
+- `tailwind-config`: A preset tailwind configuration
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Utilities
 
@@ -37,7 +28,6 @@ This Turborepo has some additional tools already setup for you:
 To build all apps and packages, run the following command:
 
 ```
-cd my-turborepo
 pnpm build
 ```
 
@@ -46,7 +36,6 @@ pnpm build
 To develop all apps and packages, run the following command:
 
 ```
-cd my-turborepo
 pnpm dev
 ```
 
@@ -79,3 +68,11 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+## Publishing
+
+To publish a new version to `npm`, you'll first need to be authorized. Use `npm adduser` to login to the `npm` registry.
+
+```
+pnpm publish-packages
+```
