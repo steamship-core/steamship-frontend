@@ -4,21 +4,21 @@
 
 [Steamship Plugins](https://www.steamship.com/plugins) perform specific tasks related to AI.
 
-This page is about using existing plugins. If you want to develop a `Plugin`, see [Developing Plugins](/using/../developing#developingpluginssec)
+This page is about using existing plugins. If you want to develop a `Plugin`, see [Developing Plugins](/plugins/using/../developing#developingpluginssec)
 
 Steamship supports the following types of plugins:
 
-- [File Importers](/using/importers#file-importers) pull raw data from common external sources into [Files](/using/../../data/files.md#files).
-- [Blockifiers](/using/blockifiers#blockifiers) extract text and other content from raw data from [Files](/using/../../data/files.md#files) to [Blocks](/using/../../data/blocks.md#blocks).
-- [Taggers](/using/taggers#taggers) create [Tags](/using/../../data/tags.md#tags) (annotations) on [Files](/using/../../data/files.md#files) and [Blocks](/using/../../data/blocks.md#blocks).
-- [Generators](/using/generators#generators) create new [Blocks](/using/../../data/blocks.md#blocks) (content) from existing [Blocks](/using/../../data/blocks.md#blocks) (content).
-- [Embedders](/using/embedders#embedders) convert content into a vector representation. This is primarily used in combination with Steamship’s built in Embedding Search.
+- [File Importers](/plugins/using/importers#file-importers) pull raw data from common external sources into [Files](/plugins/using/../../data/files.md#files).
+- [Blockifiers](/plugins/using/blockifiers#blockifiers) extract text and other content from raw data from [Files](/plugins/using/../../data/files.md#files) to [Blocks](/plugins/using/../../data/blocks.md#blocks).
+- [Taggers](/plugins/using/taggers#taggers) create [Tags](/plugins/using/../../data/tags.md#tags) (annotations) on [Files](/plugins/using/../../data/files.md#files) and [Blocks](/plugins/using/../../data/blocks.md#blocks).
+- [Generators](/plugins/using/generators#generators) create new [Blocks](/plugins/using/../../data/blocks.md#blocks) (content) from existing [Blocks](/plugins/using/../../data/blocks.md#blocks) (content).
+- [Embedders](/plugins/using/embedders#embedders) convert content into a vector representation. This is primarily used in combination with Steamship’s built in Embedding Search.
 
 <a id="creating-plugin-instances"></a>
 
 ## Plugin Instances
 
-To use a `Plugin`, create an instance of it. When building into a [Package](/using/../../packages#packages), We recommend doing this in the constructor, and saving the result as a member
+To use a `Plugin`, create an instance of it. When building into a [Package](/plugins/using/../../packages#packages), We recommend doing this in the constructor, and saving the result as a member
 variable.
 
 ```python
@@ -47,7 +47,7 @@ To use a `PluginInstance`, call the type-specific methods on it:
 result_task = gpt4.generate(text="What's up GPT?")
 ```
 
-Plugin invocations return asynchronous [Tasks](/using/tasks.md#tasks) so that you can easily run many plugins and control when you need
+Plugin invocations return asynchronous [Tasks](/plugins/using/tasks.md#tasks) so that you can easily run many plugins and control when you need
 the results.
 
 See the plugin individual plugin types for further info on how each can be called.
@@ -64,8 +64,8 @@ Yes. While the preferred access pattern for plugins is via our SDK, Steamship do
 
 The HTTP endpoint for plugin instance invocation is: `https://api.steamship.com/api/v1/plugin/instance/{plugin-method}`.
 
-Replace `{plugin-method}` with the name of the method you wish to invoke on your instance. For instance, for [Generators](/using/generators#generators), use `generate` and
-for [Taggers](/using/taggers#taggers), use `tag`.
+Replace `{plugin-method}` with the name of the method you wish to invoke on your instance. For instance, for [Generators](/plugins/using/generators#generators), use `generate` and
+for [Taggers](/plugins/using/taggers#taggers), use `tag`.
 
 Your HTTP call MUST use the following conventions:
 

@@ -2,7 +2,7 @@
 
 # Generators
 
-Generators create more [Blocks](/generators/../../../data/blocks.md#blocks) (content) on a [File](/generators/../../../data/files.md#files).
+Generators create more [Blocks](/plugins/using/generators/../../../data/blocks.md#blocks) (content) on a [File](/plugins/using/generators/../../../data/files.md#files).
 
 ## Using Generators
 
@@ -47,7 +47,7 @@ generator_task = generator.generate(input_file_id=my_file.id, input_file_start_b
 generator_task = generator.generate(input_file_id=my_file.id, input_file_block_index_list=[2, 4])
 ```
 
-**A query for existing Blocks** You can pass the generator a [query](/generators/../../../data/queries#queries) that will produce `Blocks` for the `Generator`.
+**A query for existing Blocks** You can pass the generator a [query](/plugins/using/generators/../../../data/queries#queries) that will produce `Blocks` for the `Generator`.
 
 ```python
 # Pass all the Blocks in the File
@@ -60,7 +60,7 @@ generator_task = generator.generate(block_query='kind "some-relevant-tag-kind"')
 
 When you call `generate` on a file or via a `PluginInstance`, the object that is returned is a `Task`. You can `wait()` on
 this task, or continue on to do other work.
-The output to a `generate` operation is [Blocks](/generators/../../../data/blocks.md#blocks). You can always get these blocks from the output of the `Task`:
+The output to a `generate` operation is [Blocks](/plugins/using/generators/../../../data/blocks.md#blocks). You can always get these blocks from the output of the `Task`:
 
 ```python
 # Apply the generator to some text
@@ -97,7 +97,7 @@ my_file.refresh()
 
 Steamship provides several Generators:
 
-* [DALL-E](/generators/dalle.md)
-* [GPT-4](/generators/gpt4.md)
+* [DALL-E](/plugins/using/generators/dalle.md)
+* [GPT-4](/plugins/using/generators/gpt4.md)
 
 Other generators are available on the Steamship [plugins page](https://www.steamship.com/plugins?tab=Public)

@@ -2,15 +2,15 @@
 
 # Blockifiers
 
-Blockifiers convert data into Steamship’s native [Block format](/blockifiers/../../../data#data-model).
+Blockifiers convert data into Steamship’s native [Block format](/plugins/using/blockifiers/../../../data#data-model).
 
 - **A Blockifier’s input** is raw bytes. Examples include a PDF, image,
   audio, HTML, CSV, JSON-formatted API output, or so on.
-- **A Blockifier’s output** is an object in [Steamship Block format](/blockifiers/../../../data#data-model).
+- **A Blockifier’s output** is an object in [Steamship Block format](/plugins/using/blockifiers/../../../data#data-model).
 
 All data imported into Steamship must be first blockified before it can be used.
 
-You can use blockifiers when developing Steamship [Packages](/blockifiers/../../../packages#packages), in your own Python app code,
+You can use blockifiers when developing Steamship [Packages](/plugins/using/blockifiers/../../../packages#packages), in your own Python app code,
 or as one-off functions that convert data in the cloud.
 
 ## Using Blockifiers
@@ -73,5 +73,5 @@ The input to a `blockify` operation is a `File` with no `Blocks`.
 
 When you call `blockify` on a file, the object that is returned is a `Task`. You can `wait()` on
 this task, or continue on to do other work.
-The output of a `blockify` operation is [Blocks](/blockifiers/../../../data/blocks.md#blocks) and potentially [Tags](/blockifiers/../../../data/tags.md#tags) on that file. However, since the operation happens asynchronously on the back-end, you will
+The output of a `blockify` operation is [Blocks](/plugins/using/blockifiers/../../../data/blocks.md#blocks) and potentially [Tags](/plugins/using/blockifiers/../../../data/tags.md#tags) on that file. However, since the operation happens asynchronously on the back-end, you will
 need to `refresh()` the file to see the output.

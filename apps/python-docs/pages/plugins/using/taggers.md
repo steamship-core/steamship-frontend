@@ -2,12 +2,12 @@
 
 # Taggers
 
-Taggers add [Tags](/taggers/../../../data/tags.md#tags) (annotations) to [Blocks](/taggers/../../../data/blocks.md#blocks) (content). These tags can be [queried](/taggers/../../../data/queries#queries) and composed later.
+Taggers add [Tags](/plugins/using/taggers/../../../data/tags.md#tags) (annotations) to [Blocks](/plugins/using/taggers/../../../data/blocks.md#blocks) (content). These tags can be [queried](/plugins/using/taggers/../../../data/queries#queries) and composed later.
 
 ## Using Taggers
 
 To use a tagger, create an instance within your workspace and then apply it to a file.
-Note that a file must first have [Blocks](/taggers/../../../data/blocks.md#blocks), either by direct creation or using a [Blockifier](/taggers/../blockifiers#blockifiers).
+Note that a file must first have [Blocks](/plugins/using/taggers/../../../data/blocks.md#blocks), either by direct creation or using a [Blockifier](/plugins/using/taggers/../blockifiers#blockifiers).
 
 ```python
 from steamship import Steamship, File
@@ -37,7 +37,7 @@ The input to a `tag` operation is a `File`.  Most `Taggers` by default will tag 
 
 When you call `tag` on a file or via a `PluginInstance`, the object that is returned is a `Task`. You can `wait()` on
 this task, or continue on to do other work.
-The output to a `tag` operation is more [Tags](/taggers/../../../data/tags.md#tags) on that file. However, since the tag operations happens asynchronously on the back-end, you will
+The output to a `tag` operation is more [Tags](/plugins/using/taggers/../../../data/tags.md#tags) on that file. However, since the tag operations happens asynchronously on the back-end, you will
 need to `refresh()` the file to see the output:
 
 ```python

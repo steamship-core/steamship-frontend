@@ -4,18 +4,18 @@
 
 ## Working with Language
 
-* [Collect and query sentiment](/cookbook/collecting-and-querying-sentiment.md)
-* [Extract an outline from markdown](/cookbook/how-to-extract-outline-from-markdown.md)
+* [Collect and query sentiment](/packages/cookbook/collecting-and-querying-sentiment.md)
+* [Extract an outline from markdown](/packages/cookbook/how-to-extract-outline-from-markdown.md)
 
 ## Building Packages
 
-* [Modify an existing package](/cookbook/modifying-an-existing-package.md)
-* [Make a package or plugin user-configurable](/cookbook/adding-configuration.md)
-* [Receive webhooks from another service](/cookbook/receiving-webhooks.md)
+* [Modify an existing package](/packages/cookbook/modifying-an-existing-package.md)
+* [Make a package or plugin user-configurable](/packages/cookbook/adding-configuration.md)
+* [Receive webhooks from another service](/packages/cookbook/receiving-webhooks.md)
 
 ## Response Types
 
-* [Returning Text](/cookbook/return-text.md)
-* [Returning JSON](/cookbook/return-json.md)
-* [Returning Images](/cookbook/return-image.md)
-* [Returning Audio](/cookbook/return-audio.md)
+* [Returning Text](/packages/cookbook/return-text.md)
+* [Returning JSON](/packages/cookbook/return-json.md)
+* [Returning Images](/packages/cookbook/return-image.md)
+* [Returning Audio](/packages/cookbook/return-audio.md)

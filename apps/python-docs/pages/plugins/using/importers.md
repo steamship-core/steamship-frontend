@@ -12,7 +12,7 @@ import data in the cloud.
 
 ## Using File Importers
 
-To use a [file importer](/importers/#file-importers), create an instance within your workspace and then refer to it when creating a file.
+To use a [file importer](/plugins/using/importers/#file-importers), create an instance within your workspace and then refer to it when creating a file.
 
 ```python
 # Load a Steamship Worksapce

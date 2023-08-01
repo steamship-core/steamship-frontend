@@ -12,15 +12,15 @@ If you’ve implemented the required abstract methods, you have successfully bui
 
 Read more here:
 
-* [Plugin Project Structure](/developing/project-structure.md)
-* [Developing File Importers](/developing/importers.md)
-* [Developing Blockifiers](/developing/blockifiers.md)
-* [Developing Generators](/developing/generators.md)
-* [Developing Taggers](/developing/taggers.md)
-* [Developing Embedders](/developing/embedders.md)
+* [Plugin Project Structure](/plugins/developing/project-structure.md)
+* [Developing File Importers](/plugins/developing/importers.md)
+* [Developing Blockifiers](/plugins/developing/blockifiers.md)
+* [Developing Generators](/plugins/developing/generators.md)
+* [Developing Taggers](/plugins/developing/taggers.md)
+* [Developing Embedders](/plugins/developing/embedders.md)
 
 Unlike packages, plugins also offer support for asynchronous work.
 This is useful when writing a plugin that, itself, contacts an asynchronous third-party API.
 You can find the documentation for that here:
 
-* [Writing Async Plugins](/developing/async-plugins.md)
+* [Writing Async Plugins](/plugins/developing/async-plugins.md)
