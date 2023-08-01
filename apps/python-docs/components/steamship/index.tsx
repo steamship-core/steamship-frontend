@@ -19,7 +19,11 @@ export const SteamshipChatContainer = () => {
 
   useEffect(() => {
     const handleAskClick = (e: MouseEvent) => {
-      if (e.target instanceof Element && e.target.textContent === 'Ask') {
+      if (
+        e.target instanceof Element &&
+        e.target.textContent === 'Ask' &&
+        e.target.closest('nav')
+      ) {
         setIsOpen(true);
       }
     };
@@ -32,7 +36,6 @@ export const SteamshipChatContainer = () => {
   if (!isOpen) {
     return null;
   }
-  console.log('IS OHPEN, RENDERING', isOpen)
-  
+
   return <SteamshipChatPrompt onClose={() => setIsOpen(false)} />;
-}
+};

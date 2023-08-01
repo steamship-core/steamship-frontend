@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --steamship-background: 0 0% 100%;
+    --steamship-foreground: 240 10% 3.9%;
+
+    --steamship-muted: 240 4.8% 95.9%;
+    --steamship-muted-foreground: 240 3.8% 46.1%;
+
+    --steamship-popover: 0 0% 100%;
+    --steamship-popover-foreground: 240 10% 3.9%;
+
+    --steamship-card: 0 0% 100%;
+    --steamship-card-foreground: 240 10% 3.9%;
+
+    --steamship-border: 240 5.9% 90%;
+    --steamship-input: 240 5.9% 90%;
+
+    --steamship-primary: 240 5.9% 10%;
+    --steamship-primary-foreground: 0 0% 98%;
+
+    --steamship-secondary: 240 4.8% 95.9%;
+    --steamship-secondary-foreground: 240 5.9% 10%;
+
+    --steamship-accent: 240 4.8% 95.9%;
+    --steamship-accent-foreground: 240 5.9% 10%;
+
+    --steamship-destructive: 0 84.2% 60.2%;
+    --steamship-destructive-foreground: 0 0% 98%;
+
+    --steamship-ring: 240 5% 64.9%;
+
+    --steamship-radius: 0.5rem;
+  }
+
+  .dark {
+    --steamship-background: 240 10% 3.9%;
+    --steamship-foreground: 0 0% 98%;
+
+    --steamship-muted: 240 3.7% 15.9%;
+    --steamship-muted-foreground: 240 5% 64.9%;
+
+    --steamship-popover: 240 10% 3.9%;
+    --steamship-popover-foreground: 0 0% 98%;
+
+    --steamship-card: 240 10% 3.9%;
+    --steamship-card-foreground: 0 0% 98%;
+
+    --steamship-border: 240 3.7% 15.9%;
+    --steamship-input: 240 3.7% 15.9%;
+
+    --steamship-primary: 0 0% 98%;
+    --steamship-primary-foreground: 240 5.9% 10%;
+
+    --steamship-secondary: 240 3.7% 15.9%;
+    --steamship-secondary-foreground: 0 0% 98%;
+
+    --steamship-accent: 240 3.7% 15.9%;
+    --steamship-accent-foreground: 0 0% 98%;
+
+    --steamship-destructive: 0 62.8% 30.6%;
+    --steamship-destructive-foreground: 0 85.7% 97.3%;
+
+    --steamship-ring: 240 3.7% 15.9%;
+  }
+}
+
+@layer base {
+  body .steamship-widget {
+    @apply steamship-text-foreground;
+  }
+}
+
+.code-block pre {
+  padding: 0;
+  display: flex;
+}
+
+.code-block code {
+  display: block;
+}

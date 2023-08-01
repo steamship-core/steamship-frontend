@@ -1,11 +1,20 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["STEAMSHIP_API_KEY", "STEAMSHIP_AGENT_URL", "STEAMSHIP_API_URL"],
+  "globalEnv": [
+    "STEAMSHIP_API_KEY",
+    "STEAMSHIP_AGENT_URL",
+    "STEAMSHIP_API_URL"
+  ],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "storybook-static/**"
+      ]
     },
     "lint": {},
     "dev": {

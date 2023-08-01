@@ -1,13 +1,20 @@
-'use client';
+"use client";
 
-import { useChat } from 'ai/react';
-import { useEffect, useState, useRef, useMemo } from 'react';
-import { BotIcon, RotateCcwIcon, SendIcon, UserIcon, XIcon } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
-import ReactMarkdown from 'react-markdown';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-import { Button, Input, Separator, Skeleton, cn } from 'ui';
+import { useChat } from "ai/react";
+import { useEffect, useState, useRef, useMemo, ReactNode } from "react";
+import {
+  BotIcon,
+  RotateCcwIcon,
+  SendIcon,
+  UserIcon,
+  XIcon,
+} from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import Markdown from "markdown-to-jsx";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { a11yDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
+import { Button, Input, Separator, Skeleton, cn } from "./ui";
+import "./styles.css";
 
 const useBlockUrl = (blockId: string) => {
   const [url, setUrl] = useState<string | undefined>();
@@ -28,22 +35,58 @@ const useBlockUrl = (blockId: string) => {
 const SteamshipImage = ({ blockId }: { blockId: string }) => {
   const url = useBlockUrl(blockId);
   if (!url) {
-    return <Skeleton className="w-44 h-44" />;
+    return <Skeleton className="steamship-w-44 steamship-h-44" />;
   }
-  return <img src={url} className="w-auto h-44" />;
+  return <img src={url} className="steamship-w-auto steamship-h-44" />;
 };
 
-const SteamshipAudio = ({ blockId, mimeType }: { blockId: string; mimeType: string }) => {
+const SteamshipAudio = ({
+  blockId,
+  mimeType,
+}: {
+  blockId: string;
+  mimeType: string;
+}) => {
   const url = useBlockUrl(blockId);
 
   if (!url) {
-    return <Skeleton className="w-44 h-2" />;
+    return <Skeleton className="steamship-w-44 steamship-h-2" />;
   }
 
   return (
     <audio controls>
       <source src={url} type={mimeType} />
     </audio>
+  );
+};
+
+const Code = ({
+  className,
+  children,
+  inline,
+  ...props
+}: {
+  className: string;
+  children: any;
+  inline: boolean;
+}) => {
+  const match = /language-(\w+)/.exec(className || "");
+  return !inline && match ? (
+    <SyntaxHighlighter
+      {...props}
+      className={cn(
+        className,
+        "steamship-rounded-md steamship-my-2 steamship-break-words steamship-whitespace-pre-wrap"
+      )}
+      style={a11yDark}
+      language={match[1]}
+    >
+      {`${children}`}
+    </SyntaxHighlighter>
+  ) : (
+    <code className="steamship-text-blue-500 !steamship-inline">
+      {children}
+    </code>
   );
 };
 
@@ -55,39 +98,38 @@ const SteamshipMessage = ({ message }: { message: string }) => {
       fileId?: string;
       mimeType?: string;
     }[];
-    const audioMessage = messageJson.find((m) => m.fileId && m.mimeType?.indexOf('audio') !== -1);
+    const audioMessage = messageJson.find(
+      (m) => m.fileId && m.mimeType?.indexOf("audio") !== -1
+    );
     if (audioMessage && audioMessage.id && audioMessage.mimeType) {
-      return <SteamshipAudio blockId={audioMessage.id} mimeType={audioMessage.mimeType} />;
+      return (
+        <SteamshipAudio
+          blockId={audioMessage.id}
+          mimeType={audioMessage.mimeType}
+        />
+      );
     }
 
     return messageJson.map((m, i) => {
-      if (m.id && m.mimeType?.indexOf('image') !== -1) {
+      if (m.id && m.mimeType?.indexOf("image") !== -1) {
         return <SteamshipImage key={i} blockId={m.id} />;
       }
       let text = m.text;
-      if (m.text.startsWith('. ')) {
+      if (m.text.startsWith(". ")) {
         text = m.text.slice(2);
       }
       return (
-        <div key={i} className="code-block whitespace-pre-wrap">
-          <ReactMarkdown
+        <div
+          key={i}
+          className="steamship-code-block steamship-whitespace-pre-wrap"
+        >
+          <Markdown
+            // eslint-disable-next-line react/no-children-prop
             children={text}
-            components={{
-              code({ node, inline, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || '');
-                return !inline && match ? (
-                  <SyntaxHighlighter
-                    {...props}
-                    className={cn(className, 'rounded-md my-2 break-words whitespace-pre-wrap')}
-                    style={a11yDark}
-                    language={match[1]}
-                  >
-                    {`${children}`}
-                  </SyntaxHighlighter>
-                ) : (
-                  <code className="text-blue-500 !inline">{children}</code>
-                );
-              }
+            options={{
+              overrides: {
+                code: Code,
+              },
             }}
           />
         </div>
@@ -101,61 +143,72 @@ const SteamshipMessage = ({ message }: { message: string }) => {
 export const SteamshipChatPrompt = ({ onClose }: { onClose: () => void }) => {
   const starterSubmitButtonRef = useRef<HTMLButtonElement | null>();
   const chatUUID = useMemo(() => uuidv4(), []);
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setInput, setMessages } =
-    useChat({ id: chatUUID, body: { id: chatUUID } });
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    setInput,
+    setMessages,
+  } = useChat({ id: chatUUID, body: { id: chatUUID } });
 
   return (
-    <div className="fixed top-0 bottom-0 right-0 left-0 flex z-30 justify-center items-start py-12 md:py-24 bg-black bg-opacity-60">
+    <div className="steamship-widget steamship-fixed steamship-top-0 steamship-bottom-0 steamship-right-0 steamship-left-0 steamship-flex steamship-z-30 steamship-justify-center steamship-items-start steamship-py-12 md:steamship-py-24 steamship-bg-black steamship-bg-opacity-60">
       <div
         id="steamship-chat-modal"
-        className="border rounded-xl shadow-xl bg-background flex w-[650px] max-w-[100vw] max-h-[100%]"
+        className="steamship-border steamship-rounded-xl steamship-shadow-xl steamship-bg-background steamship-flex steamship-w-[650px] steamship-max-w-[100vw] steamship-max-h-[100%]"
       >
         {messages.length === 0 ? (
-          <div className="w-full">
+          <div className="steamship-w-full">
             <form
               onSubmit={handleSubmit}
-              className="flex items-center justify-center gap-2 mt-2 px-2"
+              className="steamship-flex steamship-items-center steamship-justify-center steamship-gap-2 steamship-mt-2 steamship-px-2"
             >
               <Input
                 autoFocus
                 placeholder="Ask any question of our docs"
                 value={input}
                 onChange={handleInputChange}
-                className="flex-grow border-none !ring-0 focus-visible:ring-0 focus-visible:ring-transparent focus:ring-none focus:outline-none focus:border-none text-xl"
+                className="steamship-flex-grow steamship-border-none !steamship-ring-0 focus-visible:steamship-ring-0 focus-visible:steamship-ring-transparent focus:steamship-ring-none focus:steamship-outline-none focus:steamship-border-none steamship-text-xl"
               />
-              <Button type="submit" ref={starterSubmitButtonRef as React.Ref<HTMLButtonElement>}>
-                <SendIcon className="h-6 w-6" />
+              <Button
+                type="submit"
+                ref={starterSubmitButtonRef as React.Ref<HTMLButtonElement>}
+              >
+                <SendIcon className="steamship-h-6 steamship-w-6" />
               </Button>
             </form>
-            <div className="py-2">
+            <div className="steamship-py-2">
               <Separator />
             </div>
-            <div className="py-4 flex gap-3 flex-col px-12">
+            <div className="steamship-py-4 steamship-flex steamship-gap-3 steamship-flex-col steamship-px-12">
               <div>
-                Ask any question of our docs and our assistant will help you find the answer.
+                Ask any question of our docs and our assistant will help you
+                find the answer.
               </div>
-              <div className="flex items-start justify-start gap-4">
+              <div className="steamship-flex steamship-items-start steamship-justify-start steamship-gap-4">
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setInput('How do I create a package?');
+                    setInput("How do I create a package?");
                     setTimeout(() => {
                       starterSubmitButtonRef?.current?.click();
                     }, 100);
                   }}
-                  className="w-full"
+                  className="steamship-w-full"
                 >
                   How do I create a package?
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setInput('How do I use a package?');
+                    setInput("How do I use a package?");
                     setTimeout(() => {
                       starterSubmitButtonRef?.current?.click();
                     }, 100);
                   }}
-                  className="w-full"
+                  className="steamship-w-full"
                 >
                   How do I use a package?
                 </Button>
@@ -163,8 +216,8 @@ export const SteamshipChatPrompt = ({ onClose }: { onClose: () => void }) => {
             </div>
           </div>
         ) : (
-          <div className="flex-grow flex flex-col justify-between">
-            <div className="px-4 flex justify-end gap-4 pt-2">
+          <div className="steamship-flex-grow steamship-flex steamship-flex-col steamship-justify-between">
+            <div className="steamship-px-4 steamship-flex steamship-justify-end steamship-gap-4 steamship-pt-2">
               <Button
                 size="sm"
                 type="button"
@@ -172,31 +225,31 @@ export const SteamshipChatPrompt = ({ onClose }: { onClose: () => void }) => {
                   e.stopPropagation();
                   e.preventDefault();
                   setMessages([]);
-                  setInput('');
+                  setInput("");
                 }}
                 variant="outline"
               >
-                <RotateCcwIcon className="h-4 w-4" />
+                <RotateCcwIcon className="steamship-h-4 steamship-w-4" />
               </Button>
               <Button size="sm" variant="outline" onClick={() => onClose()}>
-                <XIcon className="h-4 w-4" />
+                <XIcon className="steamship-h-4 steamship-w-4" />
               </Button>
             </div>
-            <div className="px-4 py-2 flex-grow overflow-scroll flex flex-col-reverse">
+            <div className="steamship-px-4 steamship-py-2 steamship-flex-grow steamship-overflow-scroll steamship-flex steamship-flex-col-reverse">
               <div>
                 {messages.map((m) => (
                   <div
                     key={m.id}
-                    className="border border-white/10 px-2 py-4 rounded-md mb-4 grid grid-cols-12"
+                    className="steamship-border steamship-border-white/10 steamship-px-2 steamship-py-4 steamship-rounded-md steamship-mb-4 steamship-grid steamship-grid-cols-12"
                   >
-                    <div className="col-span-1 flex justify-center">
-                      {m.role === 'user' ? (
-                        <UserIcon className="h-6 w-6" />
+                    <div className="steamship-col-span-1 steamship-flex steamship-justify-center">
+                      {m.role === "user" ? (
+                        <UserIcon className="steamship-h-6 steamship-w-6" />
                       ) : (
-                        <BotIcon className="h-6 w-6" />
+                        <BotIcon className="steamship-h-6 steamship-w-6" />
                       )}
                     </div>
-                    <div className="space-y-2 col-span-11">
+                    <div className="steamship-space-y-2 steamship-col-span-11">
                       {/* @ts-ignore */}
                       <SteamshipMessage message={m.content} />
                     </div>
@@ -204,37 +257,40 @@ export const SteamshipChatPrompt = ({ onClose }: { onClose: () => void }) => {
                 ))}
                 {isLoading && (
                   <div>
-                    <div className="px-2 rounded-md flex gap-4">
+                    <div className="steamship-px-2 steamship-rounded-md steamship-flex steamship-gap-4">
                       <div className="">
-                        <Skeleton className="h-6 w-6 bg-foreground/20" />
+                        <Skeleton className="steamship-h-6 steamship-w-6 steamship-bg-foreground/20" />
                       </div>
-                      <div className="space-y-2 w-full">
-                        <Skeleton className="w-full h-8 bg-foreground/20" />
-                        <div className="flex gap-4">
-                          <Skeleton className="w-1/4 h-8 bg-foreground/20" />
-                          <Skeleton className="w-3/4 h-8 bg-foreground/20" />
+                      <div className="steamship-space-y-2 steamship-w-full">
+                        <Skeleton className="steamship-w-full steamship-h-8 steamship-bg-foreground/20" />
+                        <div className="steamship-flex steamship-gap-4">
+                          <Skeleton className="steamship-w-1/4 steamship-h-8 steamship-bg-foreground/20" />
+                          <Skeleton className="steamship-w-3/4 steamship-h-8 steamship-bg-foreground/20" />
                         </div>
-                        <Skeleton className="w-2/3 h-8 bg-foreground/20" />
+                        <Skeleton className="steamship-w-2/3 steamship-h-8 steamship-bg-foreground/20" />
                       </div>
                     </div>
-                    <div className="flex items-center justify-center text-sm mt-2">
+                    <div className="steamship-flex steamship-items-center steamship-justify-center steamship-text-sm steamship-mt-2">
                       Searching the documentation ...
                     </div>
                   </div>
                 )}
               </div>
             </div>
-            <form onSubmit={handleSubmit} className="flex gap-2 px-4 py-2">
-              <label className="flex-grow">
+            <form
+              onSubmit={handleSubmit}
+              className="steamship-flex steamship-gap-2 steamship-px-4 steamship-py-2"
+            >
+              <label className="steamship-flex-grow">
                 <Input
                   placeholder="Ask any question of our docs"
                   value={input}
                   onChange={handleInputChange}
-                  className="flex-grow"
+                  className="steamship-flex-grow"
                 />
               </label>
               <Button type="submit">
-                <SendIcon className="h-6 w-6" />
+                <SendIcon className="steamship-h-6 steamship-w-6" />
               </Button>
             </form>
           </div>
