@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
-import { DocsThemeConfig } from 'nextra-theme-docs';
+import { DocsThemeConfig, useConfig } from 'nextra-theme-docs';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
@@ -20,6 +21,21 @@ const config: DocsThemeConfig = {
       />
     </div>
   ),
+  head: () => {
+    const { asPath, defaultLocale, locale } = useRouter();
+    const { frontMatter } = useConfig();
+    const url =
+      'https://docs.steamship.com' + (defaultLocale === locale ? asPath : `/${locale}${asPath}`);
+
+    return (
+      <>
+        <meta property="og:url" content={url} />
+        {frontMatter.description && (
+          <meta property="og:description" content={frontMatter.description} />
+        )}
+      </>
+    );
+  },
   project: {
     link: 'https://github.com/steamship-core/python-client'
   },
@@ -48,6 +64,9 @@ const config: DocsThemeConfig = {
         titleTemplate: '%s – Steamship'
       };
     }
+    return {
+      title: 'Steamship'
+    };
   }
 };
 
