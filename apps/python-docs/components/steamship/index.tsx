@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { SteamshipChatPrompt } from 'react-components';
+import { SteamshipChatPrompt } from '@steamship/react/next';
 
 export const SteamshipChatContainer = () => {
   const [isOpen, setIsOpen] = useState(false);

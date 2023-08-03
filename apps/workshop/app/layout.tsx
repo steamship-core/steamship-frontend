@@ -1,5 +1,5 @@
 import "./globals.css";
-import "react-components/dist/index.css";
+import "@steamship/react/dist/index.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 

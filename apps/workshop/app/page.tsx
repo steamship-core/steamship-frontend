@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { SteamshipChatPrompt } from "react-components";
 import { Steamship } from "./components/steamship";
 
 export default function Home() {

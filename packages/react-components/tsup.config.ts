@@ -5,7 +5,7 @@ const options: Options = {
   clean: true,
   splitting: false,
   dts: true,
-  entryPoints: ["index.tsx"],
+  entryPoints: ["index.tsx", "next.tsx"],
   minify: true,
   sourcemap: true,
   target: "es2015",
