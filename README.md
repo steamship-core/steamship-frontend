@@ -39,6 +39,15 @@ To develop all apps and packages, run the following command:
 pnpm dev
 ```
 
+### Updating the changelog
+
+To develop all apps and packages, run the following command:
+
+```
+pnpm changeset
+pnpm changeset publish --tag {TAG}
+```
+
 ### Remote Caching
 
 Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
