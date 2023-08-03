@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, Dispatch, SetStateAction, ReactNode } from "react";
 import {
   BotIcon,
   RotateCcwIcon,
@@ -13,7 +13,13 @@ import { v4 as uuidv4 } from "uuid";
 import { Button, Input, Separator, Skeleton } from "../ui";
 import SteamshipMessage from "./steamship-message";
 
-const SteamshipChatPrompt = ({ onClose }: { onClose: () => void }) => {
+const SteamshipChatPrompt = ({
+  onClose,
+  children,
+}: {
+  onClose: () => void;
+  children: (args: { onSubmit: (message: string) => void }) => ReactNode;
+}) => {
   const starterSubmitButtonRef = useRef<HTMLButtonElement | null>();
   const chatUUID = useMemo(() => uuidv4(), []);
   const {
@@ -25,6 +31,13 @@ const SteamshipChatPrompt = ({ onClose }: { onClose: () => void }) => {
     setInput,
     setMessages,
   } = useChat({ id: chatUUID, body: { id: chatUUID } });
+
+  const onSubmit = (message: string) => {
+    setInput(message);
+    setTimeout(() => {
+      starterSubmitButtonRef?.current?.click();
+    }, 100);
+  };
 
   return (
     <div className="steamship-widget steamship-fixed steamship-top-0 steamship-bottom-0 steamship-right-0 steamship-left-0 steamship-flex steamship-z-30 steamship-justify-center steamship-items-start steamship-py-12 md:steamship-py-24 steamship-bg-black steamship-bg-opacity-60">
@@ -52,41 +65,7 @@ const SteamshipChatPrompt = ({ onClose }: { onClose: () => void }) => {
                 <SendIcon className="steamship-h-6 steamship-w-6" />
               </Button>
             </form>
-            <div className="steamship-py-2">
-              <Separator />
-            </div>
-            <div className="steamship-py-4 steamship-flex steamship-gap-3 steamship-flex-col steamship-px-12">
-              <div>
-                Ask any question of our docs and our assistant will help you
-                find the answer.
-              </div>
-              <div className="steamship-flex steamship-items-start steamship-justify-start steamship-gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setInput("How do I create a package?");
-                    setTimeout(() => {
-                      starterSubmitButtonRef?.current?.click();
-                    }, 100);
-                  }}
-                  className="steamship-w-full"
-                >
-                  How do I create a package?
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setInput("How do I use a package?");
-                    setTimeout(() => {
-                      starterSubmitButtonRef?.current?.click();
-                    }, 100);
-                  }}
-                  className="steamship-w-full"
-                >
-                  How do I use a package?
-                </Button>
-              </div>
-            </div>
+            {children({ onSubmit })}
           </div>
         ) : (
           <div className="steamship-flex-grow steamship-flex steamship-flex-col steamship-justify-between">

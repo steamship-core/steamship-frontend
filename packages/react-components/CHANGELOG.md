@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.2.0
+
+### Minor Changes
+
+- support custom uis for emptystate placeholder
+
 ## 0.1.0
 
 ### Minor Changes
