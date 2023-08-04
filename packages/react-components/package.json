@@ -4,8 +4,8 @@
   "exports": {
     ".": "./dist/index.js",
     "./css": "./dist/index.css",
-    "./next/server": "./dist/src/next/server.js",
-    "./next/client": "./dist/src/next/client.js"
+    "./next/server": "./dist/next/server.js",
+    "./next/client": "./dist/next/client.js"
   },
   "typesVersions": {
     "*": {
@@ -13,7 +13,7 @@
         "*"
       ],
       "next/*": [
-        "src/next/*"
+        "dist/next/*"
       ]
     }
   },
