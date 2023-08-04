@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.3.0
+
+### Minor Changes
+
+- add utilities for nextjs api routes
+
 ## 0.2.0
 
 ### Minor Changes
