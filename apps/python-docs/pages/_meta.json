@@ -19,9 +19,5 @@
     "type": "page",
     "href": "https://www.steamship.com/",
     "newWindow": true
-  },
-  "ask": {
-    "title": "Ask",
-    "type": "page"
   }
 }
