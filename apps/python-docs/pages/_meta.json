@@ -7,10 +7,21 @@
   "data": "Data",
   "embedding-search": "Embedding Search Index",
   "developing": "Developer Reference",
+  "-": {
+    "type": "separator",
+    "title": "SDKs"
+  },
+  "react": {
+    "title": "React (Beta)"
+  },
   "api": {
     "title": "Python API Reference",
     "href": "https://python-sdk.docs.steamship.com",
     "newWindow": true
+  },
+  "--": {
+    "type": "separator",
+    "title": "Company"
   },
   "license": "License",
   "authors": "Authors",
