@@ -4,7 +4,8 @@
   "globalEnv": [
     "STEAMSHIP_API_KEY",
     "STEAMSHIP_AGENT_URL",
-    "STEAMSHIP_API_URL"
+    "STEAMSHIP_API_URL",
+    "STEAMSHIP_WORKSPACE_KEY"
   ],
   "pipeline": {
     "build": {
@@ -15,6 +16,9 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "clean": {
+      "cache": false
     }
   }
 }

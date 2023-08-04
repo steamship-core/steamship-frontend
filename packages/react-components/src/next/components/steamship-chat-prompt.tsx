@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { useRef, useMemo, Dispatch, SetStateAction, ReactNode } from "react";
+import { useRef, useMemo, ReactNode } from "react";
 import {
   BotIcon,
   RotateCcwIcon,
@@ -10,8 +10,8 @@ import {
   XIcon,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { Button, Input, Separator, Skeleton } from "../ui";
-import SteamshipMessage from "./steamship-message";
+import { Button, Input, Separator, Skeleton } from "../../ui";
+import SteamshipMessage from "../../components/steamship-message";
 
 const SteamshipChatPrompt = ({
   onClose,
@@ -30,7 +30,11 @@ const SteamshipChatPrompt = ({
     isLoading,
     setInput,
     setMessages,
-  } = useChat({ id: chatUUID, body: { id: chatUUID } });
+  } = useChat({
+    id: chatUUID,
+    body: { id: chatUUID },
+    api: "/api/steamship/chat",
+  });
 
   const onSubmit = (message: string) => {
     setInput(message);

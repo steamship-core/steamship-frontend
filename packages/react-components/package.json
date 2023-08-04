@@ -4,12 +4,16 @@
   "exports": {
     ".": "./dist/index.js",
     "./css": "./dist/index.css",
-    "./next": "./dist/next.js"
+    "./next/server": "./dist/src/next/server.js",
+    "./next/client": "./dist/src/next/client.js"
   },
   "typesVersions": {
     "*": {
       "*": [
-        "./dist/*"
+        "*"
+      ],
+      "next/*": [
+        "src/next/*"
       ]
     }
   },
@@ -19,7 +23,8 @@
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "clean": "rm -rf .next .turbo node_modules"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.0.3",
@@ -28,6 +33,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-react": "^0.262.0",
+    "next": "^13.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^1.14.0",
@@ -45,7 +51,7 @@
     "tailwind-config": "workspace:*",
     "tsconfig": "workspace:*",
     "tsup": "^7.1.0",
-    "typescript": "^4.5.2"
+    "typescript": "^5.1.6"
   },
   "files": [
     "dist"

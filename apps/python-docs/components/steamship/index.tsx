@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { SteamshipChatPrompt } from '@steamship/react/next';
+import { SteamshipChatPrompt } from '@steamship/react/next/client';
 import { Button, Separator } from '@steamship/react';
 
 export const SteamshipChatContainer = () => {

@@ -6,7 +6,7 @@ const useBlockUrl = (blockId: string) => {
   const [url, setUrl] = useState<string | undefined>();
   useEffect(() => {
     const fetchImage = async () => {
-      const res = await fetch(`/api/steamship/${blockId}`);
+      const res = await fetch(`/api/steamship/blockId/${blockId}`);
       const body = await res.blob();
       setUrl(URL.createObjectURL(body));
     };

@@ -1,16 +1,15 @@
 import { StreamingTextResponse } from "ai";
 
-// Set the runtime to edge for best performance
-export const runtime = "edge";
-
-export async function POST(req: Request) {
+export const createChatApiHandler = () => async (req: Request) => {
   const { messages, id } = (await req.json()) as {
     messages: { role: "user" | "assistent"; content: string }[];
     id: string;
   };
+
   const mostRecentUserMessage = messages
     .reverse()
     .find((message) => message.role === "user");
+
   const steamshipResponse = await fetch(
     `${process.env.STEAMSHIP_AGENT_URL}/prompt`,
     {
@@ -28,4 +27,4 @@ export async function POST(req: Request) {
   return new StreamingTextResponse(
     steamshipResponse.body as ReadableStream<any>
   );
-}
+};
