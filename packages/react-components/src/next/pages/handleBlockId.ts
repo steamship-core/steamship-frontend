@@ -1,5 +1,10 @@
 import { NextRequest } from "next/server";
 
+/**
+ * API Handler resolves `some/path/to/<block_id>` raw value of that Steamship Block (text, image, audio, video, etc).
+ * 
+ * The Steamship Key stored in the `STEAMSHIP_API_KEY` variable is used for authentication.
+ */
 export default async function blockIdHandler(req: NextRequest) {
   if (req.method !== "GET") {
     return new Response("Method not allowed", {
