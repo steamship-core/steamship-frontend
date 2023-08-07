@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.3.2
+
+### Patch Changes
+
+- update readme with link to documentation
+
 ## 0.3.1
 
 ### Patch Changes
