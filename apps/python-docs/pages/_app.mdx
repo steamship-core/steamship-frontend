@@ -1,12 +1,14 @@
 import { SteamshipChatContainer } from '../components/steamship'
 import "../styles/globals.css"
 import "@steamship/react/styles.css";
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App({ Component, pageProps }) {
   return (
     <div className="">
       <Component {...pageProps} />
       <SteamshipChatContainer />
+       <Analytics />
     </div>
   )
 
