@@ -1,9 +1,10 @@
 {
   "name": "@steamship/react",
-  "version": "0.3.2",
+  "version": "0.3.3",
+  "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./css": "./dist/index.css",
+    "./styles.css": "./dist/index.css",
     "./next/server": "./dist/next/server.js",
     "./next/client": "./dist/next/client.js"
   },

@@ -66,6 +66,7 @@ You can refer directly to the `useChat` docs for the easiest way to interact wit
 'use client';
 
 import { useChat } from 'ai/react';
+import { SteamshipMessage } from '@steamship/react';
 
 export default function Chat() {
   const chatUUID = useMemo(() => uuidv4(), []);
@@ -80,7 +81,7 @@ export default function Chat() {
       {messages.map((m) => (
         <div key={m.id}>
           {m.role === 'user' ? 'User: ' : 'AI: '}
-          {m.content}
+          <SteamshipMessage message={m.content} />
         </div>
       ))}
 

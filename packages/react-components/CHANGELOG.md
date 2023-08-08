@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.3.3
+
+### Patch Changes
+
+- fix package resolution for main entrypoint
+
 ## 0.3.2
 
 ### Patch Changes
