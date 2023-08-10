@@ -39,7 +39,11 @@ export const SteamshipChatContainer = () => {
   }
 
   return (
-    <SteamshipChatPrompt onClose={() => null}>
+    <SteamshipChatPrompt
+      onClose={() => null}
+      placeholder="Ask any question of our docs"
+      loadingText="Searching the documentation ..."
+    >
       {({ onSubmit }) => (
         <>
           <div className="py-2">

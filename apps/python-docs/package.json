@@ -1,6 +1,6 @@
 {
   "name": "python-docs",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Python SDK Documentation",
   "scripts": {
     "dev": "next dev --port 3000",

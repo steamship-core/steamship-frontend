@@ -12,13 +12,23 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { Button, Input, Separator, Skeleton } from "../../ui";
 import SteamshipMessage from "../../components/steamship-message";
+import {
+  SteamshipChatLoadingMessage,
+  SteamshipChatMessageContainer,
+  SteamshipChatMessageContentsContainer,
+  SteamshipChatUser,
+} from "../../components/steamship-chat-elements";
 
 const SteamshipChatPrompt = ({
   onClose,
   children,
+  placeholder,
+  loadingText,
 }: {
   onClose: () => void;
   children: (args: { onSubmit: (message: string) => void }) => ReactNode;
+  placeholder?: string;
+  loadingText?: string;
 }) => {
   const starterSubmitButtonRef = useRef<HTMLButtonElement | null>();
   const chatUUID = useMemo(() => uuidv4(), []);
@@ -57,7 +67,7 @@ const SteamshipChatPrompt = ({
             >
               <Input
                 autoFocus
-                placeholder="Ask any question of our docs"
+                placeholder={placeholder}
                 value={input}
                 onChange={handleInputChange}
                 className="steamship-flex-grow steamship-border-none !steamship-ring-0 focus-visible:steamship-ring-0 focus-visible:steamship-ring-transparent focus:steamship-ring-none focus:steamship-outline-none focus:steamship-border-none steamship-text-xl"
@@ -94,40 +104,21 @@ const SteamshipChatPrompt = ({
             <div className="steamship-px-4 steamship-py-2 steamship-flex-grow steamship-overflow-scroll steamship-flex steamship-flex-col-reverse">
               <div>
                 {messages.map((m) => (
-                  <div
-                    key={m.id}
-                    className="steamship-border steamship-border-white/10 steamship-px-2 steamship-py-4 steamship-rounded-md steamship-mb-4 steamship-grid steamship-grid-cols-12"
-                  >
-                    <div className="steamship-col-span-1 steamship-flex steamship-justify-center">
-                      {m.role === "user" ? (
-                        <UserIcon className="steamship-h-6 steamship-w-6" />
-                      ) : (
-                        <BotIcon className="steamship-h-6 steamship-w-6" />
-                      )}
-                    </div>
-                    <div className="steamship-space-y-2 steamship-col-span-11">
+                  <SteamshipChatMessageContainer key={m.id}>
+                    <SteamshipChatUser role={m.role} />
+                    <SteamshipChatMessageContentsContainer>
                       <SteamshipMessage message={m.content} />
-                    </div>
-                  </div>
+                    </SteamshipChatMessageContentsContainer>
+                  </SteamshipChatMessageContainer>
                 ))}
                 {isLoading && (
                   <div>
-                    <div className="steamship-px-2 steamship-rounded-md steamship-flex steamship-gap-4">
-                      <div className="">
-                        <Skeleton className="steamship-h-6 steamship-w-6 steamship-bg-foreground/20" />
+                    <SteamshipChatLoadingMessage />
+                    {loadingText && (
+                      <div className="steamship-flex steamship-items-center steamship-justify-center steamship-text-sm steamship-mt-2">
+                        {loadingText}
                       </div>
-                      <div className="steamship-space-y-2 steamship-w-full">
-                        <Skeleton className="steamship-w-full steamship-h-8 steamship-bg-foreground/20" />
-                        <div className="steamship-flex steamship-gap-4">
-                          <Skeleton className="steamship-w-1/4 steamship-h-8 steamship-bg-foreground/20" />
-                          <Skeleton className="steamship-w-3/4 steamship-h-8 steamship-bg-foreground/20" />
-                        </div>
-                        <Skeleton className="steamship-w-2/3 steamship-h-8 steamship-bg-foreground/20" />
-                      </div>
-                    </div>
-                    <div className="steamship-flex steamship-items-center steamship-justify-center steamship-text-sm steamship-mt-2">
-                      Searching the documentation ...
-                    </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -138,7 +129,7 @@ const SteamshipChatPrompt = ({
             >
               <label className="steamship-flex-grow">
                 <Input
-                  placeholder="Ask any question of our docs"
+                  placeholder={placeholder}
                   value={input}
                   onChange={handleInputChange}
                   className="steamship-flex-grow"

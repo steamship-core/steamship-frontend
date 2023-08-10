@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.4.0
+
+### Minor Changes
+
+- feat: add basic chat widget component, add additional props for configuration
+
 ## 0.3.3
 
 ### Patch Changes
