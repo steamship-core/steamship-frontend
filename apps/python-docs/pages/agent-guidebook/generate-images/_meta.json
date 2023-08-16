@@ -1,0 +1,6 @@
+{
+  "generate-dalle-images": "Use DALL-E",
+  "genearte-stable-diffusion-images": "Use Stable Diffusion",
+  "generate-google-search-images": "Use Google Images",
+  "bundling-prompts": "Bundle Image Prompts"
+}

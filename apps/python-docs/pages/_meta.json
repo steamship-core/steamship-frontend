@@ -1,23 +1,32 @@
 {
+  "--guidebooks": {
+    "type": "separator",
+    "title": "Guidebooks"
+  },
+  "agent-guidebook": "Agent Guidebook",
+  "--sdk": {
+    "type": "separator",
+    "title": "Python SDK"
+  },
   "index": "Introduction",
   "configuration": "Configuration",
   "agents": "Agents",
   "packages": "Packages",
   "plugins": "Plugins",
-  "data": "Data",
   "embedding-search": "Embedding Search Index",
   "developing": "Developer Reference",
-  "-": {
-    "type": "separator",
-    "title": "SDKs"
-  },
-  "react": {
-    "title": "React (Beta)"
-  },
+  "data": "Data",
   "api": {
     "title": "Python API Reference",
     "href": "https://python-sdk.docs.steamship.com",
     "newWindow": true
+  },
+  "--web": {
+    "type": "separator",
+    "title": "Web SDK"
+  },
+  "react": {
+    "title": "React (Beta)"
   },
   "--": {
     "type": "separator",

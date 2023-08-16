@@ -1,0 +1,13 @@
+{
+  "required-skills": "Required Skills",
+  "getting-started": "Getting Started",
+  "core-concepts": "Core Concepts",
+  "personality": "Add Personality",
+  "generate-images": "Generate Images",
+  "generate-speech": "Generate Speech",
+  "learning": "Learn Things",
+  "question-answering": "Answer Questions",
+  "add-api-endpoints": "Custom API Endpoints",
+  "connect": "Connect your Agent",
+  "next-steps": "Next Steps"
+}
