@@ -1,3 +1,5 @@
+import {Callout} from "@/components/markdown/callout"
+
 # Deploy Your Agent
 
 To deploy your agent to the cloud, just open a shell and type:
@@ -49,11 +51,12 @@ The wizard will ask you what the new version number should be and push it up to 
 
 The most recently deployed version always becomes the default version for new instances.
 
-{% callout type="warning" title="Deploying a new version doesn't upgrade running ones!" %}
+<Callout type="warning" title="Deploying a new version doesn't upgrade running ones!">
 
 When you deploy a new version, it's like releasing a new version of software.
 
 The agent instances already running in the cloud continue to run on whatever version they were created with.
 
 Reach out to us at crew@steamship.com if this is problematic and we can assist with upgrading.
-{% /callout %}
+
+</Callout>

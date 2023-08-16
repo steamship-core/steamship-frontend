@@ -1,10 +1,12 @@
+import {Definition, VersionRequirement} from "@/components/markdown/callout"
+
 # Learn Facts from Users
 
 Learn facts from your users and save them to a vector database
 
 You can use the [`VectorSearchLearnerTool`](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/tools/question_answering/vector_search_learner_tool.py) to learn facts from users and save them to a vector database.
 
-{% definition term="vector-database" /%}
+<Definition term="vector-database" />
 
 Using this tool only requires providing it to your [`FunctionsBasedAgent`](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/functional/functions_based.py):
 

@@ -1,11 +1,12 @@
----
-title: Answering Questions with a Vector Database
-description: Answer natural language questions with facts pulled from a vector database
----
+import {Definition, VersionRequirement} from "@/components/markdown/callout"
+
+# Answering Questions with a Vector Database
+
+Answer natural language questions with facts pulled from a vector database
 
 The [`VectorSearchQATool`](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/tools/question_answering/vector_search_qa_tool.py) answer questions using information stored in a Vector Database.
 
-{% definition term="vector-database" /%}
+<Definition term="vector-database" />
 
 This tool works out of the box with Steamship's on-demand Vector Database:
 
@@ -58,7 +59,7 @@ self._agent = FunctionsBasedAgent(
 )
 ```
 
-[//]: # 'The [`document_qa_agent.py`](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/examples/document_qa_agent.py) example contains a full, working example agent that learns from a user (with the [`VectorSearchLearnerTool`](/learn/agent-guidebook/learning/learning-facts-from-users)) and then answers questions with `VectorSearchQATool`.'
+[//]: # 'The [`document_qa_agent.py`](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/examples/document_qa_agent.py) example contains a full, working example agent that learns from a user (with the [`VectorSearchLearnerTool`](/agent-guidebook/learning/learning-facts-from-users)) and then answers questions with `VectorSearchQATool`.'
 
 ## Deploying an AgentService with `VectorSearchQATool`
 

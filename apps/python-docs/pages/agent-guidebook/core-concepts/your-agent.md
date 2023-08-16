@@ -100,9 +100,9 @@ The system prompt provides the core set of instructions for you agent.
 
 In starter project has a system prompt that contains:
 
-- A personality (see the [Personality Chapter](/learn/agent-guidebook/personality/add-a-personality))
-- Instructions for [using tools](/learn/agent-guidebook/project-layout/tools), including multi-modal tools like 
-  for generating [images](/learn/agent-guidebook/generate-images/image-generation-tools) and [audio](/learn/agent-guidebook/use-voice/spoken-output).
+- A personality (see the [Personality Chapter](/agent-guidebook/personality/add-a-personality))
+- Instructions for [using tools](/agent-guidebook/core-concepts/tools), including multi-modal tools like 
+  for generating [images](/agent-guidebook/generate-images) and [audio](/agent-guidebook/generate-speech).
 
 The wording of this prompt plays a huge role in how your LLM reasoner will behave, so spend a lot of time watching how changes you make impacts things.
 
@@ -112,7 +112,7 @@ The wording of this prompt plays a huge role in how your LLM reasoner will behav
          tools=[SearchTool(), GoogleImageSearchTool()],
 ```
 
-We'll cover tools in the [next section](/learn/agent-guidebook/project-layout/tools), but for now think of them as targeted skills that your agent can learn.
+We'll cover tools in the [next section](/agent-guidebook/core-concepts/tools), but for now think of them as targeted skills that your agent can learn.
 
 ## Part 3 - A REPL
 

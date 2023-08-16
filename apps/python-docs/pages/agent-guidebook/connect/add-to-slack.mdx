@@ -1,3 +1,5 @@
+import {Definition, VersionRequirement} from "@/components/markdown/callout"
+
 # Add your agent to Slack
 
 You can add your agent to Slack as a bot
@@ -7,7 +9,7 @@ Use the [`SlackTransport` Mixin](https://github.com/steamship-core/python-client
 **[A full working example is here](https://github.com/steamship-core/multimodal-agent-starter/blob/main/src/example_agents/slack_bot.py)**.
 You can copy and paste this agent into your `api.py` file or use it as a reference.
 
-{% definition term="mixin" /%}
+<Definition term="mixin" />
 
 ## Adding the `SlackTransport` Mixin
 
@@ -17,7 +19,7 @@ You can copy and paste this agent into your `api.py` file or use it as a referen
    self.add_mixin(SlackTransport(
        self.client,
        config=SlackTransportConfig(),
-       self, 
+       self,
        self.agent
    ))
    ```
@@ -28,13 +30,13 @@ With your Steamship agent running in either development or production:
 
 1. Visit the `/slack_install_link` method of your agent instance. This will generate a URL that will initiate Slack's installation process.
 2. Within the Slack admin console, complete the installation process.
-3. Within the Slack admin console, fetch your Slack API Token 
-4. Invoke the `/set_slack_access_token' method of your agent instance with the body `{"token": "YOUR TOKEN"}`.
+3. Within the Slack admin console, fetch your Slack API Token
+4. Invoke the `/set_slack_access_token` method of your agent instance with the body `{"token": "YOUR TOKEN"}`.
 5. From a Slack chatroom, mention your bot by name. It should respond!
 
 ## Testing your Slack Connection
 
-{% versionRequirement version="2.17.18" /%}
+<VersionRequirement version="2.17.18" />
 
 You do not need to deploy your agent to test the Slack connection -- you can test with Slack directly from your local machine.
 

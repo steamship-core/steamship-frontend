@@ -1,12 +1,14 @@
-# Learn from PDFs on the Web
+import {Definition, VersionRequirement} from "@/components/markdown/callout"
 
-Give your agent the ability to read and remember PDF content
+# Transcribe and Learn from YouTube Videos
 
-Use the [`IndexerPipelineMixin`](https://github.com/steamship-core/python-client/blob/main/src/steamship/invocable/mixins/indexer_pipeline_mixin.py) to give your agent the ability to read and remember PDF files.
+Give your agent the ability to watch and remember YouTube videos
+
+Use the [`IndexerPipelineMixin`](https://github.com/steamship-core/python-client/blob/main/src/steamship/invocable/mixins/indexer_pipeline_mixin.py) to give your agent the ability to watch and remember YouTube videos.
 
 **[A full working example is available here](https://github.com/steamship-core/multimodal-agent-starter/blob/main/src/example_agents/document_qa_agent.py)**. You can copy and paste this agent into your `api.py` file or use it as a reference.
 
-{% definition term="mixin" /%}
+<Definition term="mixin" />
 
 ## Adding the `IndexerPipelineMixin`
 
@@ -16,7 +18,7 @@ Use the [`IndexerPipelineMixin`](https://github.com/steamship-core/python-client
    self.add_mixin(IndexerPipelineMixin(self.client, self))
    ```
 
-Adding this mixin registers an entire asynchronous document processing pipeline to your agent, along with an API endpoint (`/index_url`) to access it.
+Adding this mixin registers an entire asynchronous document processing pipeline to your agent, along with an API endpoint (`/learn_url`) to access it.
 
 This pipeline will:
 
@@ -27,7 +29,7 @@ This pipeline will:
 
 
 ## Learning new content with `IndexerPipelineMixin`
-
+   
 **NOTE: `IndexerPipelineMixin` currently only functions in deployed agents. You will have to run `ship deploy` to learn new information with this Mixin.**
 
 ### Via API
@@ -51,13 +53,13 @@ Proceed just as with the instructions for API learning, but use the auto-generat
 
 Note that you only need to provide the `url` argument.
 
-## PDF Specific Notes
+## YouTube Specific Notes
 
-Our PDF processing plugin currently only supports text PDFs.
+The open source tools used to scrape YouTube videos have a high error rate.
 
-If your PDF is scanned and each page is an image, it will fail to parse.
+When you use the `IndexerPipelineMixin` to scrape YouTube videos, you should expect that up to 70-80% of your attempts to scrape a video will fail.
 
-Adding file importer plugins to Steamship to leverage cloud OCR services is relatively easy. If you create one, please consider sending us a [pull request on GitHub](https://github.com/steamship-core/python-client)!
+In our experience, simply trying a few times, adding a generous (1-2 second) timeout between attempts generally results in success after a few tries.
 
 ## Customizing the Behavior of `IndexerPipelineMixin`
 

@@ -1,3 +1,5 @@
+import {Callout} from "@/components/markdown/callout"
+
 # Share Your Agent
 
 When you run `ship deploy`, you will see output that looks like this:
@@ -17,8 +19,8 @@ Each instance is separate. It's a running copy of your agent.
 - It is pinned to a version of your agent
 - Any cloud service usage is associated with the account that created the instance.
 
-{% callout type="warning" title="You can only share public agents" %}
+<Callout type="warning" title="You can only share public agents">
 
 When you deployed for the first time, you have to mark your agent as `public` if you wish to share it.
 
-{% /callout %}
+</Callout>

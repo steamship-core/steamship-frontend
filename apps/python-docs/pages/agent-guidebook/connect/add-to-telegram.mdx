@@ -1,3 +1,5 @@
+import {Definition, VersionRequirement} from "@/components/markdown/callout"
+
 # Add your agent to Telegram
 
 You can add your agent to Telegram as a bot
@@ -7,7 +9,7 @@ Use the [`TelegramTransport` Mixin](https://github.com/steamship-core/python-cli
 **[A full working example is here](https://github.com/steamship-core/multimodal-agent-starter/blob/main/src/example_agents/telegram_bot.py)**.
 You can copy and paste this agent into your `api.py` file or use it as a reference.
 
-{% definition term="mixin" /%}
+<Definition term="mixin" />
 
 ## Adding the `TelegramTransport` Mixin
 
@@ -43,7 +45,7 @@ To get a Telegram Bot Token:
 
 ## Testing your Telegram Connection
 
-{% versionRequirement version="2.17.18" /%}
+<VersionRequirement version="2.17.18" />
 
 You do not need to deploy your agent to test the telegram connection -- you can test with Telegram directly from your local machine.
 Just follow these steps:

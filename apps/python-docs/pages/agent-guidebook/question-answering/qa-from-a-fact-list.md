@@ -1,7 +1,6 @@
----
-title: Answering Questions from a Prompt Database
-description: A simple form of question-answering that works with pre-loaded information
----
+# Answering Questions from a Prompt Database
+
+A simple form of question-answering that works with pre-loaded information
 
 You can use the [`PromptDatabaseQATool`](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/tools/question_answering/prompt_database_question_answerer.py) to help your agent answer questions from a fact list that you provide.
 

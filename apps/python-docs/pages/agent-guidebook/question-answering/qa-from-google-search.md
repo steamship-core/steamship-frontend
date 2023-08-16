@@ -1,7 +1,6 @@
----
-title: Answering Questions with Google Search
-description: A simple form of question-answering that works with Google Search
----
+# Answering Questions with Google Search
+
+A simple form of question-answering that works with Google Search
 
 You can use the [`SearchTool`](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/tools/search/search.py) to help your agent answer questions from Google Search results.
 
