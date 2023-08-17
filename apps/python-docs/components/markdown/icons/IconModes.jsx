@@ -1,3 +1,5 @@
+import { cn } from '@steamship/react';
+
 const gradients = {
     blue: [
         { stopColor: '#0EA5E9' },
@@ -21,9 +23,9 @@ export function Gradient({ color = 'blue', ...props }) {
 }
 
 export function LightMode({ className, ...props }) {
-    return <g className={`dark:hidden ${className}`} {...props} />;
+    return <g className={cn(`dark:hidden`, className)} {...props} />;
 }
 
 export function DarkMode({ className, ...props }) {
-    return <g className={`hidden dark:inline ${className}`} {...props} />;
+    return <g className={cn(`hidden dark:inline`, className)} {...props} />;
 }

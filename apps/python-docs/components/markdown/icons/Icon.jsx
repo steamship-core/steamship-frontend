@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { cn } from '@steamship/react';
 
 import { InstallationIcon } from '@/components/markdown/icons/InstallationIcon';
 import { LightbulbIcon } from '@/components/markdown/icons/LightbulbIcon';
@@ -30,7 +31,7 @@ export function Icon({ color = 'blue', icon, className, ...props }) {
       aria-hidden="true"
       viewBox="0 0 32 32"
       fill="none"
-      className={`${className} ${iconStyles[color]}`}
+      className={cn(className, iconStyles[color])}
       {...props}
     >
       <IconComponent id={id} color={color} />

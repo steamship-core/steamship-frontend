@@ -1,26 +1,23 @@
 # Steamship
 
-Steamship is the fastest way to add AI to your software.
+Steamship is an SDK and hosting platform for AI Agents and Tools.
 
-Think of Steamship as both a package manager and package hosting for AI.
-Each [Steamship package](https://www.steamship.com/packages) runs in the cloud on a managed stack.
+**Follow our [Agent Guidebook](/agent-guidebook) for a complete tutorial.**  
 
 ## Steamship in 30 seconds
 
-- [Build Agents](agents#building-agents) which run in the cloud.
+- [Build Agents](/agent-guidebook) which run in the cloud.
 - [Use Plugins](plugins/using#using-plugins) for common operations like generating text with GPT, converting a CSV to text, or generating an image from text. Steamship manages asynchronicity and retries.
 - [Store data in Files, Blocks, and Tags](data#data-model). This allows you to [query](data/queries#queries) or [search](embedding-search#embedding-search-index) it later.
 - [Deploy as a Package](packages/developing#developing-packages), creating a scalable API for your front end.
 - [Create as many instances of the Package](packages/developing#creating-package-instances) as you want, each with its own data.
 
-The best way to start is to make a simple package:
+## Start from our Multimodal Agent Template
 
-## Start from a template
-
-Clone one of our starter packages ([https://github.com/steamship-packages](https://github.com/steamship-packages)):
+Clone our starter repository:
 
 ```bash
-git clone https://github.com/steamship-packages/empty-package.git
+git clone https://github.com/steamship-core/multimodal-agent-starter
 ```
 
 Create a virtual environment and install dependencies:
@@ -33,41 +30,19 @@ pip install -r requirements.txt
 pip install -r requirements.dev.txt
 ```
 
-and start editing `src/api.py`.
-
-## Start from scratch
-
-First, install our SDK and CLI (ideally in a virtual environment):
+Then run:
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+ship run local
+````
 
-pip install steamship
-```
+Now that you've interacted with your new agent, you're ready to start modifying it in `src/api.py`.
 
-Now copy this into `api.py`:
-
-```python
-from steamship.invocable import post, PackageService
-
-class MyPackage(PackageService):
-
-    @post("hello_world")
-    def hello_world(self, name: str = None) -> str:
-        return f"Hello, {name}"
-```
-
-# Next Steps
-
-Use full-stack language AI packages in your own code.
-
-Build and deploy packages with our low-code framework.
-
-Package examples for common scenarios.
+See the **[Agent Guidebook](/agent-guidebook)** for details.
 
 # Contents
 
+* [Agent Guidebook](agent-guidebook)
 * [Configuration](configuration)
   * [Authentication](configuration/authentication.md)
     * [Steamship Configuration File](configuration/authentication.md#steamship-configuration-file)
