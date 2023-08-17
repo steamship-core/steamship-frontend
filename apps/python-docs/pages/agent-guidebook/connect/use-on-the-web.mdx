@@ -1,0 +1,30 @@
+import {Definition, VersionRequirement} from "@/components/markdown/callout"
+
+# Embed your agent on a web site
+
+You can embed your agent on other sites with an IFRAME
+
+Use the [`SteamshipWidgetTransport` Mixin](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/mixins/transports/steamship_widget.py) to give your agent a web-based widget you can interact with.
+
+**[A full working example is here](https://github.com/steamship-core/multimodal-agent-starter/blob/main/src/example_agents/annoyed_robot.py)**. 
+You can copy and paste this agent into your `api.py` file or use it as a reference.
+
+<Definition term="mixin" />
+
+## Adding the `SteamshipWidgetTransport` Mixin
+
+1. Add `SteamshipWidgetTransport` to the static `USED_MIXIN_CLASSES` list in your AgentService
+2. Register `SteamshipWidgetTransport` in your AgentService `__init__` with
+   ```python
+   self.add_mixin(SteamshipWidgetTransport(self.client, self, self.agent))
+   ```
+
+## Using the Web Widget
+
+After [deploying](/agent-guidebook/getting-started/deploy-your-agent), just [create an instance from the web](/agent-guidebook/getting-started/share-your-agent).
+
+That will take you to a web page that contains a chat window as well as other management tools for your agent.
+
+## Embedding the Web Widget
+
+At the top-right, you will find an **Embed** widget with instructions for placing this chat window on other web pages.

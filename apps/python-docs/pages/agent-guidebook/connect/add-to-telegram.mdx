@@ -1,0 +1,66 @@
+import {Definition, VersionRequirement} from "@/components/markdown/callout"
+
+# Add your agent to Telegram
+
+You can add your agent to Telegram as a bot
+
+Use the [`TelegramTransport` Mixin](https://github.com/steamship-core/python-client/blob/main/src/steamship/agents/mixins/transports/telegram.py) to connect your agent to a Telegram Bot.
+
+**[A full working example is here](https://github.com/steamship-core/multimodal-agent-starter/blob/main/src/example_agents/telegram_bot.py)**.
+You can copy and paste this agent into your `api.py` file or use it as a reference.
+
+<Definition term="mixin" />
+
+## Adding the `TelegramTransport` Mixin
+
+1. Add `TelegramTransport` to the static `USED_MIXIN_CLASSES` list in your AgentService
+2. Add a `bot_token` configuration parameter to your agent:
+   ```python
+   class ExampleTelegramAgent(AgentService):
+       class ExampleTelegramAgent(Config):
+           bot_token: str = Field(description="The secret token for your Telegram bot")
+       
+       @classmethod
+           def config_cls(cls) -> Type[Config]:
+               return ExampleTelegramAgent.ExampleTelegramAgent
+   ```
+3. Register `TelegramTransport` in your AgentService `__init__` with
+   ```python
+   self.add_mixin(TelegramTransport(
+       self.client,
+       config=TelegramTransportConfig(bot_token=self.config.bot_token),
+       self, 
+       self.agent
+   ))
+   ```
+
+## Getting a Telegram Bot Token
+
+To get a Telegram Bot Token:
+
+1. Contact the [@BotFather](https://t.me/botfather) on Telegram
+2. Run the `/newbot` command
+3. Name your bot
+4. Copy the bot token that you are given
+
+## Testing your Telegram Connection
+
+<VersionRequirement version="2.17.18" />
+
+You do not need to deploy your agent to test the telegram connection -- you can test with Telegram directly from your local machine.
+Just follow these steps:
+
+1. Create a `config.json` file that contains the configuration of your AgentService. This will now include a required `bot_token` field that contains your Telegram bot token.
+2. Run `ship run local -c config.json` to run a local copy of your Agent with the provided configuration.
+
+It will automatically connect to Telegram using a public NGROK URL.
+
+## Using your Telegram Connection in Production
+
+After [deploying](/agent-guidebook/getting-started/deploy-your-agent), when you [create an instance from the web](/agent-guidebook/getting-started/share-your-agent) just select **Optional Configuration** from the instance creation screen.
+
+![](/images/hackathon/package-create-optional.png)
+
+Then enter the **telegram_token**.
+
+You can find instructions for how to generate a Telegram bot key from the field in the UI.

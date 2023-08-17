@@ -6,7 +6,7 @@ Steamship is made for building, scaling, and managing Agents in the cloud.
 
 A full tutorial for getting started with Agents is available here:
 
-[Agent Guidebook](https://www.steamship.com/learn/agent-guidebook)
+[Agent Guidebook](https://docs.steamship.com/agent-guidebook)
 
 If you’re new to building Agents, we highly recommend following the above tutorial.
 
