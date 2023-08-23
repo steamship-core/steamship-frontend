@@ -10,6 +10,7 @@ export {
   SteamshipChatUserContainer,
   SteamshipChatMessageContentsContainer,
   SteamshipChatLoadingMessage,
+  SteamshipChatUser,
 } from "./src/components/steamship-chat-elements";
 
 export * from "./src/ui";
