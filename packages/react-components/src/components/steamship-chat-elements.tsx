@@ -12,7 +12,7 @@ export const SteamshipChatMessageContainer = ({
   </div>
 );
 
-export const SteamshipChatUserontainer = ({
+export const SteamshipChatUserContainer = ({
   children,
 }: {
   children: ReactNode;
@@ -27,13 +27,13 @@ export const SteamshipChatUser = ({
 }: {
   role: "function" | "user" | "system" | "assistant";
 }) => (
-  <SteamshipChatUserontainer>
+  <SteamshipChatUserContainer>
     {role === "user" ? (
       <UserIcon className="steamship-h-6 steamship-w-6" />
     ) : (
       <BotIcon className="steamship-h-6 steamship-w-6" />
     )}
-  </SteamshipChatUserontainer>
+  </SteamshipChatUserContainer>
 );
 
 export const SteamshipChatMessageContentsContainer = ({
@@ -46,9 +46,9 @@ export const SteamshipChatMessageContentsContainer = ({
 
 export const SteamshipChatLoadingMessage = () => (
   <SteamshipChatMessageContainer>
-    <SteamshipChatUserontainer>
+    <SteamshipChatUserContainer>
       <Skeleton className="steamship-h-6 steamship-w-6 steamship-bg-foreground/20" />
-    </SteamshipChatUserontainer>
+    </SteamshipChatUserContainer>
     <SteamshipChatMessageContentsContainer>
       <Skeleton className="steamship-w-full steamship-h-8 steamship-bg-foreground/20" />
       <div className="steamship-flex steamship-gap-4">

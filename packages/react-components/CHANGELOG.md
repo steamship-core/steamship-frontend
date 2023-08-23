@@ -1,5 +1,12 @@
 # @steamship/react
 
+## 0.5.0
+
+### Minor Changes
+
+- exporting chat elements
+- added chat elements
+
 ## 0.4.0
 
 ### Minor Changes

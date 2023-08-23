@@ -1,5 +1,13 @@
 # workshop
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @steamship/react@0.5.0
+
 ## 0.1.6
 
 ### Patch Changes
