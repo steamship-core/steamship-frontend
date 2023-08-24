@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.7.0
+
+### Minor Changes
+
+- Adds support for /answer and /prompt api endpoints
+
 ## 0.6.0
 
 ### Minor Changes
