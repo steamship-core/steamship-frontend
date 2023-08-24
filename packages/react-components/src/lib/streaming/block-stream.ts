@@ -5,6 +5,38 @@ import {
 import { createStreamDataTransformer } from 'ai/stream-data'
 import { SteamshipBlock} from "./datamodel";
 
+
+const decoder = new TextDecoder("utf-8");
+const queuingStrategy = new CountQueuingStrategy({ highWaterMark: 1 });
+
+/*
+ * Fetches the URL at which the Steamship Block's contents can be streamed.
+ */
+const blockToContentStreamUrl = (b: SteamshipBlock): string => {
+    return "https://example.org"
+}
+
+/*
+ * Returns the Steamship block's contents as a stream.
+ */
+const blockToContentStream = async (block: SteamshipBlock): Promise<ReadableStream> => {
+    const streamUrl = "https://example";
+    const response = await fetch(blockToContentStreamUrl(block));
+    return response.body;
+}
+
+/*
+ * Converts a string into a Readable Stream.
+ */
+const stringToReadableStream = (s: string): ReadableStream => {
+    return new ReadableStream({
+        start(controller){
+            controller.enqueue(s);
+            controller.close();
+        }
+    });
+}
+
 /* ==========================================================================================
  * Steamship BlockStream
  *
@@ -29,14 +61,14 @@ function createBlockStreamParser(res: Response): ReadableStreamDefaultReader<Uin
 /*
  * A BlockStream streams the bytes from a Steamship Block.
  */
-function createBlockStreamParserFromBlock(block: SteamshipBlock): ReadableStream<string> {
+const createBlockStreamParserFromBlock = async (block: SteamshipBlock): Promise<ReadableStream<string>> => {
     if (block.mimeType?.startsWith("audio/")) {
-        return new ReadableStream("[audio file](LINK)")
+        return stringToReadableStream("[audio file](LINK)")
     } else if (block.mimeType?.startsWith("video/")) {
-        return new ReadableStream("[video file](LINK)")
+        return stringToReadableStream("[video file](LINK)")
     } else if (block.mimeType?.startsWith("image/")) {
-        return new ReadableStream("![image](LINK)")
+        return stringToReadableStream("![image](LINK)")
     } else {
-        // TODO: Create blockstream of bytes, which in this case represents the UTF-8return createBlockStreamParserAsText(block)
+        return await blockToContentStream(block);
     }
 }
