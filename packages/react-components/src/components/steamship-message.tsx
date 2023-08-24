@@ -37,15 +37,39 @@ const Code = ({
   );
 };
 
+type PromptAPIMessage = {
+  answer: string;
+};
+
+type AnswerAPIMessage = {
+  text: string;
+  id: string;
+  fileId?: string;
+  mimeType?: string;
+};
+
 const SteamshipMessage = ({ message }: { message: string }) => {
   try {
-    const messageJson = JSON.parse(message) as {
-      text: string;
-      id?: string;
-      fileId?: string;
-      mimeType?: string;
-    }[];
-    const audioMessage = messageJson.find(
+    let messageJson = JSON.parse(message);
+
+    // if messageJson is not an array
+    if (!Array.isArray(messageJson)) {
+      <div className="steamship-code-block steamship-whitespace-pre-wrap">
+        <Markdown
+          // eslint-disable-next-line react/no-children-prop
+          children={(messageJson as PromptAPIMessage).answer}
+          options={{
+            overrides: {
+              code: Code,
+            },
+          }}
+        />
+      </div>;
+    }
+
+    const answerApiMessage = messageJson as AnswerAPIMessage[];
+
+    const audioMessage = answerApiMessage.find(
       (m) => m.fileId && m.mimeType?.indexOf("audio") !== -1
     );
     if (audioMessage && audioMessage.id && audioMessage.mimeType) {
@@ -59,13 +83,13 @@ const SteamshipMessage = ({ message }: { message: string }) => {
 
     return (
       <>
-        {messageJson.map((m, i) => {
+        {answerApiMessage.map((m, i) => {
           if (m.id && m.mimeType?.indexOf("image") !== -1) {
             return <SteamshipImage key={i} blockId={m.id} />;
           }
-          let text = m.text;
-          if (m.text.startsWith(". ")) {
-            text = m.text.slice(2);
+          let text = m.text || "";
+          if (text.startsWith(". ")) {
+            text = text.slice(2);
           }
           return (
             <div
