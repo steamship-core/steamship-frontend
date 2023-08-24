@@ -1,4 +1,5 @@
 import { SteamshipBlock} from "./datamodel";
+import { stringToStream } from "./utils";
 
 /*
  * Fetches the URL at which the Steamship Block's contents can be streamed.
@@ -13,18 +14,6 @@ const blockToContentStreamUrl = (b: SteamshipBlock): string => {
 const blockToContentStream = async (block: SteamshipBlock): Promise<ReadableStream> => {
     const response = await fetch(blockToContentStreamUrl(block));
     return response.body as any;
-}
-
-/*
- * Converts a string into a Readable Stream.
- */
-const stringToReadableStream = (s: string): ReadableStream => {
-    return new ReadableStream({
-        start(controller){
-            controller.enqueue(s);
-            controller.close();
-        }
-    });
 }
 
 /* ==========================================================================================
@@ -46,11 +35,11 @@ const stringToReadableStream = (s: string): ReadableStream => {
  */
 const createMarkdownBlockStreamParserFromBlock = async (block: SteamshipBlock): Promise<ReadableStream<string>> => {
     if (block.mimeType?.startsWith("audio/")) {
-        return stringToReadableStream(`[audio](${blockToContentStreamUrl(block)})`)
+        return stringToStream(`[audio](${blockToContentStreamUrl(block)})`)
     } else if (block.mimeType?.startsWith("video/")) {
-        return stringToReadableStream(`[video](${blockToContentStreamUrl(block)})`)
+        return stringToStream(`[video](${blockToContentStreamUrl(block)})`)
     } else if (block.mimeType?.startsWith("image/")) {
-        return stringToReadableStream(`![image](${blockToContentStreamUrl(block)})`)
+        return stringToStream(`![image](${blockToContentStreamUrl(block)})`)
     } else {
         return await blockToContentStream(block);
     }

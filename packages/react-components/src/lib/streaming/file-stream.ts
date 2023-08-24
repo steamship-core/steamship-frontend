@@ -2,11 +2,6 @@
  * Sketch at how we might implement the SteamshipStream class.
  */
 
-import {
-    type AIStreamCallbacksAndOptions,
-    createCallbacksTransformer
-} from 'ai/ai-stream'
-import { createStreamDataTransformer } from 'ai/stream-data'
 import {SteamshipBlock} from "./datamodel";
 
 /* ==========================================================================================
@@ -45,7 +40,6 @@ async function sendStringsToFileStreamEventController(
     }
 }
 
-
 /*
  * Parses UTF-8 lines out of the stream of bytes and passes those lines to `processLines` for interpretation.
  */
@@ -61,7 +55,8 @@ async function sendBytesToFileStreamEventController(
             break
         }
 
-        segment += utf8Decoder.decode(chunk as any, { stream: true })
+        // TODO: I think something might be wrong if chunk can be a string here..
+        segment += (typeof chunk == 'string') ? chunk : utf8Decoder.decode(chunk as any, { stream: true })
 
         const linesArray = segment.split(/\r\n|\n|\r/g)
         segment = linesArray.pop() || ''
@@ -77,14 +72,11 @@ async function sendBytesToFileStreamEventController(
     controller.close()
 }
 
-
 /*
  * A FileStream decodes a list of FileStreamEvent Server Sent Events. Each announces when a new block
  * has been appended to a file.
  */
-function createFileStreamParser(res: Response): ReadableStream<FileStreamEvent> {
-    const reader = res.body?.getReader()
-
+function createFileStreamParser(reader: ReadableStreamDefaultReader): ReadableStream<FileStreamEvent> {
     return new ReadableStream<FileStreamEvent>({
         async start(controller): Promise<void> {
             if (!reader) {
@@ -96,3 +88,16 @@ function createFileStreamParser(res: Response): ReadableStream<FileStreamEvent> 
     })
 }
 
+/*
+ * A FileStream decodes a list of FileStreamEvent Server Sent Events. Each announces when a new block
+ * has been appended to a file.
+ */
+function createFileStreamParserFromResponse(res: Response): ReadableStream<FileStreamEvent> {
+    const reader = res.body?.getReader()
+    if (!reader) {
+        throw Error("No body in response.")
+    }
+    return createFileStreamParser(reader)
+}
+
+export { createFileStreamParser, createFileStreamParserFromResponse }

@@ -1,4 +1,5 @@
 import {SteamshipBlock} from "../../../../src/lib/streaming/datamodel";
+import {FileStreamEvent} from "../../../../src/lib/streaming/file-stream";
 
 const MOCK_STREAM_URL = "https://example.org"
 
@@ -26,9 +27,28 @@ const TEST_TEXT_BLOCK: SteamshipBlock = {
     text: `Hi`
 }
 
+const TEST_TEXT_FILE_EVENT_1: FileStreamEvent = {
+    id: "1",
+    event: "BLOCK_APPENDED",
+    data: TEST_TEXT_BLOCK
+}
+
+
+const TEST_FILE_STREAM: FileStreamEvent[] = [
+    TEST_TEXT_FILE_EVENT_1
+]
+
+const fileStreamEventsToJsonLines = (events: FileStreamEvent[]): string => {
+    return events.map((event) => {
+        return JSON.stringify(event)
+    }).join("\n")
+}
+
 export {
     TEST_AUDIO_BLOCK,
     TEST_VIDEO_BLOCK,
     TEST_IMAGE_BLOCK,
-    TEST_TEXT_BLOCK
+    TEST_TEXT_BLOCK,
+    TEST_FILE_STREAM,
+    fileStreamEventsToJsonLines
 }
