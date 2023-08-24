@@ -13,13 +13,39 @@
  *
  * =========================================================================================*/
 
+import {FileStreamEvent} from "./file-stream";
+import {SteamshipBlock} from "./datamodel";
+
 export function SteamshipMarkdownStream(
     reader: Response,
     callbacks?: AIStreamCallbacksAndOptions
 ): ReadableStream {
-    return createParser(reader)
-        .pipeThrough(createCallbacksTransformer(callbacks))
-        .pipeThrough(
-            createStreamDataTransformer(callbacks?.experimental_streamData)
-        )
+    // What we ultimately want to return to users is a ReadableStream that outputs Markdown.
+    // That is going to be implemented as a StreamQueue which allows us to append individual BlockStreams as they
+    // are being created.
+    const markdownStream = new StreamQueue();
+
+    // The `reader` object -- the response to our /generate request -- is a SteamshipFileStream that will
+    // stream us events of any Steamship Blocks that are being created as a result of the request.
+    const fileStream = createFileStreamParser(reader)
+
+    const onFileStreamEvent = async (event: FileStreamEvent) => {
+        if (event.event == "BLOCK_APPENDED") {
+            const block: SteamshipBlock = event.data
+            const blockStream = await createBlockStreamParserFromBlock(block);
+            markdownStream.push(blockStream);
+        } else if (event.event == "STREAM_FINISHED") {
+            // What to do here? Maybe set a flag on SteamQueue that blocks further appends and lets it know
+            // the blocks it has are the full set?
+        }
+    }
+
+
+    return markdownStream;
+
+    // return createParser(reader)
+    //     .pipeThrough(createCallbacksTransformer(callbacks))
+    //     .pipeThrough(
+    //         createStreamDataTransformer(callbacks?.experimental_streamData)
+    //     )
 }

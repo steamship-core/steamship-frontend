@@ -27,7 +27,11 @@ export type FileStreamEvent = {
 
 const utf8Decoder = new TextDecoder('utf-8')
 
-async function processLines(
+/*
+ * Processes each line of the file stream. Each line is expected to be a UTF-8 string containing a JSON object
+ * that represents a FileStreamEvent.
+ */
+async function sendStringsToFileStreamEventController(
     lines: string[],
     controller: ReadableStreamDefaultController<FileStreamEvent>
 ) {
@@ -42,7 +46,10 @@ async function processLines(
 }
 
 
-async function readAndProcessFileStreamLines(
+/*
+ * Parses UTF-8 lines out of the stream of bytes and passes those lines to `processLines` for interpretation.
+ */
+async function sendBytesToFileStreamEventController(
     reader: ReadableStreamDefaultReader<Uint8Array>,
     controller: ReadableStreamDefaultController<FileStreamEvent>
 ) {
@@ -59,12 +66,12 @@ async function readAndProcessFileStreamLines(
         const linesArray = segment.split(/\r\n|\n|\r/g)
         segment = linesArray.pop() || ''
 
-        await processLines(linesArray, controller)
+        await sendStringsToFileStreamEventController(linesArray, controller)
     }
 
     if (segment) {
         const linesArray = [segment]
-        await processLines(linesArray, controller)
+        await sendStringsToFileStreamEventController(linesArray, controller)
     }
 
     controller.close()
@@ -84,7 +91,7 @@ function createFileStreamParser(res: Response): ReadableStream<FileStreamEvent> 
                 controller.close()
                 return
             }
-            await readAndProcessFileStreamLines(reader, controller)
+            await sendBytesToFileStreamEventController(reader, controller)
         }
     })
 }
