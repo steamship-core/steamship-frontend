@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.7.1
+
+### Patch Changes
+
+- should not hardcode endpoint
+
 ## 0.7.0
 
 ### Minor Changes

@@ -51,20 +51,21 @@ type AnswerAPIMessage = {
 const SteamshipMessage = ({ message }: { message: string }) => {
   try {
     let messageJson = JSON.parse(message);
-
     // if messageJson is not an array
     if (!Array.isArray(messageJson)) {
-      <div className="steamship-code-block steamship-whitespace-pre-wrap">
-        <Markdown
-          // eslint-disable-next-line react/no-children-prop
-          children={(messageJson as PromptAPIMessage).answer}
-          options={{
-            overrides: {
-              code: Code,
-            },
-          }}
-        />
-      </div>;
+      return (
+        <div className="steamship-code-block steamship-whitespace-pre-wrap">
+          <Markdown
+            // eslint-disable-next-line react/no-children-prop
+            children={(messageJson as PromptAPIMessage).answer}
+            options={{
+              overrides: {
+                code: Code,
+              },
+            }}
+          />
+        </div>
+      );
     }
 
     const answerApiMessage = messageJson as AnswerAPIMessage[];

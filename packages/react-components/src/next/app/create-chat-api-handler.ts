@@ -10,20 +10,17 @@ export const createChatApiHandler = () => async (req: Request) => {
     .reverse()
     .find((message) => message.role === "user");
 
-  const steamshipResponse = await fetch(
-    `${process.env.STEAMSHIP_AGENT_URL}/prompt`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.STEAMSHIP_API_KEY}`,
-      },
-      method: "POST",
-      body: JSON.stringify({
-        question: mostRecentUserMessage?.content,
-        chat_session_id: id,
-      }),
-    }
-  );
+  const steamshipResponse = await fetch(`${process.env.STEAMSHIP_AGENT_URL}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.STEAMSHIP_API_KEY}`,
+    },
+    method: "POST",
+    body: JSON.stringify({
+      question: mostRecentUserMessage?.content,
+      chat_session_id: id,
+    }),
+  });
   return new StreamingTextResponse(
     steamshipResponse.body as ReadableStream<any>
   );
