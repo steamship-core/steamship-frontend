@@ -57,7 +57,7 @@ const SteamshipMessage = ({ message }: { message: string }) => {
         <div className="steamship-code-block steamship-whitespace-pre-wrap">
           <Markdown
             // eslint-disable-next-line react/no-children-prop
-            children={(messageJson as PromptAPIMessage).answer}
+            children={(messageJson as PromptAPIMessage).answer || ""}
             options={{
               overrides: {
                 code: Code,

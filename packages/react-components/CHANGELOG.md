@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.7.2
+
+### Patch Changes
+
+- account for empty responses
+
 ## 0.7.1
 
 ### Patch Changes
