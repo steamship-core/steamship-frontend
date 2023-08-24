@@ -15,8 +15,8 @@
  * =========================================================================================*/
 
 class StreamQueue<T> {
-    private streams: ReadableStreamDefaultController<T>[];
-    public outputStream: ReadableStream<T>
+    private streams: ReadableStream<T>[];
+    public outputStream?: ReadableStream<T>
     public controller?: ReadableStreamDefaultController<T>;
     public isClosed: boolean;
 
@@ -70,35 +70,68 @@ class StreamQueue<T> {
      * The spin-loop that consumes the queue of streams and emits.
      */
     private async consumeLoop() {
-        // TODO: Implement a loop across the embedded streams.
-        // CHALLENGE: Knowing "when a sub-stream is done" may be tricky. But might not. Unsure
-        // ASSUMPTION: while(true) seems not wrong here.. with a break when we truly are done.
+        // TODO: Is the spin loop OK here?
+        while(! this.shouldFinish()) {
+            await this.processNextStream()
+        }
+        this.controller?.close()
+    }
 
-        // for (const line of lines) {
-        //     const event: FileStreamEvent = JSON.parse(line)
-        //     if (event.event == "STREAM_FINISHED") {
-        //         controller.close()
-        //     } else {
-        //         controller.enqueue(event)
-        //     }
-        // }
+    public length(): number {
+        return this.streams?.length || 0
+    }
+
+    /*
+     * Consume the next available stream, emitting it to the output stream.
+     */
+    private async processNextStream() {
+        if (this.streams.length == 0) {
+            // No next stream to process.
+            return
+        }
+
+        const nextStream = this.dequeue();
+
+        const self = this;
+        const reader = nextStream.getReader();
+        const read = async (): Promise<void> => {
+            const { done, value } = await reader.read();
+            if (done) {
+                // We're finished
+                return;
+            } else if (value) {
+                self.emit(value)
+            }
+            return read();
+        }
+        await read();
     }
 
     /*
      * Push a new stream to the queue.
      */
-    public enqueue(stream: ReadableStreamDefaultController<T>) {
+    public enqueue(stream: ReadableStream<T>) {
         this.streams.push(stream)
     }
 
     /*
      * Dequeue the head from the queue
      */
-    public dequeue() {
+    public dequeue(): ReadableStream<T> {
         if (this.streams.length == 0) {
             throw Error("Unable to call dequeue: the queue was empty.")
         }
+        const head = this.streams[0]
         this.streams.shift(); // Index 0 is the head of the queue; .shift() removes the zeroth item.
+        return head;
     }
 
+    public shouldFinish(): boolean {
+        // TODO: This should actually be dependent on something else since some FUTURE blocks might join
+        // a response but only after PRIOR blocks have completed their streams.
+        return this.streams.length == 0
+    }
 }
+
+
+export {StreamQueue}

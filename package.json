@@ -6,7 +6,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "publish-packages": "turbo run build && changeset version && changeset publish",
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
     "@turbo/gen": "^1.9.7",

@@ -23,7 +23,7 @@ export function SteamshipMarkdownStream(
     // What we ultimately want to return to users is a ReadableStream that outputs Markdown.
     // That is going to be implemented as a StreamQueue which allows us to append individual BlockStreams as they
     // are being created.
-    const markdownStream = new StreamQueue();
+    const markdownStream = new StreamQueue<T>();
 
     // The `reader` object -- the response to our /generate request -- is a SteamshipFileStream that will
     // stream us events of any Steamship Blocks that are being created as a result of the request.

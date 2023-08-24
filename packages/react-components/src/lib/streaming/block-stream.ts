@@ -1,28 +1,18 @@
-import {
-    type AIStreamCallbacksAndOptions,
-    createCallbacksTransformer
-} from 'ai/ai-stream'
-import { createStreamDataTransformer } from 'ai/stream-data'
 import { SteamshipBlock} from "./datamodel";
-
-
-const decoder = new TextDecoder("utf-8");
-const queuingStrategy = new CountQueuingStrategy({ highWaterMark: 1 });
 
 /*
  * Fetches the URL at which the Steamship Block's contents can be streamed.
  */
 const blockToContentStreamUrl = (b: SteamshipBlock): string => {
-    return "https://example.org"
+    return b.url || "";
 }
 
 /*
  * Returns the Steamship block's contents as a stream.
  */
 const blockToContentStream = async (block: SteamshipBlock): Promise<ReadableStream> => {
-    const streamUrl = "https://example";
     const response = await fetch(blockToContentStreamUrl(block));
-    return response.body;
+    return response.body as any;
 }
 
 /*
@@ -54,21 +44,18 @@ const stringToReadableStream = (s: string): ReadableStream => {
 /*
  * A BlockStream streams the bytes from a Steamship Block.
  */
-function createBlockStreamParser(res: Response): ReadableStreamDefaultReader<Uint8Array> {
-    return res.body?.getReader()
-}
-
-/*
- * A BlockStream streams the bytes from a Steamship Block.
- */
-const createBlockStreamParserFromBlock = async (block: SteamshipBlock): Promise<ReadableStream<string>> => {
+const createMarkdownBlockStreamParserFromBlock = async (block: SteamshipBlock): Promise<ReadableStream<string>> => {
     if (block.mimeType?.startsWith("audio/")) {
-        return stringToReadableStream("[audio file](LINK)")
+        return stringToReadableStream(`[audio](${blockToContentStreamUrl(block)})`)
     } else if (block.mimeType?.startsWith("video/")) {
-        return stringToReadableStream("[video file](LINK)")
+        return stringToReadableStream(`[video](${blockToContentStreamUrl(block)})`)
     } else if (block.mimeType?.startsWith("image/")) {
-        return stringToReadableStream("![image](LINK)")
+        return stringToReadableStream(`![image](${blockToContentStreamUrl(block)})`)
     } else {
         return await blockToContentStream(block);
     }
+}
+
+export {
+    createMarkdownBlockStreamParserFromBlock,
 }
