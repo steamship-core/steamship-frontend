@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.10.0
+
+### Minor Changes
+
+- dark-mode support for elements
+
 ## 0.9.0
 
 ### Minor Changes

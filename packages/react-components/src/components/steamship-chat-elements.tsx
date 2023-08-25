@@ -7,7 +7,7 @@ export const SteamshipChatMessageContainer = ({
 }: {
   children: ReactNode;
 }) => (
-  <div className="steamship-border steamship-border-white/10 steamship-px-2 steamship-py-4 steamship-rounded-md steamship-mb-4 steamship-grid steamship-grid-cols-12">
+  <div className="steamship-border steamship-border-foreground/10 steamship-px-2 steamship-py-4 steamship-rounded-md steamship-mb-4 steamship-grid steamship-grid-cols-12">
     {children}
   </div>
 );
