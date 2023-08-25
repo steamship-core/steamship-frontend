@@ -37,8 +37,19 @@ const Code = ({
   );
 };
 
+type Source = {
+  page_content: string;
+  metadata: {
+    block_id: string;
+    file_id: string;
+    page: number;
+    source: string;
+  };
+};
+
 type PromptAPIMessage = {
   answer: string;
+  sources: Source[];
 };
 
 type AnswerAPIMessage = {
@@ -46,6 +57,28 @@ type AnswerAPIMessage = {
   id: string;
   fileId?: string;
   mimeType?: string;
+  sources: Source[];
+};
+
+const SourceBlock = ({ sources }: { sources: Source[] }) => {
+  return (
+    <ol className="steamship-mt-2">
+      {sources.map((s) => (
+        <li key={s.metadata.block_id} className="steamship-text-sm">
+          📙
+          <a
+            href={s.metadata.source}
+            className="steamship-ml-2 steamship-text-blue-500"
+          >
+            {s.metadata.source}
+          </a>
+          <span className="steamship-ml-2 steamship-text-xs">
+            (p. {s.metadata.page + 1})
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
 };
 
 const SteamshipMessage = ({ message }: { message: string }) => {
@@ -53,6 +86,7 @@ const SteamshipMessage = ({ message }: { message: string }) => {
     let messageJson = JSON.parse(message);
     // if messageJson is not an array
     if (!Array.isArray(messageJson)) {
+      const promptAPIMessage = messageJson as PromptAPIMessage;
       return (
         <div className="steamship-code-block steamship-whitespace-pre-wrap">
           <Markdown
@@ -64,6 +98,9 @@ const SteamshipMessage = ({ message }: { message: string }) => {
               },
             }}
           />
+          {promptAPIMessage.sources && (
+            <SourceBlock sources={promptAPIMessage.sources} />
+          )}
         </div>
       );
     }
@@ -106,6 +143,7 @@ const SteamshipMessage = ({ message }: { message: string }) => {
                   },
                 }}
               />
+              {m.sources && <SourceBlock sources={m.sources} />}
             </div>
           );
         })}

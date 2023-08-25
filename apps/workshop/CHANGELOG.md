@@ -1,5 +1,13 @@
 # workshop
 
+## 0.1.12
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @steamship/react@0.8.0
+
 ## 0.1.11
 
 ### Patch Changes

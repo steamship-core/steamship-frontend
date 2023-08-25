@@ -1,5 +1,12 @@
 # @steamship/react
 
+## 0.8.0
+
+### Minor Changes
+
+- support rendering sources
+- render sources, remove logs
+
 ## 0.7.2
 
 ### Patch Changes
