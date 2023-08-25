@@ -50,6 +50,9 @@ type Source = {
 type PromptAPIMessage = {
   answer: string;
   sources: Source[];
+  mime_type?: string;
+  file_id?: string;
+  id: string;
 };
 
 type AnswerAPIMessage = {
@@ -81,27 +84,40 @@ const SourceBlock = ({ sources }: { sources: Source[] }) => {
   );
 };
 
+const SteamshipAnswerAPIMessage = ({
+  message,
+}: {
+  message: PromptAPIMessage;
+}) => {
+  if (message.mime_type?.includes("audio")) {
+    return <SteamshipAudio blockId={message.id} mimeType={message.mime_type} />;
+  }
+  if (message.mime_type?.includes("image")) {
+    return <SteamshipImage blockId={message.id} />;
+  }
+  return (
+    <div className="steamship-code-block steamship-whitespace-pre-wrap">
+      <Markdown
+        // eslint-disable-next-line react/no-children-prop
+        children={message.answer || ""}
+        options={{
+          overrides: {
+            code: Code,
+          },
+        }}
+      />
+      {message.sources && <SourceBlock sources={message.sources} />}
+    </div>
+  );
+};
+
 const SteamshipMessage = ({ message }: { message: string }) => {
   try {
     let messageJson = JSON.parse(message);
     // if messageJson is not an array
     if (!Array.isArray(messageJson)) {
-      const promptAPIMessage = messageJson as PromptAPIMessage;
       return (
-        <div className="steamship-code-block steamship-whitespace-pre-wrap">
-          <Markdown
-            // eslint-disable-next-line react/no-children-prop
-            children={(messageJson as PromptAPIMessage).answer || ""}
-            options={{
-              overrides: {
-                code: Code,
-              },
-            }}
-          />
-          {promptAPIMessage.sources && (
-            <SourceBlock sources={promptAPIMessage.sources} />
-          )}
-        </div>
+        <SteamshipAnswerAPIMessage message={messageJson as PromptAPIMessage} />
       );
     }
 

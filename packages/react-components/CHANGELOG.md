@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.9.0
+
+### Minor Changes
+
+- support audio and images for answer api
+
 ## 0.8.0
 
 ### Minor Changes
