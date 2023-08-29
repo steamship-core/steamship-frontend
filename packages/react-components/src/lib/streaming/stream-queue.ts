@@ -19,10 +19,12 @@ class StreamQueue<T> {
     public outputStream?: ReadableStream<T>
     public controller?: ReadableStreamDefaultController<T>;
     public isClosed: boolean;
+    public streamAddingClosed: boolean;
 
     constructor() {
         this.streams = []
         this.isClosed = false;
+        this.streamAddingClosed = false;
     }
 
     /*
@@ -127,9 +129,12 @@ class StreamQueue<T> {
     }
 
     public shouldFinish(): boolean {
-        // TODO: This should actually be dependent on something else since some FUTURE blocks might join
-        // a response but only after PRIOR blocks have completed their streams.
-        return this.streams.length == 0
+        if (this.streamAddingClosed) {
+            return this.streams.length == 0
+        } else {
+            // We might be adding more streams!
+            return false;
+        }
     }
 }
 

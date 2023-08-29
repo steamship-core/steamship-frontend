@@ -13,39 +13,63 @@
  *
  * =========================================================================================*/
 
-import {FileStreamEvent} from "./file-stream";
+import {createFileStreamParser, createFileStreamParserFromResponse, FileStreamEvent} from "./file-stream";
 import {SteamshipBlock} from "./datamodel";
+import {StreamQueue} from "./stream-queue";
+import {createMarkdownBlockStreamParserFromBlock} from "./block-stream";
 
-export function SteamshipMarkdownStream(
-    reader: Response,
-    callbacks?: AIStreamCallbacksAndOptions
-): ReadableStream {
+const SteamshipMarkdownStreamFromReader = (
+    reader: ReadableStreamDefaultReader,
+    // callbacks?: AIStreamCallbacksAndOptions
+): ReadableStream => {
     // What we ultimately want to return to users is a ReadableStream that outputs Markdown.
     // That is going to be implemented as a StreamQueue which allows us to append individual BlockStreams as they
     // are being created.
-    const markdownStream = new StreamQueue<T>();
+    const markdownStream = new StreamQueue<string>();
 
     // The `reader` object -- the response to our /generate request -- is a SteamshipFileStream that will
     // stream us events of any Steamship Blocks that are being created as a result of the request.
     const fileStream = createFileStreamParser(reader)
 
     const onFileStreamEvent = async (event: FileStreamEvent) => {
-        if (event.event == "BLOCK_APPENDED") {
+        if ((event.event == "BLOCK_APPENDED") && (event.data)) {
             const block: SteamshipBlock = event.data
-            const blockStream = await createBlockStreamParserFromBlock(block);
-            markdownStream.push(blockStream);
+            const blockStream = await createMarkdownBlockStreamParserFromBlock(block);
+            markdownStream.enqueue(blockStream);
         } else if (event.event == "STREAM_FINISHED") {
-            // What to do here? Maybe set a flag on SteamQueue that blocks further appends and lets it know
-            // the blocks it has are the full set?
+            // Tell the StreamQueue that we're done appending streams.
+            markdownStream.streamAddingClosed = true;
         }
     }
 
+    async function consumeLoop() {
+        while (true) {
+            const {done, value} = await reader.read();
+            if (done) {
+                // Tell the StreamQueue that we're done appending streams.
+                markdownStream.streamAddingClosed = true;
+                break;
+            }
+            onFileStreamEvent(value)
+        }
+    }
 
-    return markdownStream;
+    // TODO: Test that this return isn't blocked upon the manner of implementation above.
+    return markdownStream.start()
+}
 
-    // return createParser(reader)
-    //     .pipeThrough(createCallbacksTransformer(callbacks))
-    //     .pipeThrough(
-    //         createStreamDataTransformer(callbacks?.experimental_streamData)
-    //     )
+const SteamshipMarkdownStream = (
+    response: Response,
+    // callbacks?: AIStreamCallbacksAndOptions
+): ReadableStream => {
+    const reader = response.body?.getReader()
+    if (!reader) {
+        throw Error("No body in response.")
+    }
+    return SteamshipMarkdownStreamFromReader(reader)
+}
+
+export {
+    SteamshipMarkdownStream,
+    SteamshipMarkdownStreamFromReader
 }
