@@ -1,5 +1,12 @@
 # python-docs
 
+## 0.0.16
+
+### Patch Changes
+
+- Updated dependencies
+  - @steamship/react@0.11.0
+
 ## 0.0.15
 
 ### Patch Changes

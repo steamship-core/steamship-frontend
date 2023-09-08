@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.11.0
+
+### Minor Changes
+
+- support nested audio blocks
+
 ## 0.10.0
 
 ### Minor Changes

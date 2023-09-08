@@ -123,24 +123,20 @@ const SteamshipMessage = ({ message }: { message: string }) => {
 
     const answerApiMessage = messageJson as AnswerAPIMessage[];
 
-    const audioMessage = answerApiMessage.find(
-      (m) => m.fileId && m.mimeType?.indexOf("audio") !== -1
-    );
-    if (audioMessage && audioMessage.id && audioMessage.mimeType) {
-      return (
-        <SteamshipAudio
-          blockId={audioMessage.id}
-          mimeType={audioMessage.mimeType}
-        />
-      );
-    }
-
     return (
       <>
         {answerApiMessage.map((m, i) => {
-          if (m.id && m.mimeType?.indexOf("image") !== -1) {
+          const mimeType = m.mimeType;
+          if (m.fileId && mimeType && mimeType.indexOf("audio") !== -1) {
+            return (
+              <SteamshipAudio key={i} blockId={m.id} mimeType={mimeType} />
+            );
+          }
+
+          if (m.id && mimeType && mimeType?.indexOf("image") !== -1) {
             return <SteamshipImage key={i} blockId={m.id} />;
           }
+
           let text = m.text || "";
           if (text.startsWith(". ")) {
             text = text.slice(2);
