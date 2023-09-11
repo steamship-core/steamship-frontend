@@ -1,34 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Overview
+
+This example repo uses:
+
+1. [Clerk](https://clerk.com/) for authentication
+2. [Vercel](https://vercel.com/) Postgres for a database
+3. [Shadcn](https://ui.shadcn.com/) for it's ui
+4. [Steamship](https://steamship.com) for a Multi-Modal agent
+
+This demo application creates an AI Doggy Daycare where you can add dogs and chat with the dog trainer bot about the dogs you've added. You can ask questions about individual dogs, or ask for pictures.
 
 ## Getting Started
 
-First, run the development server:
+### Fork this project and setup a vercel account
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+1. Fork this repo
+2. Create an account with [Vercel](https://vercel.com/)
+3. Create a new project for the newly forked repo. Note: The deploy step will fail initialially. We will need to setup a few environmental variables before proceeding.
+
+### Setup the Database
+
+1. Within Vercel, open the new project, and select the "Storage" tab
+2. Create a new postgres database
+3. The environmental variables should be automatically set now within vercel. You can verify this by navigating to project settings > environmental variables > looking for postgres related env vars.
+
+### Setup Clerk
+
+1. Create an account with [Clerk](https://clerk.com/)
+2. Create a new project
+3. Copy your env vars into Vercel. These should be:
+
+```
+CLERK_SECRET_KEY="..."
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/"
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="..."
+NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Configure Steamship
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Create an account with [Steamship](https://steamship.com)
+2. Set the following environmental variables:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+STEAMSHIP_API_KEY=YOUR_API_KEY
+STEAMSHIP_API_URL="https://api.steamship.com"
+STEAMSHIP_PACKAGE_HANDLE="ai-dog-trainer"
+```
 
-## Learn More
+### Connect to Vercel locally & initialize the Prisma ORM
 
-To learn more about Next.js, take a look at the following resources:
+We use prisma to talk to our database and vercel to run our app locally.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Install the vercel cli `npm i -g vercel`
+2. Install repo dependencies `npm i`
+3. Connect to Vercel `vercel link`. Follow the prompts to connect to the project you just created
+4. Generate the prisma types: `npx prisma generate`
+5. Create the tables in the DB: `npm run dev:db-push`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Running the app
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. `vercel dev`
