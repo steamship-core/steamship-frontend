@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.12.0
+
+### Minor Changes
+
+- support custom class names
+
 ## 0.11.0
 
 ### Minor Changes

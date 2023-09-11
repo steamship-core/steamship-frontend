@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { Skeleton, cn } from "../ui";
 import { BotIcon, UserIcon } from "lucide-react";
-import clsx from "clsx";
 
 export const SteamshipChatMessageContainer = ({
   children,
