@@ -44,7 +44,8 @@ const AddPetButton = () => {
         <DialogHeader>
           <DialogTitle>Add Dog</DialogTitle>
           <DialogDescription>
-            Add a new dog to your profile here. Click save when you're done.
+            Add a new dog to your profile here. Click save when you&apos;re
+            done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
