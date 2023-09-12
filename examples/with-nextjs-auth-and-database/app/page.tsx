@@ -19,9 +19,12 @@ import { TypographyH2 } from "@/components/ui/typography/TypographyH2";
 import { TypographySmall } from "@/components/ui/typography/TypographySmall";
 import Image from "next/image";
 import { TypographyH3 } from "@/components/ui/typography/TypographyH3";
+import conditionallyCreateAgent from "@/lib/conditionally-create-agent";
 
 export default async function Home(): Promise<JSX.Element> {
   const { userId } = auth();
+  conditionallyCreateAgent(userId!);
+
   const dogs = await prisma.dogs.findMany({
     where: {
       ownerId: userId!,

@@ -3,31 +3,7 @@ import { StreamingTextResponse } from "ai";
 import { Steamship } from "@steamship/client";
 import { auth } from "@clerk/nextjs";
 import prisma from "@/lib/db";
-
-const getAgent = async (userId: string) => {
-  const agent = await prisma.agents.findFirst({
-    where: {
-      ownerId: userId!,
-    },
-  });
-
-  if (!agent) {
-    const steamship = new Steamship({ apiKey: process.env.STEAMSHIP_API_KEY });
-    const packageInstance = await steamship.use(
-      process.env.STEAMSHIP_PACKAGE_HANDLE!,
-      `${process.env.STEAMSHIP_PACKAGE_HANDLE!}-${userId.toLowerCase()}`
-    );
-    return await prisma.agents.create({
-      data: {
-        ownerId: userId!,
-        agentUrl: packageInstance.invocationURL!,
-        handle: packageInstance.handle!,
-      },
-    });
-  }
-
-  return agent;
-};
+import conditionallyCreateAgent from "@/lib/conditionally-create-agent";
 
 export const POST = async (req: Request) => {
   const { userId } = auth();
@@ -41,7 +17,7 @@ export const POST = async (req: Request) => {
     .reverse()
     .find((message) => message.role === "user");
 
-  const agent = await getAgent(userId!);
+  const agent = await conditionallyCreateAgent(userId!);
   const dogs = await prisma.dogs.findMany({
     where: {
       ownerId: userId!,
