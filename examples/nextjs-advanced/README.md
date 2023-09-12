@@ -8,7 +8,7 @@ Once you have access to [the environment variables you'll need](#set-up-environm
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/steamship-core/steamship-frontend/tree/main/examples/nextjs-advanced&project-name=steamship-web-app&repository-name=steamship-web-app&env=CLERK_SECRET_KEY,NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,NEXT_PUBLIC_CLERK_SIGN_IN_URL,NEXT_PUBLIC_CLERK_SIGN_UP_URL,STEAMSHIP_API_KEY,STEAMSHIP_API_URL,STEAMSHIP_PACKAGE_HANDLE)
 
-Once deployed, you'll need to [configure your database](#configure-the-database)
+**Important!** Once deployed, you'll need to [configure your database](#configure-the-database)
 
 ## Overview
 
