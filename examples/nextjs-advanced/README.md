@@ -17,7 +17,7 @@ This example repo uses:
 
 This demo application creates an AI Doggy Daycare where you can add dogs and chat with the dog trainer bot about the dogs you've added. You can ask questions about individual dogs, or ask for pictures.
 
-## Setup Environmental Variables
+## Set up Environmental Variables
 
 ### Clerk
 
