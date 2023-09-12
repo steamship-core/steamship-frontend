@@ -41,7 +41,8 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 ### Configure Steamship
 
 1. Create an account with [Steamship](https://steamship.com)
-2. Set the following env vars in Vercel:
+2. Get your API Key [here](https://www.steamship.com/account/api) 
+3. Set the following env vars in Vercel:
 
 ```
 STEAMSHIP_API_KEY=YOUR_API_KEY
