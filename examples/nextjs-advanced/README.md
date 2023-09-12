@@ -1,3 +1,7 @@
+# Nextjs Auth and DB
+
+This is an example of building a Next.js application with: Authentication, a Postgres DB, and Steamship agents.
+
 ## Deploy your own
 
 Once you have access to [the environment variables you'll need](#set-up-environment-variables), deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
@@ -17,7 +21,7 @@ This example repo uses:
 
 This demo application creates an AI Doggy Daycare where you can add dogs and chat with the dog trainer bot about the dogs you've added. You can ask questions about individual dogs, or ask for pictures.
 
-## Set up Environmental Variables
+## Set up Environment Variables
 
 ### Clerk
 
