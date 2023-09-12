@@ -27,7 +27,7 @@ This demo application creates an AI Doggy Daycare where you can add dogs and cha
 
 1. Create an account with [Clerk](https://clerk.com/)
 2. Create a new project
-3. Grab the following env vars
+3. Set the following env vars in Vercel
 
 ```
 CLERK_SECRET_KEY="..."
@@ -41,7 +41,7 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 ### Configure Steamship
 
 1. Create an account with [Steamship](https://steamship.com)
-2. Grab the following environmental variables:
+2. Set the following env vars in Vercel:
 
 ```
 STEAMSHIP_API_KEY=YOUR_API_KEY
@@ -53,7 +53,7 @@ STEAMSHIP_PACKAGE_HANDLE="ai-dog-trainer"
 
 1. Within Vercel, open the new project, and select the "Storage" tab
 2. Create a new postgres database
-3. The environmental variables should be automatically set now within vercel. You can verify this by navigating to project settings > environmental variables > looking for postgres related env vars.
+3. The environment variables should be automatically set now within vercel. You can verify this by navigating to project settings > environmental variables > looking for postgres related env vars.
 
 More on setting up your database can be found here: https://vercel.com/docs/storage/vercel-postgres/quickstart.
 
