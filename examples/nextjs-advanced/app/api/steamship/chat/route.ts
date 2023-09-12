@@ -1,11 +1,8 @@
-import { createBlockApiHandler } from "@steamship/react/next/server";
 import { StreamingTextResponse } from "ai";
 
 import { Steamship } from "@steamship/client";
 import { auth } from "@clerk/nextjs";
 import prisma from "@/lib/db";
-
-export const GET = createBlockApiHandler();
 
 const getAgent = async (userId: string) => {
   const agent = await prisma.agents.findFirst({
