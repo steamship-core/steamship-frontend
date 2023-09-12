@@ -46,7 +46,6 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
 ```
 STEAMSHIP_API_KEY=YOUR_API_KEY
-STEAMSHIP_API_URL=https://api.steamship.com
 STEAMSHIP_PACKAGE_HANDLE=ai-dog-trainer
 ```
 

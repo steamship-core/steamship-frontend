@@ -1,6 +1,6 @@
 import { StreamingTextResponse } from "ai";
 
-export const createChatApiHandler = () => async (req: Request) => {
+export const POST = async (req: Request) => {
   const { messages, id } = (await req.json()) as {
     messages: { role: "user" | "assistent"; content: string }[];
     id: string;
@@ -21,6 +21,7 @@ export const createChatApiHandler = () => async (req: Request) => {
       chat_session_id: id,
     }),
   });
+
   return new StreamingTextResponse(
     steamshipResponse.body as ReadableStream<any>
   );

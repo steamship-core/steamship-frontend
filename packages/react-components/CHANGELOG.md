@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 0.13.0
+
+### Minor Changes
+
+- remove utilities for API routes
+
 ## 0.12.0
 
 ### Minor Changes
