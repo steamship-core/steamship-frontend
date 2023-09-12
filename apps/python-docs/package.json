@@ -13,7 +13,7 @@
   "homepage": "https://docs.steamship.com/",
   "dependencies": {
     "ai": "^2.1.22",
-    "next": "^13.4.1",
+    "next": "13.4.19",
     "nextra": "latest",
     "nextra-theme-docs": "latest",
     "react": "^18.2.0",
