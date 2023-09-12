@@ -30,12 +30,12 @@ This demo application creates an AI Doggy Daycare where you can add dogs and cha
 3. Set the following env vars in Vercel
 
 ```
-CLERK_SECRET_KEY="..."
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/"
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="..."
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+CLERK_SECRET_KEY=YOUR_CLERK_SECRET_KEY
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=YOUR_CLERK_PUBLISHABLE_KEY
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 ```
 
 ### Configure Steamship
@@ -45,8 +45,8 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 
 ```
 STEAMSHIP_API_KEY=YOUR_API_KEY
-STEAMSHIP_API_URL="https://api.steamship.com"
-STEAMSHIP_PACKAGE_HANDLE="ai-dog-trainer"
+STEAMSHIP_API_URL=https://api.steamship.com
+STEAMSHIP_PACKAGE_HANDLE=ai-dog-trainer
 ```
 
 ## Configure the Database
