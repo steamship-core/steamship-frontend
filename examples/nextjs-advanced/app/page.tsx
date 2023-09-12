@@ -49,6 +49,7 @@ export default async function Home(): Promise<JSX.Element> {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Name</TableHead>
+            <TableHead>Breed</TableHead>
             <TableHead>Description</TableHead>
           </TableRow>
         </TableHeader>
@@ -56,6 +57,7 @@ export default async function Home(): Promise<JSX.Element> {
           {dogs.map((dog) => (
             <TableRow key={dog.id}>
               <TableCell className="font-medium">{dog.name}</TableCell>
+              <TableCell>{dog.breed}</TableCell>
               <TableCell>{dog.description}</TableCell>
             </TableRow>
           ))}
