@@ -58,9 +58,9 @@ STEAMSHIP_PACKAGE_HANDLE=ai-dog-trainer
 
 More on setting up your database can be found here: https://vercel.com/docs/storage/vercel-postgres/quickstart.
 
-## Connect to Vercel locally & initialize the Prisma ORM
+### Create the database tables
 
-We use prisma to talk to our database and vercel to run our app locally.
+We use prisma to talk to our database.
 
 1. Install the vercel cli `npm i -g vercel`
 2. Install repo dependencies `npm i`
@@ -68,6 +68,6 @@ We use prisma to talk to our database and vercel to run our app locally.
 4. Generate the prisma types: `npx prisma generate`
 5. Create the tables in the DB: `npm run dev:db-push`
 
-### Running the app
+## Local Development
 
 1. `vercel dev`
