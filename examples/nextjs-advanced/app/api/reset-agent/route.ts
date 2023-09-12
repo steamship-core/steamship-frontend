@@ -3,13 +3,14 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
 import { Steamship } from "@steamship/client";
 import prisma from "@/lib/db";
+import { v4 } from "uuid";
 
 export async function POST(request: Request) {
   const { userId } = auth();
   const steamship = new Steamship({ apiKey: process.env.STEAMSHIP_API_KEY });
   const packageInstance = await steamship.use(
     process.env.STEAMSHIP_PACKAGE_HANDLE!,
-    `${process.env.STEAMSHIP_PACKAGE_HANDLE!}-${userId!.toLowerCase()}`
+    `${process.env.STEAMSHIP_PACKAGE_HANDLE!}-${v4()}`
   );
   const agent = await prisma.agents.findFirst({
     where: {
