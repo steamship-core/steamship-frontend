@@ -41,7 +41,7 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 ### Configure Steamship
 
 1. Create an account with [Steamship](https://steamship.com)
-2. Get your API Key [here](https://www.steamship.com/account/api) 
+2. Get your API Key [here](https://www.steamship.com/account/api)
 3. Set the following env vars in Vercel:
 
 ```
@@ -66,7 +66,20 @@ We use prisma to talk to our database.
 2. Install repo dependencies `npm i`
 3. Connect to Vercel `vercel link`. Follow the prompts to connect to the project you just created
 4. Generate the prisma types: `npx prisma generate`
-5. Create the tables in the DB: `npm run dev:db-push`
+
+#### Update the production DB
+
+1. `vercel pull --environment=production`
+2. Create the tables in the DB: `npm run prod:db-push`
+
+#### Update the development DB
+
+1. `vercel pull --environment=development`
+2. Create the tables in the DB: `npm run dev:db-push`
+
+### Redeploy your appplication
+
+After configuring your production database. Make sure to re-deploy your project. You can do that by navigating to your project in Vercel and clicking the redeploy option.
 
 ## Local Development
 
