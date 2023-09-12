@@ -13,6 +13,11 @@ import AddPetButton from "./add-pet-button";
 import Steamship from "./steamship";
 import ResetAgentButton from "./reset-agent-button";
 import prisma from "@/lib/db";
+import FirstTimeModal from "./api/first-time-modal";
+import { TypographyH1 } from "@/components/ui/typography/TypographyH1";
+import { TypographyH2 } from "@/components/ui/typography/TypographyH2";
+import { TypographySmall } from "@/components/ui/typography/TypographySmall";
+import Image from "next/image";
 
 export default async function Home(): Promise<JSX.Element> {
   const { userId } = auth();
@@ -24,8 +29,21 @@ export default async function Home(): Promise<JSX.Element> {
 
   return (
     <main className="px-4 py-4 sm:px-12 overflow-scroll flex flex-col">
-      <div className="flex w-full justify-end items-center mb-8">
-        <UserButton />
+      <div className="flex w-full justify-between items-center mb-8">
+        <div>
+          <TypographySmall>Powered by</TypographySmall>
+          <Image
+            alt="Steamship"
+            src="/logo-dark@3x.png"
+            width={1749 / 10}
+            height={381 / 10}
+            className="mt-2"
+          />
+        </div>
+        <div className="flex justify-center items-center gap-4">
+          <FirstTimeModal />
+          <UserButton />
+        </div>
       </div>
       <div className="flex w-full justify-between items-center mb-8">
         <div className="max-w-[60%]">
