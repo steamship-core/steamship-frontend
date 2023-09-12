@@ -38,7 +38,7 @@ const AddPetButton = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className={buttonVariants()}>Add Pet</Button>
+        <Button className={buttonVariants()}>Add Dog</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

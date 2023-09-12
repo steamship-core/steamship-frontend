@@ -18,6 +18,7 @@ import { TypographyH1 } from "@/components/ui/typography/TypographyH1";
 import { TypographyH2 } from "@/components/ui/typography/TypographyH2";
 import { TypographySmall } from "@/components/ui/typography/TypographySmall";
 import Image from "next/image";
+import { TypographyH3 } from "@/components/ui/typography/TypographyH3";
 
 export default async function Home(): Promise<JSX.Element> {
   const { userId } = auth();
@@ -84,9 +85,19 @@ export default async function Home(): Promise<JSX.Element> {
       <div className="flex w-full justify-between items-center my-8">
         <h3 className="text-2xl font-medium">Chat about your dogs</h3>
       </div>
-      <div className="h-[600px]">
-        <Steamship />
-      </div>
+      {dogs.length > 0 ? (
+        <div className="h-[600px]">
+          <Steamship />
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-[600px]">
+          <TypographyH2 className="mb-4">No dogs yet!</TypographyH2>
+          <TypographyH3 className="mb-4">
+            Add a dog to start chatting.
+          </TypographyH3>
+          <AddPetButton />
+        </div>
+      )}
     </main>
   );
 }

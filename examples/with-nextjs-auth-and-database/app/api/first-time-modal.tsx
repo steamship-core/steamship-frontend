@@ -16,18 +16,18 @@ import { useEffect, useState } from "react";
 
 // Only renders a modal if the user has never been to the site before
 const FirstTimeModal = () => {
-  const [hasVisited, setHasVisited] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const hasVisited = localStorage.getItem("hasVisited");
     if (!hasVisited) {
       localStorage.setItem("hasVisited", "true");
-      setHasVisited(true);
+      setShowModal(true);
     }
   }, []);
 
   return (
-    <Dialog open={hasVisited} onOpenChange={setHasVisited}>
+    <Dialog open={showModal} onOpenChange={setShowModal}>
       <DialogTrigger asChild>
         <Button variant="ghost">About this demo</Button>
       </DialogTrigger>
@@ -74,7 +74,7 @@ const FirstTimeModal = () => {
           </a>
         </div>
         <DialogFooter>
-          <Button>Get Started</Button>
+          <Button onClick={() => setShowModal(false)}>Get Started</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
