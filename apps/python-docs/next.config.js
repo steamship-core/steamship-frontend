@@ -4,5 +4,8 @@ const withNextra = require('nextra')({
 });
 
 module.exports = withNextra({
-  transpilePackages: ['@steamship/react']
+  transpilePackages: ['@steamship/react'],
+  experimental: {
+    appDir: true
+  }
 });

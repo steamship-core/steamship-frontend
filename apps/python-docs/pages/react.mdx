@@ -23,39 +23,66 @@ This package also ships with a few React components and hooks that make it easy 
 ```
 STEAMSHIP_API_KEY=...
 STEAMSHIP_AGENT_URL=...
-STEAMSHIP_WORKSPACE_KEY=...
-STEAMSHIP_API_URL=https://api.steamship.com
 ```
 
 Your `STEAMSHIP_API_KEY` can be found at [https://www.steamship.com/account/api](https://www.steamship.com/account/api).
 
-Your `STEAMSHIP_AGENT_URL` can be found by navigating to Dashboard > Your Agent > API > POST /prompt > cURL
-
-Your `STEAMSHIP_WORKSPACE_KEY` can be found in the URL for your agent. `https://www.steamship.com/dashboard/agents/workspaces/YOUR_WORKSPACE_KEY/packages/YOUR_PACKAGE_KEY/POST/prompt`.
+Your `STEAMSHIP_AGENT_URL` can be found by navigating to Dashboard > Your Agent > API > POST /prompt > cURL. This should look something like `https://some-random-string.steamship.run/{workspace-id}/{package-instance-id}/prompt`
 
 #### Setup api endpoints
 
-If you're using the new `app` directory, create a file located at `app/api/steamship/[...id]/route.ts` with the following contents:
+Handle chat requests by creating a file: `app/api/steamship/chat/route/ts`
 
 ```javascript
-import { createBlockApiHandler, createChatApiHandler } from '@steamship/react/next/server';
+import { StreamingTextResponse } from "ai";
 
-export const runtime = 'edge';
+export const POST = async (req: Request) => {
+  const { messages, id } = (await req.json()) as {
+    messages: { role: "user" | "assistent"; content: string }[];
+    id: string;
+  };
 
-export const GET = createBlockApiHandler();
-export const POST = createChatApiHandler();
+  const mostRecentUserMessage = messages
+    .reverse()
+    .find((message) => message.role === "user");
+
+  const steamshipResponse = await fetch(
+    process.env.STEAMSHIP_AGENT_URL,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.STEAMSHIP_API_KEY}`,
+      },
+      method: "POST",
+      body: JSON.stringify({
+        question: mostRecentUserMessage?.content,
+        chat_session_id: id,
+      }),
+    }
+  );
+  return new StreamingTextResponse(
+    steamshipResponse.body as ReadableStream<any>
+  );
+};
 ```
 
-If youre using the old `pages` directory, create a file located at `pages/api/steamship/[...steamship].ts` with the following contents:
+Handle resolving requests by creating a file: `app/api/steamship/chat/block/[blockid]/route.ts`
 
 ```javascript
-import { createNextPagesApiHandler } from '@steamship/react/next/server';
+import { NextResponse } from "next/server";
 
-export const config = {
-  runtime: 'edge'
+const GET = (req: Request, context: { params: any }) => {
+  const blockId = context.params.blockId;
+  return fetch(`https://api.steamship.com/api/v1/block/${blockId}/raw`, {
+    headers: {
+      Authorization: `Bearer ${process.env.STEAMSHIP_API_KEY}`,
+    },
+    method: "GET",
+  }) as Promise<NextResponse>;
 };
 
-export default createNextPagesApiHandler();
+export { GET };
+
 ```
 
 #### Use in components
