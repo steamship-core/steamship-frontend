@@ -1,14 +1,14 @@
 # Nextjs Auth and DB
 
-This is an example of building a Next.js application with: Authentication, a Postgres DB, and Steamship agents.
+This is an example of building a Next.js application with: Authentication, a Postgres DB, and Steamship agents. This example uses our [dog-trainer](https://github.com/steamship-core/multimodal-agent-starter/tree/main/dog-trainer) example project.
 
 ## Deploy your own
+
+**Important!** After your initial deployment, you'll need to [configure your database](#configure-the-database)
 
 Once you have access to [the environment variables you'll need](#set-up-environment-variables), deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/steamship-core/steamship-frontend/tree/main/examples/with-nextjs-auth-and-database&project-name=steamship-web-app&repository-name=steamship-web-app&env=CLERK_SECRET_KEY,NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,NEXT_PUBLIC_CLERK_SIGN_IN_URL,NEXT_PUBLIC_CLERK_SIGN_UP_URL,STEAMSHIP_API_KEY,STEAMSHIP_PACKAGE_HANDLE)
-
-**Important!** Once deployed, you'll need to [configure your database](#configure-the-database)
 
 ## Overview
 
@@ -17,7 +17,7 @@ This example repo uses:
 1. [Clerk](https://clerk.com/) for authentication
 2. [Vercel](https://vercel.com/) Postgres for a database
 3. [Shadcn](https://ui.shadcn.com/) for it's ui
-4. [Steamship](https://steamship.com) for a Multi-Modal agent
+4. [Steamship](https://steamship.com) for a Multi-Modal agent. Specifically, this example uses our [dog-trainer](https://github.com/steamship-core/multimodal-agent-starter/tree/main/dog-trainer) example project.
 
 This demo application creates an AI Doggy Daycare where you can add dogs and chat with the dog trainer bot about the dogs you've added. You can ask questions about individual dogs, or ask for pictures.
 
