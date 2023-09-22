@@ -10,7 +10,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { Button, Input, Separator, Skeleton } from "../../ui";
+import { Button, Input, Separator, Skeleton, cn } from "../../ui";
 import SteamshipMessage from "../../components/steamship-message";
 import {
   SteamshipChatLoadingMessage,
@@ -22,9 +22,11 @@ import {
 const SteamshipChatBox = ({
   placeholder,
   loadingText,
+  dark = false,
 }: {
   placeholder?: string;
   loadingText?: string;
+  dark?: boolean;
 }) => {
   const chatUUID = useMemo(() => uuidv4(), []);
   const {
@@ -42,7 +44,7 @@ const SteamshipChatBox = ({
   });
 
   return (
-    <div className="steamship-h-full steamship-w-full">
+    <div className={cn("steamship-h-full steamship-w-full", dark && "dark")}>
       <div className="steamship-h-full steamship-flex-grow steamship-flex steamship-flex-col steamship-justify-between">
         <div className="steamship-px-4 steamship-flex steamship-justify-end steamship-gap-4 steamship-pt-2">
           <Button

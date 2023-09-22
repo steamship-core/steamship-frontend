@@ -7,7 +7,6 @@ const options: Options = {
   dts: true,
   entry: {
     index: "index.tsx",
-    "next/server": "src/next/server.ts",
     "next/client": "src/next/client.ts",
   },
   minify: true,
