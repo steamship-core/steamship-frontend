@@ -12,7 +12,7 @@ describe('mock-client',  () => {
                 expect(file.id).not.toBeUndefined()
 
                 // Test getting the file
-                const resp = client.get(`file/${file.id || ''}/stream`)
+                const resp = await client.get(`file/${file.id || ''}/stream`)
                 const jsonl = await resp.text()
                 const jsons = jsonl.split('\n')
 
@@ -43,9 +43,9 @@ describe('mock-client',  () => {
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
                 for (const block of file.blocks || []) {
-                    const resp = client.post('block/get', {id: block.id})
-                    const got = resp.json() as Block
-                    expect(block.id).toBe(got.id)
+                    const resp = await client.post('block/get', {id: block.id})
+                    const got = await resp.json()
+                    expect(got?.block?.id).toBe(block.id)
                 }
             }
         })
@@ -57,8 +57,8 @@ describe('mock-client',  () => {
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
                 for (const block of file.blocks || []) {
-                    const resp = client.get(`block/${block.id}/stream`)
-                    expect(resp.body).toBe(block.text)
+                    const resp = await client.get(`block/${block.id}/raw`)
+                    expect(await resp.text()).toBe(block.text)
                 }
             }
         })

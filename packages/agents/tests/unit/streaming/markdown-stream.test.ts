@@ -10,7 +10,7 @@ import {
     TEST_FILE_STREAM,
     fileStreamEventsToJsonLines
 } from "./data"
-import {createFileStreamParser, FileStreamEvent} from "../../../src/streaming/file-stream";
+import {createFileEventStreamParser, FileStreamEvent} from "../../../src/streaming/file-stream";
 import {SteamshipMarkdownStreamFromReader} from "../../../src/streaming/markdown-stream";
 
 describe('markdown-stream',  () => {

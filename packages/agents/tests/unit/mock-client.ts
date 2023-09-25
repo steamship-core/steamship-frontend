@@ -4,30 +4,30 @@ import {FileStreamEvent} from "../../src/schema/event";
 import {Client} from "../../src/client";
 import {stringToStream} from "../../src/streaming/utils";
 
-const MOCK_STREAM_URL = "https://example.org"
+const MOCK_API_URL = "https://mock.steamship.com/api/v1/"
 
 const TEST_IMAGE_BLOCK: Block = {
     id: 'test-image-block',
     createdAt: "",
     mimeType: "image/png",
-    url: MOCK_STREAM_URL,
-    text: `![image](${MOCK_STREAM_URL})`
+    url: MOCK_API_URL,
+    text: `![image](${MOCK_API_URL}block/test-image-block/raw)`
 }
 
 const TEST_AUDIO_BLOCK: Block = {
     createdAt: "",
     id: 'test-audio-block',
     mimeType: "audio/mp3",
-    url: MOCK_STREAM_URL,
-    text: `[audio](${MOCK_STREAM_URL})`
+    url: MOCK_API_URL,
+    text: `[audio](${MOCK_API_URL}block/test-audio-block/raw)`
 }
 
 const TEST_VIDEO_BLOCK: Block = {
     createdAt: "",
     id: 'test-video-block',
     mimeType: "video/mp4",
-    url: MOCK_STREAM_URL,
-    text: `[video](${MOCK_STREAM_URL})`
+    url: MOCK_API_URL,
+    text: `[video](${MOCK_API_URL}block/test-video-block/raw)`
 }
 
 const TEST_TEXT_BLOCK: Block = {
@@ -132,9 +132,9 @@ export class MockResponse {
 
 
 export class MockClient implements Client {
-    private FILE_STREAM = /^\/api\/v1\/file\/(.*)\/stream$/g;
-    private BLOCK_GET = /^\/api\/v1\/block\/get$/g;
-    private BLOCK_STREAM = /^\/api\/v1\/block\/(.*)\/stream$/g;
+    private FILE_STREAM = /\/api\/v1\/file\/(.*)\/stream$/g;
+    private BLOCK_GET = /\/api\/v1\/block\/get$/g;
+    private BLOCK_STREAM = /\/api\/v1\/block\/(.*)\/raw$/g;
 
     private fileStream(fileId: string) {
         const file = FILES[fileId];
@@ -155,7 +155,7 @@ export class MockClient implements Client {
     private blockGet(blockId: string) {
         const block = BLOCKS[blockId];
         if (block) {
-            return block
+            return {block}
         }
         throw Error(`BlockId ${blockId} not found`)
     }
@@ -165,8 +165,12 @@ export class MockClient implements Client {
         return matches[0]
     }
 
-    public get(path: string): Response {
-        const url = `/api/v1/${path}`
+    public url(path: string): string {
+        return `${MOCK_API_URL}${path}`
+    }
+
+    public async get(path: string): Promise<Response> {
+        const url = this.url(path)
 
         // file/:id/stream
         let fileIdMatch = this.match(this.FILE_STREAM, url);
@@ -174,7 +178,7 @@ export class MockClient implements Client {
             return new MockResponse(this.fileStream(fileIdMatch[0])) as unknown as Response
         }
 
-        // block/:id/stream
+        // block/:id/raw
         let blockIdMatch = this.match(this.BLOCK_STREAM, url);
         if (blockIdMatch) {
             return new MockResponse(this.blockStream(blockIdMatch[0])) as unknown as Response
@@ -183,8 +187,8 @@ export class MockClient implements Client {
         throw Error()
     }
 
-    public post(path: string, payload: any): Response {
-        const url = `/api/v1/${path}`
+    public async post(path: string, payload: any): Promise<Response> {
+        const url = this.url(path)
 
         // /block/get
         let fileIdMatch = this.match(this.BLOCK_GET, url);

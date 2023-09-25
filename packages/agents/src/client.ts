@@ -21,8 +21,9 @@ export const DEFAULT_CONFIGURATION = {
  * Interface for a Steamship client.
  */
 export interface Client {
-    get(path: string, payload: any);
-    post(path: string, payload: any);
+    url(path: string): string;
+    get(path: string): Promise<Response>;
+    post(path: string, payload: any): Promise<Response>
 }
 
 /**
@@ -42,6 +43,10 @@ export class Steamship implements Client {
         this.config = config
     }
 
+    public url(path: string): string {
+        return `${this.config.apiBase}${path}`
+    }
+
     /**
      * Invoke an API method on Steamship.
      *
@@ -52,7 +57,7 @@ export class Steamship implements Client {
         const _config = {...DEFAULT_CONFIGURATION, }
 
         // Transform 'file/get' into https://url/api/v1/file/get
-        const _url = `${this.config.apiBase}${path}`;
+        const _url = this.url(path)
 
         // Make sure the headers are applied correctly
         let _headers = {}

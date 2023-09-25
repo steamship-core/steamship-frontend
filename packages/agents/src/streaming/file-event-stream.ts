@@ -1,11 +1,5 @@
-/*
- * Sketch at how we might implement the SteamshipStream class.
- */
-
-import {FileStreamEvent} from "../schema/event";
-
 /* ==========================================================================================
- * Steamship FileStream
+ * Steamship FileEventStream
  *
  * A FileStream is a stream of new Blocks added to a File. In the context of chat, these new
  * blocks represent multimedia messages being streamed into the ChatHistory.
@@ -13,6 +7,9 @@ import {FileStreamEvent} from "../schema/event";
  * Portions the FileStream implementation have been adapted from the cohere-stream.
  *
  * =========================================================================================*/
+
+import {FileStreamEvent} from "../schema/event";
+import {Client} from "../client";
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -29,6 +26,7 @@ async function sendStringsToFileStreamEventController(
         if (event.event == "blockCreated") {
             controller.enqueue(event)
         }
+
         // if (event.event == "STREAM_FINISHED") {
         //     controller.close()
         // } else {
@@ -68,11 +66,11 @@ async function sendBytesToFileStreamEventController(
     controller.close()
 }
 
-/*
- * A FileStream decodes a list of FileStreamEvent Server Sent Events. Each announces when a new block
- * has been appended to a file.
+/**
+ * Create a stream of FileStreamEvent from a Reader atop a /file/:id/stream response.
+ * @param reader
  */
-function createFileStreamParser(reader: ReadableStreamDefaultReader): ReadableStream<FileStreamEvent> {
+function createFileEventStreamParser(reader: ReadableStreamDefaultReader): ReadableStream<FileStreamEvent> {
     return new ReadableStream<FileStreamEvent>({
         async start(controller): Promise<void> {
             if (!reader) {
@@ -84,16 +82,26 @@ function createFileStreamParser(reader: ReadableStreamDefaultReader): ReadableSt
     })
 }
 
-/*
- * A FileStream decodes a list of FileStreamEvent Server Sent Events. Each announces when a new block
- * has been appended to a file.
+/**
+ * Create a stream of FileStreamEvent from a file/:id/stream response.
+ * @param res Response
  */
-function createFileStreamParserFromResponse(res: Response): ReadableStream<FileStreamEvent> {
+function createFileEventStreamParserFromResponse(res: Response): ReadableStream<FileStreamEvent> {
     const reader = res.body?.getReader()
     if (!reader) {
         throw Error("No body in response.")
     }
-    return createFileStreamParser(reader)
+    return createFileEventStreamParser(reader)
 }
 
-export { createFileStreamParser, createFileStreamParserFromResponse }
+/**
+ * Create a stream of FileStreamEVent from a Steamship File ID and a Steamship Client.
+ * @param fileId
+ * @param client
+ */
+async function createFileEventStreamParserFromFileId(fileId: string, client: Client): Promise<ReadableStream<FileStreamEvent>> {
+    const response = await client.get(`file/${fileId}/stream`);
+    return createFileEventStreamParserFromResponse(response)
+}
+
+export { createFileEventStreamParser, createFileEventStreamParserFromResponse, createFileEventStreamParserFromFileId }

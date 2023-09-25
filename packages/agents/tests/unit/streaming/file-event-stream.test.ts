@@ -1,18 +1,17 @@
 import {FILES, MockClient} from "../mock-client";
 import {File as SteamshipFile} from "../../../src/schema/file";
-import {createFileStreamParserFromResponse} from "../../../src/streaming/file-stream";
+import {createFileEventStreamParserFromFileId} from "../../../src/streaming/file-event-stream";
 import {streamToArray} from "../../../src/streaming/utils";
 import {FileStreamEvent} from "../../../src/schema/event";
 
-describe('file-stream',  () => {
+describe('file-event-stream',  () => {
 
-    describe('File Stream', () => {
+    describe('File Event Stream', () => {
         it('should return a sequence of FileStreamEvent objects', async () => {
             let client = new MockClient()
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
-                const response = client.get(`file/${file.id || ''}/stream`)
-                const reader: ReadableStream<FileStreamEvent> = await createFileStreamParserFromResponse(response)
+                const reader = await createFileEventStreamParserFromFileId(file.id!, client)
 
                 const eventArray = await streamToArray(reader, false)
 
@@ -29,12 +28,7 @@ describe('file-stream',  () => {
                     expect(data.blockId).toBe(block.id)
                     expect(data.createdAt).toBe(block.createdAt)
                 }
-
-
             }
-
-
-
         })
     })
 
