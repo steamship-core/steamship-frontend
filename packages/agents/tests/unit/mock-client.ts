@@ -1,7 +1,7 @@
-import {File} from "../../../src/lib/schema/file";
-import {Block} from "../../../src/lib/schema/block";
-import {FileStreamEvent} from "../../../src/lib/schema/event";
-import {Client} from "../../../src/lib/client";
+import {File} from "../../src/schema/file";
+import {Block} from "../../src/schema/block";
+import {FileStreamEvent} from "../../src/schema/event";
+import {Client} from "../../src/client";
 
 const MOCK_STREAM_URL = "https://example.org"
 

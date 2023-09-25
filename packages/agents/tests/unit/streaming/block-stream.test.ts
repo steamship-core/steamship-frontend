@@ -1,5 +1,5 @@
-import {createMarkdownBlockStreamParserFromBlock} from '../../../../src/lib/streaming/block-stream'
-import {streamToString} from "../../../../src/lib/streaming/utils"
+import {createMarkdownBlockStreamParserFromBlock} from '../../../src/streaming/block-stream'
+import {streamToString} from "../../../src/streaming/utils"
 
 import {TEST_IMAGE_BLOCK, TEST_AUDIO_BLOCK, TEST_VIDEO_BLOCK, TEST_TEXT_BLOCK} from "./data"
 

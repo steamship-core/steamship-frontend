@@ -1,6 +1,6 @@
-import {createMarkdownBlockStreamParserFromBlock} from '../../../../src/lib/streaming/block-stream'
-import {StreamQueue} from "../../../../src/lib/streaming/stream-queue"
-import {streamToString, stringToStream} from "../../../../src/lib/streaming/utils"
+import {createMarkdownBlockStreamParserFromBlock} from '../../../src/streaming/block-stream'
+import {StreamQueue} from "../../../src/streaming/stream-queue"
+import {streamToString, stringToStream} from "../../../src/streaming/utils"
 
 import {
     TEST_IMAGE_BLOCK,
@@ -10,8 +10,8 @@ import {
     TEST_FILE_STREAM,
     fileStreamEventsToJsonLines
 } from "./data"
-import {createFileStreamParser, FileStreamEvent} from "../../../../src/lib/streaming/file-stream";
-import {SteamshipMarkdownStreamFromReader} from "../../../../src/lib/streaming/markdown-stream";
+import {createFileStreamParser, FileStreamEvent} from "../../../src/streaming/file-stream";
+import {SteamshipMarkdownStreamFromReader} from "../../../src/streaming/markdown-stream";
 
 describe('markdown-stream',  () => {
 

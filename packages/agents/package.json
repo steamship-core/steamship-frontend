@@ -1,0 +1,47 @@
+{
+  "name": "@steamship/agents",
+  "version": "0.13.0",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "*"
+      ],
+      "next/*": [
+        "dist/next/*"
+      ]
+    }
+  },
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "clean": "rm -rf .next .turbo node_modules",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.10",
+    "@types/jest": "^29.5.4",
+    "@types/uuid": "^9.0.2",
+    "babel-jest": "^29.6.4",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
+    "jest": "^29.6.4",
+    "ts-jest": "^29.1.1",
+    "tsconfig": "workspace:*",
+    "tsup": "^7.1.0",
+    "typescript": "^5.1.6"
+  },
+  "files": [
+    "dist"
+  ]
+}
