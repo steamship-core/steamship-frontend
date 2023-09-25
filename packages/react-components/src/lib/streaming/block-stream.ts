@@ -1,19 +1,20 @@
-import { SteamshipBlock} from "./datamodel";
+import { BlockCreatedEvent } from "../schema/event";
 import { stringToStream } from "./utils";
+import {API_BASE_PRODUCTION} from "../client/constants";
 
-/*
- * Fetches the URL at which the Steamship Block's contents can be streamed.
+/** Convert a BlockCreatedEvent into a Block's streaming URL.
  */
-const blockToContentStreamUrl = (b: SteamshipBlock): string => {
-    return b.url || "";
+export function getBlockStreamUrl(block: BlockCreatedEvent, apiBase: string = API_BASE_PRODUCTION): string {
+    return `${apiBase}block/${block.blockId}/raw`
 }
 
 /*
- * Returns the Steamship block's contents as a stream.
+ * Convert a BlockCreatedEvent into a Block Stream.
  */
-const blockToContentStream = async (block: SteamshipBlock): Promise<ReadableStream> => {
-    const response = await fetch(blockToContentStreamUrl(block));
-    return response.body as any;
+export async function getBlockStream(block: BlockCreatedEvent, apiBase: string = API_BASE_PRODUCTION): Promise<ReadableStream> {
+    const url = getBlockStreamUrl(block, apiBase)
+    const response = await fetch(url);
+    return response.body as ReadableStream;
 }
 
 /* ==========================================================================================

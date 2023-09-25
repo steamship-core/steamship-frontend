@@ -17,8 +17,9 @@ describe('markdown-stream',  () => {
 
     it('should return streams in sequence', async () => {
         const input = TEST_FILE_STREAM
-        const inputStream = stringToStream(fileStreamEventsToJsonLines(input))
-        const markdownStream = SteamshipMarkdownStreamFromReader(inputStream as any) // TODO: Typing wrinkle.
+        const inputStream: ReadableStream = stringToStream(fileStreamEventsToJsonLines(input))
+        const markdownStream = SteamshipMarkdownStreamFromReader(inputStream) // TODO: Typing wrinkle.
+
         const output = streamToString(markdownStream)
         let expectedOutput = '';
 

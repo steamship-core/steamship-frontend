@@ -33,7 +33,8 @@ Create a Next.js Route Handler that uses the Edge Runtime to generate a response
 For this example, we'll create a route handler at `app/api/completion/route.ts` that accepts a `POST` request with a `prompt` string:
 
 ```tsx filename="app/api/completion/route.ts" showLineNumbers
-import { StreamingTextResponse, SteamshipStream } from 'ai'
+import { StreamingTextResponse } from 'ai'
+import { SteamshipMarkdownStream } from '@steamship/react-components'
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = 'edge'
@@ -72,9 +73,9 @@ export async function POST(req: Request) {
   }
 
   // Extract the text response from the Cohere stream
-  const stream = SteamshipStream(response)
+  const stream = SteamshipMarkdownStream(response)
 
-  // Respond with the stream
+  // Respond with a stream of Markdown
   return new StreamingTextResponse(stream)
 }
 ```

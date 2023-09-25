@@ -2,7 +2,8 @@
  * Sketch at how we might implement the SteamshipStream class.
  */
 
-import {SteamshipBlock} from "./datamodel";
+import {Block} from "../schema/block";
+import {FileStreamEvent} from "../schema/event";
 
 /* ==========================================================================================
  * Steamship FileStream
@@ -13,12 +14,6 @@ import {SteamshipBlock} from "./datamodel";
  * Portions the FileStream implementation have been adapted from the cohere-stream.
  *
  * =========================================================================================*/
-
-export type FileStreamEvent = {
-    id?: string,
-    event?: "BLOCK_APPENDED" | "STREAM_FINISHED"
-    data?: SteamshipBlock
-}
 
 const utf8Decoder = new TextDecoder('utf-8')
 
