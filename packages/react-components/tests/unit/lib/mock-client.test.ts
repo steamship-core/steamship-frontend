@@ -1,6 +1,6 @@
 import {FILES, MockClient} from "./mock-client";
-import {File as SteamshipFile} from '../../../../src/lib/schema/file'
-import {Block} from "../../../../src/lib/schema/block";
+import {File as SteamshipFile} from '../../../src/lib/schema/file'
+import {Block} from "../../../src/lib/schema/block";
 
 describe('mock-client',  () => {
     describe('GET file/:id/stream', () => {
