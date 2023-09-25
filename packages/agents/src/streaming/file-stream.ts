@@ -2,7 +2,6 @@
  * Sketch at how we might implement the SteamshipStream class.
  */
 
-import {Block} from "../schema/block";
 import {FileStreamEvent} from "../schema/event";
 
 /* ==========================================================================================
@@ -27,11 +26,13 @@ async function sendStringsToFileStreamEventController(
 ) {
     for (const line of lines) {
         const event: FileStreamEvent = JSON.parse(line)
-        if (event.event == "STREAM_FINISHED") {
-            controller.close()
-        } else {
+        if (event.event == "blockCreated") {
             controller.enqueue(event)
         }
+        // if (event.event == "STREAM_FINISHED") {
+        //     controller.close()
+        // } else {
+        // }
     }
 }
 

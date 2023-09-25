@@ -2,6 +2,7 @@ import {File} from "../../src/schema/file";
 import {Block} from "../../src/schema/block";
 import {FileStreamEvent} from "../../src/schema/event";
 import {Client} from "../../src/client";
+import {stringToStream} from "../../src/streaming/utils";
 
 const MOCK_STREAM_URL = "https://example.org"
 
@@ -90,7 +91,7 @@ function _fileToEvents(file: File): string {
     return eventStrings.join("\n")
 }
 
-export class MockResponse {
+export class MockBody {
     body: string
 
     public constructor(body: string) {
@@ -100,6 +101,33 @@ export class MockResponse {
     public json(): any {
         return JSON.parse(this.body)
     }
+
+    public text(): any {
+        return this.body
+    }
+
+    public getReader(): ReadableStreamReader<any> {
+        const self = this;
+        const stream = stringToStream(self.body)
+        return stream.getReader()
+    }
+}
+
+export class MockResponse {
+    body: MockBody
+
+    public constructor(body: string) {
+        this.body = new MockBody(body)
+    }
+
+    public json(): any {
+        return this.body.json()
+    }
+
+    public text(): string {
+        return this.body.text()
+    }
+
 }
 
 
@@ -137,31 +165,31 @@ export class MockClient implements Client {
         return matches[0]
     }
 
-    public get(path: string): MockResponse {
+    public get(path: string): Response {
         const url = `/api/v1/${path}`
 
         // file/:id/stream
         let fileIdMatch = this.match(this.FILE_STREAM, url);
         if (fileIdMatch) {
-            return new MockResponse(this.fileStream(fileIdMatch[0]))
+            return new MockResponse(this.fileStream(fileIdMatch[0])) as unknown as Response
         }
 
         // block/:id/stream
         let blockIdMatch = this.match(this.BLOCK_STREAM, url);
         if (blockIdMatch) {
-            return new MockResponse(this.blockStream(blockIdMatch[0]))
+            return new MockResponse(this.blockStream(blockIdMatch[0])) as unknown as Response
         }
 
         throw Error()
     }
 
-    public post(path: string, payload: any): MockResponse {
+    public post(path: string, payload: any): Response {
         const url = `/api/v1/${path}`
 
         // /block/get
         let fileIdMatch = this.match(this.BLOCK_GET, url);
         if (fileIdMatch) {
-            return new MockResponse(JSON.stringify(this.blockGet(payload.id)))
+            return new MockResponse(JSON.stringify(this.blockGet(payload.id))) as unknown as Response
         }
 
         throw Error()

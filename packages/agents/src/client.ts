@@ -17,19 +17,38 @@ export const DEFAULT_CONFIGURATION = {
     appBase: API_BASE_PRODUCTION,
 }
 
+/**
+ * Interface for a Steamship client.
+ */
 export interface Client {
     get(path: string, payload: any);
     post(path: string, payload: any);
 }
 
+/**
+ * Steamship API client.
+ *
+ * Intended for use consuming Steamship's API.
+ */
 export class Steamship implements Client {
     config: Configuration
 
+    /**
+     * Create a new Steamship API client.
+     *
+     * @param config
+     */
     constructor(config?: Configuration) {
         this.config = config
     }
 
-    public call(path: string, opts: any) {
+    /**
+     * Invoke an API method on Steamship.
+     *
+     * @param path API Path rooted in apiBase provided in the configuration object.
+     * @param opts Javascript `fetch` options. API Key and Content-Type are auto-applied.
+     */
+    public async call(path: string, opts: any): Promise<Response> {
         const _config = {...DEFAULT_CONFIGURATION, }
 
         // Transform 'file/get' into https://url/api/v1/file/get
@@ -51,11 +70,20 @@ export class Steamship implements Client {
         return fetch(_url, opts)
     }
 
-    public get(path: string) {
+    /**
+     * Perform a `get` against the Steamship API.
+     * @param path API Path rooted in apiBase provided in the configuration object.
+     */
+    public async get(path: string): Promise<Response> {
         return this.call(path, {method: "GET"})
     }
 
-    public post(path: string, payload: any) {
+    /**
+     * Perform a 'post' against the Steamship API
+     * @param path API Path rooted in apiBase provided in the configuration object.
+     * @param payload Payload, as a JSON object, to be provided as JSON to Steamship.
+     */
+    public async post(path: string, payload: any): Promise<Response> {
         return this.call(path, {
             method: "POST",
             body: JSON.stringify(payload)

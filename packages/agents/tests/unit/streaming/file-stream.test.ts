@@ -1,29 +1,41 @@
-// import {FileStreamEvent} from '../../../../src/lib/schema/event'
-// import {createFileStreamParser} from '../../../../src/lib/streaming/file-stream'
-// import {streamToString, streamToArray, stringToStream} from "../../../../src/lib/streaming/utils"
-//
-// import {TEST_FILE_STREAM, fileStreamEventsToJsonLines} from "./mock-client.test"
-//
-// describe('file-stream',  () => {
-//
-//     describe('File Stream', () => {
-//         it('should return a sequence of FileStreamEvent objects', async () => {
-//
-//             const input = TEST_FILE_STREAM
-//             const inputStream = stringToStream(fileStreamEventsToJsonLines(input))
-//
-//             const reader: ReadableStream<FileStreamEvent> = await createFileStreamParser(inputStream.getReader())
-//
-//             const output = await streamToArray(reader, false)
-//
-//             expect(output.length).toEqual(input.length)
-//
-//             for (let i = 0; i < output.length; i++) {
-//                 const inputItem = input[i]
-//                 const outputItem = output[i]
-//                 expect(outputItem).toEqual(inputItem)
-//             }
-//         })
-//     })
-//
-// })
+import {FILES, MockClient} from "../mock-client";
+import {File as SteamshipFile} from "../../../src/schema/file";
+import {createFileStreamParserFromResponse} from "../../../src/streaming/file-stream";
+import {streamToArray} from "../../../src/streaming/utils";
+import {FileStreamEvent} from "../../../src/schema/event";
+
+describe('file-stream',  () => {
+
+    describe('File Stream', () => {
+        it('should return a sequence of FileStreamEvent objects', async () => {
+            let client = new MockClient()
+            for (const fileId in FILES) {
+                const file = FILES[fileId] as SteamshipFile;
+                const response = client.get(`file/${file.id || ''}/stream`)
+                const reader: ReadableStream<FileStreamEvent> = await createFileStreamParserFromResponse(response)
+
+                const eventArray = await streamToArray(reader, false)
+
+                expect(eventArray.length).toEqual(file.blocks?.length)
+
+                for (let i = 0; i < eventArray.length; i++) {
+                    const event = eventArray[i];
+                    expect(event.id).not.toBeUndefined()
+                    expect(event.event).toBe('blockCreated')
+                    expect(event.data).not.toBeUndefined()
+
+                    const data = event.data
+                    const block = (file.blocks || [])[i]
+                    expect(data.blockId).toBe(block.id)
+                    expect(data.createdAt).toBe(block.createdAt)
+                }
+
+
+            }
+
+
+
+        })
+    })
+
+})

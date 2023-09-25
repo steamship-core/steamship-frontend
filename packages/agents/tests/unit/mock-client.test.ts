@@ -13,7 +13,7 @@ describe('mock-client',  () => {
 
                 // Test getting the file
                 const resp = client.get(`file/${file.id || ''}/stream`)
-                const jsonl = await resp.body
+                const jsonl = await resp.text()
                 const jsons = jsonl.split('\n')
 
                 expect(jsons.length).toBe(file.blocks?.length)
