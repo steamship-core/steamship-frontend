@@ -1,11 +1,11 @@
-import {createMarkdownBlockStreamParserFromBlock} from '../../../src/streaming/block-stream'
 import {StreamQueue} from "../../../src/streaming/stream-queue"
 import {streamToString} from "../../../src/streaming/utils"
 
-import {TEST_IMAGE_BLOCK, TEST_AUDIO_BLOCK, TEST_VIDEO_BLOCK, TEST_TEXT_BLOCK} from "./data"
-import {FileStreamEvent} from "../../../src/streaming/file-stream";
+import {TEST_IMAGE_BLOCK, TEST_AUDIO_BLOCK, TEST_VIDEO_BLOCK, TEST_TEXT_BLOCK, MockClient} from "../mock-client"
+import {streamBlockAsMarkdown} from "../../../src/streaming/block-markdown-stream";
 
 describe('stream-queue',  () => {
+    let client = new MockClient()
 
     describe('multi-stream handling', () => {
         it('should return streams in sequence', async () => {
@@ -15,9 +15,11 @@ describe('stream-queue',  () => {
 
             // Add the blocks to the queue
             for (let block of blocks) {
-                streamQueue.enqueue(await createMarkdownBlockStreamParserFromBlock(block))
+                streamQueue.enqueue(await streamBlockAsMarkdown(block, client))
                 expectedOutput += block.text
             }
+
+            streamQueue.streamAddingClosed = true;
 
             // We should have one sub-stream for each block
             expect(streamQueue.length()).toEqual(blocks.length)

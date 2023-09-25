@@ -1,6 +1,4 @@
-/* ==========================================================================================
- * StreamQueue
- *
+/**
  * A StreamQueue wraps a queue of Streams, popping the head whenever it is complete and moving
  * on to the next. This enables us to form what appears to be a single stream which is actually
  * stitched together from multiple streams.
@@ -11,9 +9,7 @@
  *
  * TODO: The termination condition for this may need to be more than just "the queue is empty"
  *       if we find ourselves needing to wait for some server-side <ENDED> signal.
- *
- * =========================================================================================*/
-
+ */
 class StreamQueue<T> {
     private streams: ReadableStream<T>[];
     public outputStream?: ReadableStream<T>
@@ -27,7 +23,7 @@ class StreamQueue<T> {
         this.streamAddingClosed = false;
     }
 
-    /*
+    /**
      * Begin streaming. Returns a ReadableStream that covers the full queue of sub streams.
      */
     public start(): ReadableStream<T> {
@@ -41,8 +37,8 @@ class StreamQueue<T> {
         return this.outputStream;
     }
 
-    /*
-     * Halt Streaming.
+    /**
+     * Halt streaming.
      */
     public close() {
         if (! this.controller) {
@@ -55,8 +51,11 @@ class StreamQueue<T> {
         this.isClosed = true;
     }
 
-    /*
+    /**
      * Emit a chunk onto the output stream.
+     *
+     * @param chunk
+     * @private
      */
     private emit(chunk: T) {
         if (! this.controller) {
@@ -68,8 +67,8 @@ class StreamQueue<T> {
         this.controller.enqueue(chunk)
     }
 
-    /*
-     * The spin-loop that consumes the queue of streams and emits.
+    /**
+     * Internal spin-loop that consumes the queue of streams and emits.
      */
     private async consumeLoop() {
         // TODO: Is the spin loop OK here?
@@ -83,8 +82,9 @@ class StreamQueue<T> {
         return this.streams?.length || 0
     }
 
-    /*
+    /**
      * Consume the next available stream, emitting it to the output stream.
+     * @private
      */
     private async processNextStream() {
         if (this.streams.length == 0) {
@@ -109,15 +109,35 @@ class StreamQueue<T> {
         await read();
     }
 
-    /*
+    /**
      * Push a new stream to the queue.
      */
     public enqueue(stream: ReadableStream<T>) {
         this.streams.push(stream)
     }
 
-    /*
-     * Dequeue the head from the queue
+    /**
+     * Push a Stream of streams onto the queue.
+     */
+    public async enqueueFromStream(stream: ReadableStream<ReadableStream<T>>) {
+        // While there's an item, push.
+        const self = this;
+        const reader = stream.getReader();
+        const read = async (): Promise<void> => {
+            const {done, value} = await reader.read();
+            if (done) {
+                return;
+            } else if (value) {
+                self.streams.push(value)
+            }
+            return read()
+        }
+        await read();
+        this.streamAddingClosed = true;
+    }
+
+    /**
+     * Dequeue the head from the queue.
      */
     public dequeue(): ReadableStream<T> {
         if (this.streams.length == 0) {
@@ -128,6 +148,9 @@ class StreamQueue<T> {
         return head;
     }
 
+    /**
+     * Return whether the composite stream should be completed.
+     */
     public shouldFinish(): boolean {
         if (this.streamAddingClosed) {
             return this.streams.length == 0
