@@ -1,15 +1,8 @@
-/* ==========================================================================================
- * Steamship FileEventStream
- *
- * A FileStream is a stream of new Blocks added to a File. In the context of chat, these new
- * blocks represent multimedia messages being streamed into the ChatHistory.
- *
- * Portions the FileStream implementation have been adapted from the cohere-stream.
- *
- * =========================================================================================*/
-
-import {FileStreamEvent} from "../schema/event";
+import {Block} from "../schema/block";
+import {FileEvent, BlockCreatedPayload, ServerSentEvent} from "../schema/event";
 import {Client} from "../client";
+import {createFileBlockStreamFromFileEventStream} from "./file-block-stream";
+import * as EventSource from "eventsource"
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -19,18 +12,28 @@ const utf8Decoder = new TextDecoder('utf-8')
  */
 async function sendStringsToFileStreamEventController(
     lines: string[],
-    controller: ReadableStreamDefaultController<FileStreamEvent>
+    controller: ReadableStreamDefaultController<FileEvent>
 ) {
-    for (const line of lines) {
-        const event: FileStreamEvent = JSON.parse(line)
-        if (event.event == "blockCreated") {
-            controller.enqueue(event)
-        }
+    var eventInProgress: Record<string, any> = {}
 
-        // if (event.event == "STREAM_FINISHED") {
-        //     controller.close()
-        // } else {
-        // }
+    for (const aline of lines) {
+        let line = aline.trim()
+        if (line == '') {
+            // The engine seems to do this nesting that we want to fix.
+            if (eventInProgress.event && eventInProgress.data[eventInProgress.event]) {
+                eventInProgress.data = eventInProgress.data[eventInProgress.event]
+            }
+            controller.enqueue(eventInProgress as FileEvent)
+            eventInProgress = {}
+        } else {
+            if (line.startsWith('id: ')) {
+                eventInProgress['id'] = line.split('id: ')[1].trim()
+            } else if (line.startsWith('event: ')) {
+                eventInProgress['event'] = line.split('event: ')[1].trim()
+            } else if (line.startsWith('data: ')) {
+                eventInProgress['data'] = JSON.parse(line.split('data: ')[1].trim())
+            }
+        }
     }
 }
 
@@ -39,18 +42,33 @@ async function sendStringsToFileStreamEventController(
  */
 async function sendBytesToFileStreamEventController(
     reader: ReadableStreamDefaultReader<Uint8Array>,
-    controller: ReadableStreamDefaultController<FileStreamEvent>
+    controller: ReadableStreamDefaultController<FileEvent>
 ) {
     let segment = ''
 
     while (true) {
-        const { value: chunk, done } = await reader.read()
+        let chunk, done
+        try {
+            let read = await reader.read()
+            chunk = read.value
+            done = read.done
+        } catch(e) {
+            controller.error(e)
+            return
+        }
+
         if (done) {
             break
         }
 
-        // TODO: I think something might be wrong if chunk can be a string here..
-        segment += (typeof chunk == 'string') ? chunk : utf8Decoder.decode(chunk as any, { stream: true })
+        let chunkStr = (typeof chunk == 'string') ? chunk : utf8Decoder.decode(chunk as any, { stream: true })
+
+        if (chunkStr.startsWith("{\"status") && chunkStr.includes("\"state\":\"failed\"")) {
+            controller.error(new Error(chunkStr))
+            return
+        }
+
+        segment += chunkStr
 
         const linesArray = segment.split(/\r\n|\n|\r/g)
         segment = linesArray.pop() || ''
@@ -66,12 +84,12 @@ async function sendBytesToFileStreamEventController(
     controller.close()
 }
 
-/**
- * Create a stream of FileStreamEvent from a Reader atop a /file/:id/stream response.
- * @param reader
+/*
+ * A FileStream decodes a list of FileStreamEvent Server Sent Events. Each announces when a new block
+ * has been appended to a file.
  */
-function createFileEventStreamParser(reader: ReadableStreamDefaultReader): ReadableStream<FileStreamEvent> {
-    return new ReadableStream<FileStreamEvent>({
+function createFileStreamParser(reader: ReadableStreamDefaultReader): ReadableStream<FileEvent> {
+    return new ReadableStream<FileEvent>({
         async start(controller): Promise<void> {
             if (!reader) {
                 controller.close()
@@ -82,16 +100,16 @@ function createFileEventStreamParser(reader: ReadableStreamDefaultReader): Reada
     })
 }
 
-/**
- * Create a stream of FileStreamEvent from a file/:id/stream response.
- * @param res Response
+/*
+ * A FileStream decodes a list of FileStreamEvent Server Sent Events. Each announces when a new block
+ * has been appended to a file.
  */
-function createFileEventStreamParserFromResponse(res: Response): ReadableStream<FileStreamEvent> {
+function createFileStreamParserFromResponse(res: Response): ReadableStream<FileEvent> {
     const reader = res.body?.getReader()
     if (!reader) {
         throw Error("No body in response.")
     }
-    return createFileEventStreamParser(reader)
+    return createFileStreamParser(reader)
 }
 
 /**
@@ -99,9 +117,22 @@ function createFileEventStreamParserFromResponse(res: Response): ReadableStream<
  * @param fileId
  * @param client
  */
-async function createFileEventStreamParserFromFileId(fileId: string, client: Client): Promise<ReadableStream<FileStreamEvent>> {
-    const response = await client.get(`file/${fileId}/stream`);
-    return createFileEventStreamParserFromResponse(response)
+async function createFileEventStreamFromFileId(fileId: string, client: Client): Promise<ReadableStream<FileEvent>> {
+    return new ReadableStream<FileEvent>({
+        async start(controller): Promise<void> {
+            await client.stream(`file/${fileId}/stream`, {
+                onmessage(m: FileEvent) {
+                    controller.enqueue(m)
+                },
+                onerror(e: Error) {
+                    controller.error(e)
+                }
+            })
+            // await sendBytesToFileStreamEventController(reader, controller)
+        }
+    })
+
 }
 
-export { createFileEventStreamParser, createFileEventStreamParserFromResponse, createFileEventStreamParserFromFileId }
+
+export { createFileStreamParser, createFileStreamParserFromResponse, createFileEventStreamFromFileId }

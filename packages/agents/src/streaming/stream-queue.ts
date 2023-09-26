@@ -88,7 +88,6 @@ class StreamQueue<T> {
      */
     private async processNextStream() {
         if (this.streams.length == 0) {
-            // No next stream to process.
             return
         }
 
@@ -99,7 +98,6 @@ class StreamQueue<T> {
         const read = async (): Promise<void> => {
             const { done, value } = await reader.read();
             if (done) {
-                // We're finished
                 return;
             } else if (value) {
                 self.emit(value)
@@ -122,18 +120,20 @@ class StreamQueue<T> {
     public async enqueueFromStream(stream: ReadableStream<ReadableStream<T>>) {
         // While there's an item, push.
         const self = this;
-        const reader = stream.getReader();
-        const read = async (): Promise<void> => {
-            const {done, value} = await reader.read();
-            if (done) {
-                return;
-            } else if (value) {
-                self.streams.push(value)
+        (async () => {
+            const reader = stream.getReader();
+            const read = async (): Promise<void> => {
+                const {done, value} = await reader.read();
+                if (done) {
+                    return;
+                } else if (value) {
+                    self.enqueue(value)
+                }
+                return read()
             }
-            return read()
-        }
-        await read();
-        this.streamAddingClosed = true;
+            await read();
+            this.streamAddingClosed = true;
+        })()
     }
 
     /**

@@ -8,10 +8,10 @@
  *
  * =========================================================================================*/
 
-import {FileStreamEvent} from "../schema/event";
+import {FileEvent} from "../schema/event";
 import {Client} from "../client";
 import {Block} from "../schema/block";
-import {createFileEventStreamParserFromFileId, createFileEventStreamParserFromResponse} from "./file-event-stream";
+import {createFileEventStreamFromFileId} from "./file-event-stream";
 import {streamBlockAsMarkdown} from "./block-markdown-stream";
 import {StreamQueue} from "./stream-queue";
 
@@ -21,12 +21,20 @@ const utf8Decoder = new TextDecoder('utf-8')
  * Parse FileStreamEvents from a stream and enqueue the associated blockCreated block to a Block stream controller.
  */
 async function sendBlocksToFileBlockController(
-    reader: ReadableStreamDefaultReader<FileStreamEvent>,
+    reader: ReadableStreamDefaultReader<FileEvent>,
     controller: ReadableStreamDefaultController<ReadableStream<string>>,
     client: Client
 ) {
     while (true) {
-        const { value, done } = await reader.read()
+        let value, done;
+        try {
+            const read = await reader.read()
+            value = read.value;
+            done = read.done
+        } catch (ex) {
+            controller.error(ex);
+            return
+        }
 
         if (!value) {
             break
@@ -42,7 +50,7 @@ async function sendBlocksToFileBlockController(
             continue
         }
 
-        const { blockId, createdAt } = data;
+        const { blockId } = data;
 
         // Get the block
         const blockResponse = await client.post("block/get", {id: blockId})
@@ -64,7 +72,7 @@ async function sendBlocksToFileBlockController(
  * @param eventStream
  * @param client
  */
-async function createFileMarkdownStreamFromFileEventStream(eventStream: ReadableStreamDefaultReader<FileStreamEvent>, client: Client): Promise<ReadableStream<ReadableStream<string>>> {
+async function createFileMarkdownStreamFromFileEventStream(eventStream: ReadableStreamDefaultReader<FileEvent>, client: Client): Promise<ReadableStream<ReadableStream<string>>> {
     return new ReadableStream<ReadableStream<string>>({
         async start(controller): Promise<void> {
             if (!eventStream) {
@@ -83,7 +91,7 @@ async function createFileMarkdownStreamFromFileEventStream(eventStream: Readable
  * @param client
  */
 async function createFileMarkdownStreamFromFileId(fileId: string, client: Client): Promise<ReadableStream<string>> {
-    const eventStream = await createFileEventStreamParserFromFileId(fileId, client);
+    const eventStream = await createFileEventStreamFromFileId(fileId, client);
     const streamOfMarkdownStreams = await createFileMarkdownStreamFromFileEventStream(eventStream.getReader(), client)
     const streamQueue = new StreamQueue<string>()
     streamQueue.enqueueFromStream(streamOfMarkdownStreams)

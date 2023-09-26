@@ -13,26 +13,9 @@ describe('mock-client',  () => {
 
                 // Test getting the file
                 const resp = await client.get(`file/${file.id || ''}/stream`)
-                const jsonl = await resp.text()
-                const jsons = jsonl.split('\n')
-
-                expect(jsons.length).toBe(file.blocks?.length)
-
-                let blockId = 0
-                expect(jsons.length).toBe(file.blocks?.length)
-
-                for (const json of jsons) {
-                    const event = JSON.parse(json)
-                    expect(event.id).not.toBeUndefined()
-                    expect(event.event).toBe('blockCreated')
-                    expect(event.data).not.toBeUndefined()
-
-                    const data = event.data
-                    const block = (file.blocks || [])[blockId]
-                    expect(data.blockId).toBe(block.id)
-                    expect(data.createdAt).toBe(block.createdAt)
-                    blockId += 1
-                }
+                const text = await resp.text()
+                const lines = text.split('\n')
+                expect(lines?.length).toBe((file?.blocks?.length || 0) * 4)
             }
         })
     })

@@ -5,13 +5,13 @@ export type ServerSentEvent<T> = {
     data: T
 }
 
-export type BlockCreatedEvent = {
+export type BlockCreatedPayload = {
     blockId: string,
     createdAt: string
 }
 
-export interface FileStreamEvent extends ServerSentEvent<BlockCreatedEvent> {
+export interface FileEvent extends ServerSentEvent<BlockCreatedPayload> {
     id: string,
     event: "blockCreated",
-    data: BlockCreatedEvent
+    data: BlockCreatedPayload
 }

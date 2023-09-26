@@ -6,6 +6,23 @@ export const APP_BASE_PRODUCTION = "https://api.steamship.run/"
 export const APP_BASE_STAGING = "https://apps.staging.steamship.com/"
 export const APP_BASE_DEVELOPMENT = "http://localhost:8081/"
 
+import EventSource from 'eventsource';
+
+/* Shim for fetchEventSource
+* https://github.com/Azure/fetch-event-source/issues/39
+*/
+if (!globalThis.window) {
+    globalThis.window = {
+        fetch: globalThis.fetch,
+        setTimeout: (fn: any, timeout: any) => globalThis.setTimeout(fn, timeout),
+        clearTimeout: (t: any) => globalThis.clearTimeout(t),
+    } as unknown as (Window & typeof globalThis);
+}
+if (!globalThis.document) {
+    globalThis.document = { removeEventListener: () => {} } as unknown as Document;
+}
+
+
 export type Configuration = {
     apiBase?: string,
     appBase?: string,
@@ -24,6 +41,7 @@ export interface Client {
     url(path: string): string;
     get(path: string): Promise<Response>;
     post(path: string, payload: any): Promise<Response>
+    stream(path: string, opts: any): Promise<void>
 }
 
 /**
@@ -39,8 +57,8 @@ export class Steamship implements Client {
      *
      * @param config
      */
-    constructor(config?: Configuration) {
-        this.config = config
+    constructor(config: Configuration) {
+        this.config = {...DEFAULT_CONFIGURATION, ...config}
     }
 
     public url(path: string): string {
@@ -54,15 +72,13 @@ export class Steamship implements Client {
      * @param opts Javascript `fetch` options. API Key and Content-Type are auto-applied.
      */
     public async call(path: string, opts: any): Promise<Response> {
-        const _config = {...DEFAULT_CONFIGURATION, }
-
         // Transform 'file/get' into https://url/api/v1/file/get
         const _url = this.url(path)
 
         // Make sure the headers are applied correctly
-        let _headers = {}
+        let _headers: Record<string, string> = {}
         if (this.config.apiKey) {
-            _headers["Authorization"] = `Bearer: ${this.config.apiKey}`
+            _headers["Authorization"] = `Bearer ${this.config.apiKey}`
         }
         _headers = {
             ..._headers,
@@ -72,7 +88,8 @@ export class Steamship implements Client {
         opts['headers'] = _headers
 
         // Return a fetch against the server
-        return fetch(_url, opts)
+        const resp = await fetch(_url, opts)
+        return resp
     }
 
     /**
@@ -93,5 +110,28 @@ export class Steamship implements Client {
             method: "POST",
             body: JSON.stringify(payload)
         })
+    }
+
+    /**
+     * Wraps Microsoft's fetchEventSource implementation with auth.
+     * @param path
+     * @param opts
+     */
+    public async stream(path: string, opts: any): Promise<void> {
+        // Transform 'file/get' into https://url/api/v1/file/get
+        const _url = this.url(path)
+
+        let _headers: Record<string, string> = {}
+        if (this.config.apiKey) {
+            _headers["Authorization"] = `Bearer ${this.config.apiKey}`
+        }
+        _headers = {
+            ..._headers,
+            ...opts['headers'],
+            openWhenHidden: true // Fixes document error.
+        }
+        opts['headers'] = _headers
+
+        const es = new EventSource(_url, opts);
     }
 }

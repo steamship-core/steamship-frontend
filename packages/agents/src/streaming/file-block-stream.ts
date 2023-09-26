@@ -8,10 +8,10 @@
  *
  * =========================================================================================*/
 
-import {FileStreamEvent} from "../schema/event";
+import {FileEvent} from "../schema/event";
 import {Client} from "../client";
 import {Block} from "../schema/block";
-import {createFileEventStreamParserFromResponse} from "./file-event-stream";
+import {createFileEventStreamParserFromFileId} from "./file-event-stream";
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -19,7 +19,7 @@ const utf8Decoder = new TextDecoder('utf-8')
  * Parse FileStreamEvents from a stream and enqueue the associated blockCreated block to a Block stream controller.
  */
 async function sendBlocksToFileBlockController(
-    reader: ReadableStreamDefaultReader<FileStreamEvent>,
+    reader: ReadableStreamDefaultReader<FileEvent>,
     controller: ReadableStreamDefaultController<Block>,
     client: Client
 ) {
@@ -42,13 +42,33 @@ async function sendBlocksToFileBlockController(
 
         const { blockId, createdAt } = data;
 
+        if (!blockId) {
+            controller.error(new Error(`No blockId present in File Stream Event.`))
+            break
+        }
+
+        console.log("Yahooooo")
+        const yahoo = await fetch("https://yahoo.com")
+        console.log("Yaho")
+
         // Get the block
         const blockResponse = await client.post("block/get", {id: blockId})
-        const blockResponseJson = await blockResponse.json()
-        const block = blockResponseJson.block as Block
+        if (!blockResponse.ok) {
+            controller.error(new Error(`Unable to fetch block returned by File Stream. ${await blockResponse.text()}`))
+            break        
+        }
 
-        // Now emit the block
-        controller.enqueue(block)
+        console.log("Block response ok")
+        
+        try {
+            const blockResponseJson = await blockResponse.json()
+            const block = blockResponseJson.block as Block
+            // Now emit the block
+            controller.enqueue(block)
+        } catch (e) {
+            controller.error(e)
+            break
+        }
     }
 
     controller.close()
@@ -59,7 +79,7 @@ async function sendBlocksToFileBlockController(
  * @param eventStream
  * @param client
  */
-async function createFileBlockStreamFromFileEventStream(eventStream: ReadableStreamDefaultReader<FileStreamEvent>, client: Client): Promise<ReadableStream<Block>> {
+async function createFileBlockStreamFromFileEventStream(eventStream: ReadableStreamDefaultReader<FileEvent>, client: Client): Promise<ReadableStream<Block>> {
     return new ReadableStream<Block>({
         async start(controller): Promise<void> {
             if (!eventStream) {
@@ -71,15 +91,13 @@ async function createFileBlockStreamFromFileEventStream(eventStream: ReadableStr
     })
 }
 
-
 /**
  * Create a stream of FileStreamEVent from a Steamship File ID and a Steamship Client.
  * @param fileId
  * @param client
  */
 async function createFileBlockStreamFromFileId(fileId: string, client: Client): Promise<ReadableStream<Block>> {
-    const response = await client.get(`file/${fileId}/stream`);
-    const eventStream = createFileEventStreamParserFromResponse(response);
+    const eventStream = await createFileEventStreamParserFromFileId(fileId, client);
     return  createFileBlockStreamFromFileEventStream(eventStream.getReader(), client)
 }
 

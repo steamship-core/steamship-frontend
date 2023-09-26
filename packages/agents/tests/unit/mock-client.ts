@@ -1,6 +1,6 @@
 import {File} from "../../src/schema/file";
 import {Block} from "../../src/schema/block";
-import {FileStreamEvent} from "../../src/schema/event";
+import {FileEvent} from "../../src/schema/event";
 import {Client} from "../../src/client";
 import {stringToStream} from "../../src/streaming/utils";
 
@@ -53,8 +53,8 @@ export const TEST_FILE: File = {
  * Transforms a Block to a FileStreamEvent about the block
  * @param block
  */
-function _blockToEvent(block: Block): FileStreamEvent {
-    return <FileStreamEvent>{
+function _blockToEvent(block: Block): FileEvent {
+    return <FileEvent>{
         id: block.id,
         event: "blockCreated",
         data: {
@@ -80,52 +80,37 @@ for (let file in FILES) {
 
 /**
  * Transforms a File to a JSONL of BlockStreamEvents about the File.
- * @param block
+ * @param file
  */
 function _fileToEvents(file: File): string {
     let eventStrings = []
     for (const block of file.blocks || []) {
         const event = _blockToEvent(block)
-        eventStrings.push(JSON.stringify(event))
+        eventStrings.push(`event: ${event.event}`)
+        eventStrings.push(`id: ${event.id}`)
+        eventStrings.push(`data: ${JSON.stringify({[event.event]: event.data})}`)
+        eventStrings.push('')
     }
-    return eventStrings.join("\n")
-}
-
-export class MockBody {
-    body: string
-
-    public constructor(body: string) {
-        this.body = body
-    }
-
-    public json(): any {
-        return JSON.parse(this.body)
-    }
-
-    public text(): any {
-        return this.body
-    }
-
-    public getReader(): ReadableStreamReader<any> {
-        const self = this;
-        const stream = stringToStream(self.body)
-        return stream.getReader()
-    }
+    return eventStrings.join("\n") + '\n'
 }
 
 export class MockResponse {
-    body: MockBody
+    _body: string
+    body: ReadableStream<Uint8Array>
+
+    public ok: boolean = true
 
     public constructor(body: string) {
-        this.body = new MockBody(body)
+        this._body = body;
+        this.body = new Blob([body]).stream()
     }
 
     public json(): any {
-        return this.body.json()
+        return JSON.parse(this._body)
     }
 
-    public text(): string {
-        return this.body.text()
+    public text(): any {
+        return this._body
     }
 
 }
@@ -167,6 +152,17 @@ export class MockClient implements Client {
 
     public url(path: string): string {
         return `${MOCK_API_URL}${path}`
+    }
+
+    public async stream(path: string, opts: any): Promise<void> {
+        const url = this.url(path)
+
+        let fileIdMatch = this.match(this.FILE_STREAM, url);
+        if (fileIdMatch) {
+            for (let block of FILES[fileIdMatch[0]]?.blocks || []) {
+                opts.onmessage(_blockToEvent(block))
+            }
+        }
     }
 
     public async get(path: string): Promise<Response> {

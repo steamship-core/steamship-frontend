@@ -1,8 +1,10 @@
 import {FILES, MockClient} from "../mock-client";
 import {File as SteamshipFile} from "../../../src/schema/file";
-import {createFileEventStreamParserFromFileId} from "../../../src/streaming/file-event-stream";
+import {createFileEventStreamFromFileId} from "../../../src/streaming/file-event-stream";
 import {streamToArray} from "../../../src/streaming/utils";
-import {FileStreamEvent} from "../../../src/schema/event";
+import {FileEvent} from "../../../src/schema/event";
+import {Steamship} from "../../../src/client";
+import {createFileMarkdownStreamFromFileId} from "../../../src/streaming/file-markdown-stream";
 
 describe('file-event-stream',  () => {
 
@@ -11,7 +13,7 @@ describe('file-event-stream',  () => {
             let client = new MockClient()
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
-                const reader = await createFileEventStreamParserFromFileId(file.id!, client)
+                const reader = await createFileEventStreamFromFileId(file.id!, client)
 
                 const eventArray = await streamToArray(reader, false)
 
@@ -29,6 +31,24 @@ describe('file-event-stream',  () => {
                     expect(data.createdAt).toBe(block.createdAt)
                 }
             }
+        })
+    })
+
+    describe('file-markdown-stream',  () => {
+        it('should return streams be able to get it', async () => {
+            let client = new Steamship({apiKey: '05734E32-F33B-49E0-BD78-FB75F5F36B24'})
+            const fileId = '91FCBF70-3920-44DC-A742-7FF3146B06B5';
+            const reader = (await createFileEventStreamFromFileId(fileId, client)).getReader()
+            const read = async (): Promise<void> => {
+                const {done, value} = await reader.read();
+                if (done) {
+                    return;
+                } else if (value) {
+                    console.log(value)
+                }
+                return read()
+            }
+            await read();
         })
     })
 
