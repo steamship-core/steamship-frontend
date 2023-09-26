@@ -118,20 +118,8 @@ function createFileStreamParserFromResponse(res: Response): ReadableStream<FileE
  * @param client
  */
 async function createFileEventStreamFromFileId(fileId: string, client: Client): Promise<ReadableStream<FileEvent>> {
-    return new ReadableStream<FileEvent>({
-        async start(controller): Promise<void> {
-            await client.stream(`file/${fileId}/stream`, {
-                onmessage(m: FileEvent) {
-                    controller.enqueue(m)
-                },
-                onerror(e: Error) {
-                    controller.error(e)
-                }
-            })
-            // await sendBytesToFileStreamEventController(reader, controller)
-        }
-    })
-
+    const resp = await client.get(`file/${fileId}/stream?timeoutSeconds=30`)
+    return createFileStreamParserFromResponse(resp)
 }
 
 

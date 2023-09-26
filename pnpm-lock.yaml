@@ -166,6 +166,9 @@ importers:
       eventsource-parser:
         specifier: ^1.1.1
         version: 1.1.1
+      sse-ts:
+        specifier: ^1.0.2
+        version: 1.0.2
       uuid:
         specifier: ^9.0.0
         version: 9.0.0
@@ -10031,6 +10034,10 @@ packages:
 
   /sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
+
+  /sse-ts@1.0.2:
+    resolution: {integrity: sha512-Ojy8c1yqLfdjXHvLg1S1w1SsuymcwQByQPZbmi/Iuv0YKlCu+6qaRdDvhLTb9qxN17C8GNz/S6R1WW6AJXnIGQ==}
+    dev: false
 
   /sswr@1.11.0(svelte@4.1.1):
     resolution: {integrity: sha512-D7nEdEH0A1TKZjA1wRP6frxw/dtTCuV70EK5/pELP+FrcPmyaP8jLC49mrg86Ez5cb5z3NQb2MPx2M7ZZlSupQ==}

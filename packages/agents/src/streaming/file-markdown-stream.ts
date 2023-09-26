@@ -53,6 +53,22 @@ async function sendBlocksToFileBlockController(
         const { blockId } = data;
 
         // Get the block
+        try {
+            function returnTrue() {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve(true)
+                    }, 2 * 1000)
+                })
+            }
+            const trueP = returnTrue()
+            const trueV = await trueP;
+
+            const yahooR = fetch("https://yahoo.com")
+            const yahoo = await yahooR
+        } catch (e) {
+            console.log(e)
+        }
         const blockResponse = await client.post("block/get", {id: blockId})
         const blockResponseJson = await blockResponse.json()
         const block = blockResponseJson.block as Block

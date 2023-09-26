@@ -5,6 +5,8 @@ import {FILES, MockClient} from "../mock-client";
 import {File as SteamshipFile} from "../../../src/schema/file";
 import {API_BASE_STAGING, Steamship} from "../../../src/client";
 
+jest.setTimeout(1000 * 60)
+
 describe('file-markdown-stream',  () => {
     it('should return streams in sequence', async () => {
         let client = new MockClient()
@@ -43,5 +45,5 @@ describe('file-markdown-stream',  () => {
             return read()
         }
         await read();
-    })
+    }, 1000*60)
 })

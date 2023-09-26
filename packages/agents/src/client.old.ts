@@ -116,28 +116,144 @@ export class Steamship implements Client {
         })
     }
 
-    public async eventStream<T>(path: string, opts: any): Promise<ReadableStream<T>> {
-        const res = await this.call(path, opts)
+    // /**
+    //  * Wraps Microsoft's fetchEventSource implementation with auth.
+    //  * @param path
+    //  * @param opts
+    //  */
+    // public async stream(path: string, opts: any): Promise<any> {
+    //     // Transform 'file/get' into https://url/api/v1/file/get
+    //     const _url = this.url(path)
+    //
+    //     let _headers: Record<string, string> = {}
+    //     if (this.config.apiKey) {
+    //         _headers["Authorization"] = `Bearer ${this.config.apiKey}`
+    //     }
+    //     _headers = {
+    //         ..._headers,
+    //         ...opts['headers'],
+    //         openWhenHidden: true // Fixes document error.
+    //     }
+    //     opts['headers'] = _headers
+    //
+    //     const sseOptions: SSEOptions = {
+    //         headers: _headers,
+    //         method: SSEOptionsMethod.GET,
+    //     };
+    //
+    //     const source = new SSE(_url, sseOptions);
+    //
+    //     source.addEventListener('message', (event: any) => {
+    //         opts.onmessage(event)
+    //     })
+    //     source.addEventListener('status', (event: any) => {
+    //         console.log(event)
+    //     })
+    //
+    //     source.stream()
+    //     return source
+    // }
+
+    // /**
+    //  * Wraps Microsoft's fetchEventSource implementation with auth.
+    //  * @param path
+    //  * @param opts
+    //  */
+    // public async stream(path: string, opts: any): Promise<void> {
+    //     // Transform 'file/get' into https://url/api/v1/file/get
+    //     const _url = this.url(path)
+    //
+    //     let _headers: Record<string, string> = {}
+    //     if (this.config.apiKey) {
+    //         _headers["Authorization"] = `Bearer ${this.config.apiKey}`
+    //     }
+    //     _headers = {
+    //         ..._headers,
+    //         ...opts['headers'],
+    //         openWhenHidden: true // Fixes document error.
+    //     }
+    //     opts['headers'] = _headers
+    //
+    //     // const es = new EventSource(url, eventSourceInitDict);
+    //
+    //     return await fetchEventSource(_url, opts)
+    // }
+
+
+    // /**
+    //  * Wraps Microsoft's fetchEventSource implementation with auth.
+    //  * @param path
+    //  * @param opts
+    //  */
+    // public async stream(path: string, opts: any): Promise<void> {
+    //     // Transform 'file/get' into https://url/api/v1/file/get
+    //     const _url = this.url(path)
+    //
+    //     let _headers: Record<string, string> = {}
+    //     if (this.config.apiKey) {
+    //         _headers["Authorization"] = `Bearer ${this.config.apiKey}`
+    //     }
+    //     _headers = {
+    //         ..._headers,
+    //         ...opts['headers'],
+    //         openWhenHidden: true // Fixes document error.
+    //     }
+    //     opts['headers'] = _headers
+    //
+    //     const es = new EventSource(_url, opts);
+    //     return es
+    // }
+
+
+    public async stream(path: string, opts: any): Promise<ReadableStream> {
+        const _url = this.url(path)
+
+        let _headers: Record<string, string> = {}
+        if (this.config.apiKey) {
+            _headers["Authorization"] = `Bearer ${this.config.apiKey}`
+        }
+        _headers = {
+            ..._headers,
+            ...opts['headers'],
+        }
+        opts['headers'] = _headers
+
+        const res = await this.get(_url)
+
+        const encoder = new TextEncoder()
         const decoder = new TextDecoder()
 
-        return new ReadableStream({
+        let counter = 0
+
+        const stream = new ReadableStream({
             async start(controller): Promise<void> {
                 function onParse(event: any): void {
+
                     if (event.type === 'event') {
                         const data = event.data
+                        if (data === '[DONE]') {
+                            controller.close()
+                            return
+                        }
                         try {
-                            let json = JSON.parse(data)
-                            // The engine nests things. We don't want that.
-                            if (json[event.event]) {
-                                json = json[event.event]
+                            const json = JSON.parse(data)
+                            const text =
+                                json.choices[0]?.delta?.content ?? json.choices[0]?.text ?? ''
+
+                            if (counter < 2 && (text.match(/\n/) || []).length) {
+                                return
                             }
-                            event.data = json as T;
-                            controller.enqueue(event)
+
+                            const queue = encoder.encode(`${JSON.stringify(text)}\n`)
+                            controller.enqueue(queue)
+
+                            counter++
                         } catch (e) {
                             controller.error(e)
                         }
                     }
                 }
+
                 const parser = createParser(onParse)
                 // [Asynchronously iterate](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of) the response's body
                 for await (const chunk of res.body as any) {
@@ -145,6 +261,8 @@ export class Steamship implements Client {
                 }
             }
         })
+
+        return stream
     }
 
     // /**
