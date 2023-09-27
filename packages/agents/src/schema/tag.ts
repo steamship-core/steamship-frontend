@@ -1,15 +1,20 @@
-import {IsSteamshipModel, IsUserOwned, IsWorkspaceContained } from "./util";
+import {IsFileOwned, IsSteamshipModel, IsUserOwned, IsWorkspaceContained} from "./util";
+import {PackageInstance} from "./package";
 
-/** A complex key-valued object that annotates a block or file.
+/**
+ * Tag
+ *
+ * A complex key-valued object that annotates a block or file.
  *
  */
-export type Tag = IsSteamshipModel & IsWorkspaceContained & IsUserOwned & {
-    fileId?: string;
+export type Tag = IsSteamshipModel & IsWorkspaceContained & IsUserOwned & IsFileOwned & {
     blockId?: string;
     startIdx?: number;
     endIdx?: number;
     kind: string;
     name?: string;
-    value?: any;
+    value?: Record<string, any>;
     text?: string;
 }
+
+export type PartialTag = Partial<Tag>

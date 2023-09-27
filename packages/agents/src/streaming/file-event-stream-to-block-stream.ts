@@ -11,6 +11,7 @@
 import {FileEvent} from "../schema/event";
 import {Client} from "../client";
 import {Block} from "../schema/block";
+import steamship from "../operations"
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -22,11 +23,7 @@ function FileEventStreamToBlockStream(client: Client): TransformStream<FileEvent
                 controller.error(new Error("Empty Block ID"))
                 return;
             }
-
-            return client.post(`block/get`, {id: blockId}).then((result) => {
-              return result.json()
-            }).then((json) => {
-              const block = (json?.block || json?.data?.block) as Block;
+            steamship.block.get({id: blockId}, client).then((block) => {
               return new Promise<void>((resolve, reject) => {
                   if (!block) {
                       controller.error(new Error("Unable to load block."))

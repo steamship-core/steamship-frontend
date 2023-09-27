@@ -1,11 +1,12 @@
 import {
-    SteamshipMarkdownStream,
-    SteamshipMarkdownStreamFromReader,
-} from "./markdown-stream";
+    BlockStreamToMarkdownStream,
+} from "./block-stream-to-markdown-stream";
 
-
+import {
+    FileEventStreamToBlockStream
+} from "./file-event-stream-to-block-stream"
 
 export {
-    SteamshipMarkdownStream,
-    SteamshipMarkdownStreamFromReader,
+    BlockStreamToMarkdownStream,
+    FileEventStreamToBlockStream,
 }

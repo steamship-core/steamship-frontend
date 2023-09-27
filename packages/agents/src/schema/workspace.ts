@@ -1,14 +1,17 @@
 import {
     HasHandle,
-    IsSteamshipModel, IsUserOwned,
-    IsWorkspaceContained,
-    SteamshipModelObject,
-    SteamshipWorkspaceContainedObject
+    IsSteamshipModel,
+    IsUserOwned,
 } from "./util.ts"
 import {Tag} from './tag'
+import {Task} from "./task";
 
-/** A multimedia object within a chat history or file.
+/**
+ * Workspace
  *
+ * An isolated data container in the cloud.
  */
 export type Workspace = IsSteamshipModel & IsUserOwned & HasHandle & {
 }
+
+export type PartialWorkspace = Partial<Workspace>

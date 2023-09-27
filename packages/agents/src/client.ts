@@ -8,25 +8,6 @@ export const APP_BASE_PRODUCTION = "https://api.steamship.run/"
 export const APP_BASE_STAGING = "https://apps.staging.steamship.com/"
 export const APP_BASE_DEVELOPMENT = "http://localhost:8081/"
 
-import {fetchEventSource} from '@microsoft/fetch-event-source';
-import { CustomEventDataType, CustomEventType, SSE, SSEOptions, SSEOptionsMethod } from "./sse";
-import EventSource from "./eventsource"
-
-/* Shim for fetchEventSource
-* https://github.com/Azure/fetch-event-source/issues/39
-*/
-if (!globalThis.window) {
-    globalThis.window = {
-        fetch: globalThis.fetch,
-        setTimeout: (fn: any, timeout: any) => globalThis.setTimeout(fn, timeout),
-        clearTimeout: (t: any) => globalThis.clearTimeout(t),
-    } as unknown as (Window & typeof globalThis);
-}
-if (!globalThis.document) {
-    globalThis.document = { removeEventListener: () => {} } as unknown as Document;
-}
-
-
 export type Configuration = {
     apiBase?: string,
     appBase?: string,
@@ -38,14 +19,18 @@ export const DEFAULT_CONFIGURATION = {
     appBase: API_BASE_PRODUCTION,
 }
 
+export type RequestOptions = {
+    workspace?: string
+}
+
 /**
  * Interface for a Steamship client.
  */
 export interface Client {
     url(path: string): string;
-    get(path: string): Promise<Response>;
-    post(path: string, payload: any): Promise<Response>
-    eventStream<T>(path: string, opts: any): Promise<ReadableStream<T>>
+    get(path: string, options?: RequestOptions): Promise<Response>;
+    post(path: string, payload: any, options?: RequestOptions): Promise<Response>
+    eventStream<T>(path: string, options?: RequestOptions): Promise<ReadableStream<T>>
 }
 
 /**
@@ -65,6 +50,11 @@ export class Steamship implements Client {
         this.config = {...DEFAULT_CONFIGURATION, ...config}
     }
 
+    /**
+     * Return the fully-specified URL for an API path.
+     *
+     * @param path
+     */
     public url(path: string): string {
         return `${this.config.apiBase}${path}`
     }

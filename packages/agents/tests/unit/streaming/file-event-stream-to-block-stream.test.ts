@@ -3,6 +3,7 @@ import {File as SteamshipFile} from "../../../src/schema/file";
 import {streamToArray} from "../../../src/streaming/utils";
 import {FileEventStreamToBlockStream} from "../../../src/streaming/file-event-stream-to-block-stream";
 import {API_BASE_STAGING, Steamship} from "../../../src/client";
+import steamship from "../../../src";
 
 describe('file-block-stream',  () => {
 
@@ -12,7 +13,7 @@ describe('file-block-stream',  () => {
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
 
-                const eventStream = await client.eventStream(`file/${file.id!}/stream`, {});
+                const eventStream = await steamship.file.stream({id: file.id!}, client)
                 const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
 
                 const blockArray = await streamToArray(blockStream, false)

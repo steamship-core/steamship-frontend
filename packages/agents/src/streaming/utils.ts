@@ -36,6 +36,9 @@ const streamToString = async (stream: ReadableStream<string>) => {
     while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
+        if (done) {
+            break
+        }
         ret += value
         console.log(value)
     }

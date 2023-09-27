@@ -1,12 +1,13 @@
-import {File} from "../../src/schema/file";
-import {Block} from "../../src/schema/block";
+import {File, PartialFile} from "../../src/schema/file";
+import {Block, PartialBlock} from "../../src/schema/block";
 import {FileEvent} from "../../src/schema/event";
 import {Client} from "../../src/client";
 import {stringToStream} from "../../src/streaming/utils";
+import {PartialWorkspace} from "../../src/schema/workspace";
 
 const MOCK_API_URL = "https://mock.steamship.com/api/v1/"
 
-const TEST_IMAGE_BLOCK: Block = {
+const TEST_IMAGE_BLOCK: PartialBlock = {
     id: 'test-image-block',
     createdAt: "",
     mimeType: "image/png",
@@ -14,7 +15,7 @@ const TEST_IMAGE_BLOCK: Block = {
     text: `![image](${MOCK_API_URL}block/test-image-block/raw)`
 }
 
-const TEST_AUDIO_BLOCK: Block = {
+const TEST_AUDIO_BLOCK: PartialBlock = {
     createdAt: "",
     id: 'test-audio-block',
     mimeType: "audio/mp3",
@@ -22,7 +23,7 @@ const TEST_AUDIO_BLOCK: Block = {
     text: `[audio](${MOCK_API_URL}block/test-audio-block/raw)`
 }
 
-const TEST_VIDEO_BLOCK: Block = {
+const TEST_VIDEO_BLOCK: PartialBlock = {
     createdAt: "",
     id: 'test-video-block',
     mimeType: "video/mp4",
@@ -30,7 +31,7 @@ const TEST_VIDEO_BLOCK: Block = {
     text: `[video](${MOCK_API_URL}block/test-video-block/raw)`
 }
 
-const TEST_TEXT_BLOCK: Block = {
+const TEST_TEXT_BLOCK: PartialBlock = {
     createdAt: "",
     id: 'test-text-block',
     mimeType: "text/plain",
@@ -38,7 +39,12 @@ const TEST_TEXT_BLOCK: Block = {
     text: `Hi`
 }
 
-export const TEST_FILE: File = {
+const TEST_WORKSPACE: PartialWorkspace = {
+    id: "test-workspace-id",
+    handle: "test-workspace"
+}
+
+export const TEST_FILE: PartialFile = {
     id: 'file-1',
     blocks: [
         TEST_IMAGE_BLOCK,
@@ -46,8 +52,7 @@ export const TEST_FILE: File = {
         TEST_TEXT_BLOCK,
         TEST_VIDEO_BLOCK
     ]
-}
-
+} as PartialFile
 
 /**
  * Transforms a Block to a FileStreamEvent about the block
@@ -68,7 +73,7 @@ function _blockToEvent(block: Block): FileEvent {
  * List of files
  */
 export const FILES: Record<string, File> = {
-    [TEST_FILE.id || '']: TEST_FILE
+    [TEST_FILE.id || '']: TEST_FILE as File
 }
 
 let BLOCKS: Record<string, Block> = {}
@@ -116,10 +121,13 @@ export class MockResponse {
 }
 
 
+
 export class MockClient implements Client {
     private FILE_STREAM = /\/api\/v1\/file\/(.*)\/stream$/g;
     private BLOCK_GET = /\/api\/v1\/block\/get$/g;
     private BLOCK_STREAM = /\/api\/v1\/block\/(.*)\/raw$/g;
+
+    private WORKSPACE_CREATE = /\/api\/v1\/workspace\/create$/g;
 
     private fileStream(fileId: string): ReadableStream<FileEvent> {
         const file = FILES[fileId];
@@ -188,6 +196,13 @@ export class MockClient implements Client {
             return new MockResponse(JSON.stringify(this.blockGet(payload.id))) as unknown as Response
         }
 
+        // /workspace/create
+        if (this.match(this.WORKSPACE_CREATE, url)) {
+            return new MockResponse(JSON.stringify({
+                workspace: TEST_WORKSPACE
+            })) as unknown as Response
+        }
+
         throw Error()
     }
 }
@@ -198,4 +213,5 @@ export {
     TEST_VIDEO_BLOCK,
     TEST_IMAGE_BLOCK,
     TEST_TEXT_BLOCK,
+    TEST_WORKSPACE
 }
