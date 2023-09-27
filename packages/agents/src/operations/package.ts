@@ -3,8 +3,10 @@
  *
  */
 import {Client} from "../client";
-import {PackageInstance} from "../schema";
+import {AgentInstance, PackageInstance} from "../schema";
 import workspace from "./workspace"
+import {StreamingResponse} from "../schema/agent";
+import {AgentRespondParams} from "./agent";
 
 type CreatePackageInstanceParams = {
      /**
@@ -52,12 +54,34 @@ const create_instance = async (params: CreatePackageInstanceParams, client: Clie
         config: config
     })
     const json = await response.json()
-    return json?.workspace as PackageInstance
+    return json?.packageInstance as PackageInstance
 }
+
+
+/**
+ * Invoke a method on a package using its base_url.
+ *
+ * @param params
+ * @param client
+ */
+const invoke = async (params: {
+    base_url: string,
+    method: string,
+    payload?: Record<string, any>
+    verb?: "GET" | "POST"
+}, client: Client): Promise<Response> => {
+    return await client.invoke_package_method(params.base_url, params.method, {
+        method: params.verb || "POST",
+        body: JSON.stringify(params.payload || {}),
+        json: true
+    })
+}
+
 
 export type { CreatePackageInstanceParams }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-    create_instance
+    create_instance,
+    invoke
 }

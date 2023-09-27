@@ -10,5 +10,5 @@ export default {
     package: package_,
     workspace,
     file,
-    block
+    block,
 }

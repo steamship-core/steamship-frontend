@@ -1,9 +1,11 @@
 import {File, PartialFile} from "../../src/schema/file";
 import {Block, PartialBlock} from "../../src/schema/block";
 import {FileEvent} from "../../src/schema/event";
-import {Client} from "../../src/client";
+import {Client, RequestOptions} from "../../src/client";
 import {stringToStream} from "../../src/streaming/utils";
 import {PartialWorkspace} from "../../src/schema/workspace";
+import {PartialPackageInstance} from "../../src/schema/package";
+import {PartialTask} from "../../src/schema/task";
 
 const MOCK_API_URL = "https://mock.steamship.com/api/v1/"
 
@@ -53,6 +55,17 @@ export const TEST_FILE: PartialFile = {
         TEST_VIDEO_BLOCK
     ]
 } as PartialFile
+
+export const TEST_TASK: PartialTask = {
+    taskId: 'file-1',
+    requestId: 'request-1'
+} as PartialTask
+
+
+export const TEST_PACKAGE_INSTANCE: PartialPackageInstance = {
+    handle: "test-package-instance",
+    invocationUrl: "https://example.org/"
+}
 
 /**
  * Transforms a Block to a FileStreamEvent about the block
@@ -121,13 +134,16 @@ export class MockResponse {
 }
 
 
-
 export class MockClient implements Client {
     private FILE_STREAM = /\/api\/v1\/file\/(.*)\/stream$/g;
     private BLOCK_GET = /\/api\/v1\/block\/get$/g;
     private BLOCK_STREAM = /\/api\/v1\/block\/(.*)\/raw$/g;
 
     private WORKSPACE_CREATE = /\/api\/v1\/workspace\/create$/g;
+    private PACKAGE_INSTANCE_CREATE = /\/api\/v1\/package\/instance\/create$/g;
+
+    private AGENT_PROMPT = /\/prompt$/g;
+    private AGENT_PROMPT_ASYNC = /\/async_prompt/g;
 
     private fileStream(fileId: string): ReadableStream<FileEvent> {
         const file = FILES[fileId];
@@ -203,7 +219,33 @@ export class MockClient implements Client {
             })) as unknown as Response
         }
 
+        // /package/instance/create
+        if (this.match(this.PACKAGE_INSTANCE_CREATE, url)) {
+            return new MockResponse(JSON.stringify({
+                packageInstance: TEST_PACKAGE_INSTANCE
+            })) as unknown as Response
+        }
+
         throw Error()
+    }
+
+    public async invoke_package_method(api_base: string, path: string, opts?: any): Promise<Response> {
+        const url = `${api_base}${path}`
+
+        if (this.match(this.AGENT_PROMPT, url)) {
+            return new MockResponse(
+                JSON.stringify(TEST_FILE.blocks)
+            ) as unknown as Response
+        }
+
+        if (this.match(this.AGENT_PROMPT_ASYNC, url)) {
+            return new MockResponse(JSON.stringify({
+                file: TEST_FILE,
+                task: TEST_TASK
+            })) as unknown as Response
+        }
+
+        return new MockResponse(opts.body) as unknown as Response
     }
 }
 

@@ -1,51 +1,69 @@
 import {FileEventStreamToBlockStream} from "./file-event-stream-to-block-stream";
 import {BlockStreamToMarkdownStream} from "./block-stream-to-markdown-stream";
+import {StreamingResponse} from "../schema/agent";
+import {Client} from "../client";
+
+export type SteamshipStreamOptions = {
+    streamTimeoutSeconds?: number
+    tagKindFilter?: string
+    tagNameFilter?: string
+    minDatetime?: string
+}
+
+function _dictToURI(dict: Record<string, any>): string {
+    var str = [];
+    for(var p in dict){
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(dict[p]));
+    }
+    return str.join("&")
+}
 
 /**
- * Stream Agent responses from Steamship.
- *
- * Note:   Thie file is intended to be submitted to @vercel/ai and is modeled after Replicate's contribution here:
- *         https://github.com/vercel/ai/blob/main/packages/core/streams/replicate-stream.ts
- *
- * RFC:    Similar to Repliacte, we could consider providing:
- *           1) A single "respond" method that creates/fetches the package and then invokes response
- *           2) A helper method (SteamshipStream) that converts this response into a Markdown stream
- *
- *         Alternative:
- *           1) Have an 'Agent' class that one first creates
- *           2) Invoke the `generate` method on that Agent class
+ * Stream a Steamship Agent response as multi-modal Markdown.
  *
  * Steamship Agents act like LLMs, but they are stateful, remembering your conversation history.
  *
  * @example
- * const response = await steamship.agents.respond({
- *  agent: {
- *      "handle": "ai-dungeon",
- *      "instance": "my-instance-handle",
- *  },
+ * const response = await steamship.agent.respond({
+ *  url: "https://username.steamship.com/workspace-name/agent-name",
  *  input: {
- *    prompt: messages.join('\n')
+ *    prompt: messages.join('\n'),
+ *    context_id: "my-chat-session-id"
  *  },
- * })
+ * }, client)
  *
  * const stream = await SteamshipStream(response)
  * return new StreamingTextResponse(stream)
  *
  */
-export async function SteamshipStream(
-    res: Prediction,
-    cb?: AIStreamCallbacksAndOptions,
+export async function SteamshipMarkdownStream(
+    res: StreamingResponse,
+    client: Client,
+    opts?: SteamshipStreamOptions,
 ): Promise<ReadableStream> {
 
     // 1. Parse response from agent. This will contain information necessaty to get the stream URL
-    const chatFileId = null;
-    const responseId = null;
-    const responseTimeout = null;
+    const chatFileId = res.file.id;
+    const responseId = res.task.requestId;
 
-    // 2. Create a stream wrapping that.
-    const eventStream = await client.eventStream(`file/${fileId}/stream?timeoutSeconds=3`, {});
+    // 2. Prepare the filter over the ChatHistory so that we only stream what we're interested in
+    let filterDict = {
+        timeoutSeconds: opts?.streamTimeoutSeconds || 60
+    }
+    if (opts?.tagKindFilter) {
+        filterDict["tagKindFilter"] = opts?.tagKindFilter
+    }
+    if (opts?.tagNameFilter) {
+        filterDict["tagNameFilter"] = opts?.tagNameFilter
+    }
+    if (opts?.minDatetime) {
+        filterDict["minDatetime"] = opts?.minDatetime
+    }
+    const queryArgs = _dictToURI(filterDict)
+
+
+    // 2. Create a stream of markdown wrapping.
+    const eventStream = await client.eventStream(`file/${chatFileId}/stream?${queryArgs}`, {});
     const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
-    const markdownStream = blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
-
-    return AIStream(markdownStream)
+    return blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
 }

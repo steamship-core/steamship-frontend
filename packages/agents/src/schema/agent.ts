@@ -1,4 +1,6 @@
 import {PackageInstance} from "./package";
+import {Task} from "./task";
+import {File} from "./file";
 
 /**
  * Agent Instance.
@@ -7,3 +9,8 @@ import {PackageInstance} from "./package";
  *
  */
 export type AgentInstance = PackageInstance;
+
+export type StreamingResponse = {
+    task: Task;
+    file: File;
+}

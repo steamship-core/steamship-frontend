@@ -1,7 +1,7 @@
 import {FILES, MockClient} from "../mock-client";
 import {File as SteamshipFile} from "../../../src/schema/file";
 import {streamToArray} from "../../../src/streaming/utils";
-import {FileEventStreamToBlockStream} from "../../../src/streaming/file-event-stream-to-block-stream";
+import {FileEventStreamToBlockStream} from "../../../src";
 import {API_BASE_STAGING, Steamship} from "../../../src/client";
 import steamship from "../../../src";
 
