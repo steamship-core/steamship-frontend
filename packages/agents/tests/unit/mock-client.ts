@@ -121,12 +121,16 @@ export class MockClient implements Client {
     private BLOCK_GET = /\/api\/v1\/block\/get$/g;
     private BLOCK_STREAM = /\/api\/v1\/block\/(.*)\/raw$/g;
 
-    private fileStream(fileId: string) {
+    private fileStream(fileId: string): ReadableStream<FileEvent> {
         const file = FILES[fileId];
-        if (file) {
-            return _fileToEvents(file)
-        }
-        throw Error(`FileId ${fileId} not found`)
+        return new ReadableStream<FileEvent>({
+            async start(controller): Promise<void> {
+                for (let block of file.blocks || []) {
+                    controller.enqueue(_blockToEvent(block))
+                }
+                controller.close()
+            }
+        })
     }
 
     private blockStream(blockd: string) {
@@ -154,25 +158,17 @@ export class MockClient implements Client {
         return `${MOCK_API_URL}${path}`
     }
 
-    public async stream(path: string, opts: any): Promise<void> {
+    public async eventStream<T>(path: string, opts: any): Promise<ReadableStream<T>> {
         const url = this.url(path)
-
         let fileIdMatch = this.match(this.FILE_STREAM, url);
         if (fileIdMatch) {
-            for (let block of FILES[fileIdMatch[0]]?.blocks || []) {
-                opts.onmessage(_blockToEvent(block))
-            }
+            return this.fileStream(fileIdMatch[0]) as any
         }
+        throw Error()
     }
 
     public async get(path: string): Promise<Response> {
         const url = this.url(path)
-
-        // file/:id/stream
-        let fileIdMatch = this.match(this.FILE_STREAM, url);
-        if (fileIdMatch) {
-            return new MockResponse(this.fileStream(fileIdMatch[0])) as unknown as Response
-        }
 
         // block/:id/raw
         let blockIdMatch = this.match(this.BLOCK_STREAM, url);

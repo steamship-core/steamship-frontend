@@ -45,7 +45,7 @@ export interface Client {
     url(path: string): string;
     get(path: string): Promise<Response>;
     post(path: string, payload: any): Promise<Response>
-    stream(path: string, opts: any): Promise<ReadableStream>
+    eventStream<T>(path: string, opts: any): Promise<ReadableStream<T>>
 }
 
 /**
@@ -86,7 +86,7 @@ export class Steamship implements Client {
         }
         _headers = {
             ..._headers,
-            // 'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
             ...opts['headers']
         }
         opts['headers'] = _headers
@@ -146,43 +146,6 @@ export class Steamship implements Client {
             }
         })
     }
-
-    // /**
-    //  * eventsource
-    //  * @param path
-    //  * @param opts
-    //  */
-    // public async stream(path: string, opts: any): Promise<any> {
-    //     // Transform 'file/get' into https://url/api/v1/file/get
-    //     const _url = this.url(path)
-    //
-    //     let _headers: Record<string, string> = {}
-    //     if (this.config.apiKey) {
-    //         _headers["Authorization"] = `Bearer ${this.config.apiKey}`
-    //     }
-    //     _headers = {
-    //         ..._headers,
-    //         ...opts['headers'],
-    //         openWhenHidden: true // Fixes document error.
-    //     }
-    //     opts['headers'] = _headers
-    //
-    //     try {
-    //         // @ts-ignore
-    //         const e = new EventSource(_url, opts);
-    //         // @ts-ignore
-    //         e.addEventListener('blockCreated', (e) => {
-    //             console.log(e)
-    //         })
-    //         return e
-    //         // @ts-ignore
-    //     } catch (e: any) {
-    //         // @ts-ignore
-    //         console.log(e)
-    //         throw e
-    //     }
-    //
-    // }
 
 }
 

@@ -1,10 +1,7 @@
 import {FILES, MockClient} from "../mock-client";
 import {File as SteamshipFile} from "../../../src/schema/file";
-import {createFileEventStreamFromFileId} from "../../../src/streaming/file-event-stream";
 import {streamToArray} from "../../../src/streaming/utils";
-import {FileEvent} from "../../../src/schema/event";
-import {Steamship} from "../../../src/client";
-import {createFileMarkdownStreamFromFileId} from "../../../src/streaming/file-markdown-stream";
+import {API_BASE_STAGING, Steamship} from "../../../src/client";
 
 describe('file-event-stream',  () => {
 
@@ -13,9 +10,10 @@ describe('file-event-stream',  () => {
             let client = new MockClient()
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
-                const reader = await createFileEventStreamFromFileId(file.id!, client)
 
-                const eventArray = await streamToArray(reader, false)
+                const stream = await client.eventStream(`file/${file.id!}/stream`, {});
+
+                const eventArray = await streamToArray(stream, false)
 
                 expect(eventArray.length).toEqual(file.blocks?.length)
 
@@ -36,9 +34,15 @@ describe('file-event-stream',  () => {
 
     describe('file-markdown-stream',  () => {
         it('should return streams be able to get it', async () => {
-            let client = new Steamship({apiKey: '05734E32-F33B-49E0-BD78-FB75F5F36B24'})
+            let client = new Steamship({
+                apiKey: '',
+                apiBase: API_BASE_STAGING
+            })
+
             const fileId = '91FCBF70-3920-44DC-A742-7FF3146B06B5';
-            const reader = (await createFileEventStreamFromFileId(fileId, client)).getReader()
+            const stream = await client.eventStream(`file/${fileId}/stream`, {});
+
+            const reader = stream.getReader()
             const read = async (): Promise<void> => {
                 const {done, value} = await reader.read();
                 if (done) {
@@ -49,7 +53,7 @@ describe('file-event-stream',  () => {
                 return read()
             }
             await read();
-        })
+        }, 1000 * 10)
     })
 
 })

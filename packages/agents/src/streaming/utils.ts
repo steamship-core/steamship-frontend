@@ -26,9 +26,21 @@ const streamToArray = async (stream: ReadableStream, decodeAsText: boolean = tru
     return read();
 }
 
-const streamToString = async (stream: ReadableStream) => {
-    const arr = await streamToArray(stream)
-    return arr.join('');
+const decoder = new TextDecoder();
+
+const streamToString = async (stream: ReadableStream<string>) => {
+    let ret = ""
+    let done = false;
+    let reader = stream.getReader()
+
+    while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        ret += value
+        console.log(value)
+    }
+
+    return ret
 }
 
 /*
