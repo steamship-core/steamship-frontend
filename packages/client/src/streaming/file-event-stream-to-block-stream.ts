@@ -26,7 +26,7 @@ function FileEventStreamToBlockStream(client: Client): TransformStream<FileEvent
             steamship.block.get({id: blockId}, client).then((block) => {
               return new Promise<void>((resolve, reject) => {
                   if (!block) {
-                      controller.error(new Error("Unable to load block."))
+                      controller.error(new Error(`Block ID did not appear to exist ${blockId}`))
                       reject()
                       return
                   }

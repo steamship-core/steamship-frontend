@@ -35,6 +35,11 @@ function BlockStreamToMarkdownStream(client: Client): TransformStream<Block, str
                 controller.enqueue(`![image](${contentUrl})\n\n`)
                 return
             } else {
+                if (block.text) {
+                    controller.enqueue(block.text)
+                    return
+                }
+
                 return new Promise<void>(async (resolve, reject) => {
                     try {
                         const response = await steamship.block.raw({id: blockId}, client)

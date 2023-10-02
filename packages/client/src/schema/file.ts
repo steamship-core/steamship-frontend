@@ -1,6 +1,6 @@
-import {HasHandle, IsSteamshipModel, IsUserOwned, IsWorkspaceContained} from "./util.ts"
-import {Tag, PartialTag} from "./tag.ts"
-import {Block, PartialBlock} from "./block.ts"
+import {HasHandle, IsSteamshipModel, IsUserOwned, IsWorkspaceContained} from "./util"
+import {Tag, PartialTag} from "./tag"
+import {Block, PartialBlock} from "./block"
 
 /**
  * File

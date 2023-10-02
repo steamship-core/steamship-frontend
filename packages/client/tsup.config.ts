@@ -6,8 +6,7 @@ const options: Options = {
   splitting: false,
   dts: true,
   entry: {
-    index: "index.tsx",
-    "next/client": "src/next/client.ts",
+    index: "index.ts",
   },
   minify: true,
   sourcemap: true,

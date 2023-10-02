@@ -1,4 +1,4 @@
-import {IsWorkspaceContained, IsSteamshipModel, IsUserOwned, IsFileOwned} from "./util.ts"
+import {IsWorkspaceContained, IsSteamshipModel, IsUserOwned, IsFileOwned} from "./util"
 import {Tag} from './tag'
 
 /**

@@ -70,7 +70,7 @@ const invoke = async (params: {
     payload?: Record<string, any>
     verb?: "GET" | "POST"
 }, client: Client): Promise<Response> => {
-    return await client.invoke_package_method(params.base_url, params.method, {
+    return await client.invokePackageMethod(params.base_url, params.method, {
         method: params.verb || "POST",
         body: JSON.stringify(params.payload || {}),
         json: true

@@ -1,0 +1,96 @@
+# Steamship Javascript Client
+
+The `@steamship/client` library provides access to Steamship Agents in NodeJS and Browser environments.
+
+It is written in Typescript and [available as open-source here](https://github.com/steamship-core/steamship-frontend/tree/main/packages/client). It powers [Steamship's website](https://steamship.com), our [@vercel/ai integration](web-streaming/vercel), and our [React components](react)
+
+## Installation
+
+```
+  npm i @steamship/client
+```
+
+## Usage
+
+First, create a Steamship Client:
+
+```
+const client = new steamship.Client({
+    api_key: "YOUR-API-KEY"
+});
+```
+
+Then, use your client to interact with a Steamship Agent. All you need to know is its **BASE_URL**.
+
+Every running Steamship Agent has a **BASE_URL**.
+This URL always takes the following form:
+
+```
+https://{user-handle}.steamship.run/{workspace-handle}/{instance-handle}/
+```
+
+You can find your Agent's base URL by going to its management console on [steamship.com/dashboard/agents](https://www.steamship.com/dashboard/agents) and clicking on the **Connect > Web SDK** sidebar panel.
+
+### Chat
+
+Chat with an Agent using request/response fashion like so.
+
+```javascript
+const response = await steamship.agent.respond({
+    url: BASE_URL,
+    input: {
+        prompt: "Hi there! Tell me a story!",
+        context_id: CONTEXT_ID     // Think of this as the chatroom name.
+    },
+}, client)
+```
+
+Steamship Agents are stateful.
+You don't need to worry about providing the chat history.
+Instead, provide a `CONTEXT_ID` which looks up this history on the server side.
+
+### Steaming Chat
+
+Chat with an Agent in streaming mode like so:
+
+```javascript
+const response = await steamship.agent.respond_async({
+    url: BASE_URL
+    input: {
+        prompt: "Hi there! Tell me a story!",
+        context_id: CONTEXT_ID     // Think of this as the chatroom name.
+    },
+}, client)
+
+const stream = await SteamshipMarkdownStream(response, client)
+```
+
+You can parse the streaming response in a number of ways.
+We suggest starting with `SteamshipMarkdownStream`, which will provide you with a Markdown-formatted stream of media content.
+
+### HTTP Endpoints
+
+Each running Steamship Agents provides its own HTTP API.
+What that API does depends on the Agent implementation, but in general, Steamship developers use this API to do things like:
+
+* Implement webhooks
+* Provide "learning APIs" to upload, e.g. PDFs or text documents
+* Provide settings endpoints
+
+You can call an API method on an agent like so:
+
+```javascript
+const response = await steamship.agent.post({
+    url: BASE_URL,
+    path: "set",
+    arguments: {
+        arg1: "Value 1",
+        arg2: "Value 2",
+    },
+}, client)
+
+// The response is a web Fetch response.
+const json = await response.json()
+```
+
+If you want to make a get request, use `steamship.agent.get` and append the query params to the `path` property.

@@ -11,7 +11,9 @@ export const APP_BASE_DEVELOPMENT = "http://localhost:8081/"
 export type Configuration = {
     apiBase?: string,
     appBase?: string,
-    apiKey?: string
+    apiKey?: string,
+    workspace?: string
+    workspaceId?: string
 }
 
 export const DEFAULT_CONFIGURATION = {
@@ -21,8 +23,10 @@ export const DEFAULT_CONFIGURATION = {
 
 export type RequestOptions = {
     workspace?: string
+    workspaceId?: string
     verb?: "GET" | "POST"
     body?: any
+    baseUrl?: string
 }
 
 /**
@@ -32,8 +36,9 @@ export interface Client {
     url(path: string): string;
     get(path: string, options?: RequestOptions): Promise<Response>;
     post(path: string, payload: any, options?: RequestOptions): Promise<Response>
-    invoke_package_method(url_base: string, path: string, payload: any, options?: RequestOptions): Promise<Response>
+    invokePackageMethod(url_base: string, path: string, payload: any, options?: RequestOptions): Promise<Response>
     eventStream<T>(path: string, options?: RequestOptions): Promise<ReadableStream<T>>
+    switchWorkspace({workspace, workspaceId}: {workspace?: string, workspaceId?: string}): Client;
 }
 
 /**
@@ -53,10 +58,24 @@ export class Steamship implements Client {
         this.config = {...DEFAULT_CONFIGURATION, ...config}
     }
 
+    private workspaceHandleFromBaseUrl(baseUrl: string): string {
+        try {
+            const urlParts = baseUrl.split('//')
+            const domainAndPath = urlParts[1]
+            const pathParts = domainAndPath.split("/")
+            const workspace = pathParts[1]
+            return workspace
+        } catch (ex) {
+            throw Error(`Error trying to parse workspace handle out of base url: ${baseUrl}`)
+        }
+    }
+
     private makeHeaders(props: {
         json: boolean,
         existing?: Record<string, string>
-        workspace?: string
+        workspace?: string,
+        workspaceId?: string,
+        baseUrl?: string,
     }) {
         let _headers: Record<string, string> = {}
         if (this.config.apiKey) {
@@ -67,6 +86,8 @@ export class Steamship implements Client {
         }
         if (props.workspace) {
             _headers['x-workspace-handle'] = props.workspace
+        } else if (props.workspaceId) {
+            _headers['x-workspace-id'] = props.workspaceId
         }
         return {
             ..._headers,
@@ -86,21 +107,34 @@ export class Steamship implements Client {
     /**
      * Invoke an API method on a Steamship package.
      *
-     * @param api_base
+     * @param apiBase
      * @param path API Path rooted in apiBase provided in the configuration object.
      * @param opts Javascript `fetch` options. API Key and Content-Type are auto-applied.
      */
-    public async invoke_package_method(api_base: string, path: string, opts?: any): Promise<Response> {
-        const _url = `${api_base}${path}`
+    public async invokePackageMethod(apiBase: string, path: string, opts?: any): Promise<Response> {
+        // Parse the workspace out of the api_base.
+        const workspace = this.workspaceHandleFromBaseUrl(apiBase)
+        if (! opts.workspace) {
+            opts.workspace = workspace
+        }
+
+        const _url = `${apiBase}${path}`
         opts['headers'] = this.makeHeaders({
             json: true,
             existing: opts.headers,
-            workspace: opts.workspace
+            workspace: opts.workspace || this.config.workspace,
+            workspaceId: opts.workspaceId || this.config.workspaceId,
+            baseUrl: opts.baseUrl
         })
-        return await fetch(
-            _url,
-            opts
-        )
+        try {
+            return await fetch(
+                _url,
+                opts
+            )
+        } catch (ex) {
+            console.log(ex)
+            throw ex
+        }
     }
 
     /**
@@ -109,17 +143,20 @@ export class Steamship implements Client {
      * @param path API Path rooted in apiBase provided in the configuration object.
      * @param opts Javascript `fetch` options. API Key and Content-Type are auto-applied.
      */
-    public async invoke_api(path: string, opts: any): Promise<Response> {
+    public async invokeApi(path: string, opts: any): Promise<Response> {
         // Transform 'file/get' into https://url/api/v1/file/get
         const _url = this.url(path)
 
         opts['headers'] = this.makeHeaders({
             json: true,
             existing: opts.headers,
-            workspace: opts.workspace
+            workspace: opts.workspace || this.config.workspace,
+            workspaceId: opts.workspaceId || this.config.workspaceId,
+            baseUrl: opts.baseUrl
         })
 
-        return await fetch(_url, opts)
+        const resp = await fetch(_url, opts)
+        return resp;
     }
 
     /**
@@ -127,7 +164,7 @@ export class Steamship implements Client {
      * @param path API Path rooted in apiBase provided in the configuration object.
      */
     public async get(path: string): Promise<Response> {
-        return this.invoke_api(path, {method: "GET"})
+        return this.invokeApi(path, {method: "GET"})
     }
 
     /**
@@ -136,14 +173,23 @@ export class Steamship implements Client {
      * @param payload Payload, as a JSON object, to be provided as JSON to Steamship.
      */
     public async post(path: string, payload: any): Promise<Response> {
-        return this.invoke_api(path, {
+        return this.invokeApi(path, {
             method: "POST",
             body: JSON.stringify(payload)
         })
     }
 
+    public switchWorkspace({workspace, workspaceId}: {workspace?: string, workspaceId?: string}): Client {
+        let newConfig = {...this.config}
+        delete newConfig.workspace;
+        delete newConfig.workspaceId
+        newConfig.workspace = workspace
+        newConfig.workspaceId = workspaceId
+        return new Steamship(newConfig)
+    }
+
     public async eventStream<T>(path: string, opts: any): Promise<ReadableStream<T>> {
-        const res = await this.invoke_api(path, opts)
+        const res = await this.invokeApi(path, opts)
         const decoder = new TextDecoder()
 
         return new ReadableStream({

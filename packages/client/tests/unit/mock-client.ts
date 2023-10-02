@@ -229,7 +229,7 @@ export class MockClient implements Client {
         throw Error()
     }
 
-    public async invoke_package_method(api_base: string, path: string, opts?: any): Promise<Response> {
+    public async invokePackageMethod(api_base: string, path: string, opts?: any): Promise<Response> {
         const url = `${api_base}${path}`
 
         if (this.match(this.AGENT_PROMPT, url)) {

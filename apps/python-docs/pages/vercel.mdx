@@ -2,25 +2,31 @@
 title: "@vercel/ai"
 ---
 
-# React Streaming
+import { Steps, Callout } from 'nextra-theme-docs';
 
-Steamship Agents support Vercel's AI SDK out of the box.
+# @vercel/ai Support
 
-In this guide, we'll walk through how to use the utilities to create a text completion app.
+Steamship Agents can stream responses directly to Vercel's AI SDK.
 
-## Guide: Text Completion
+To do so, we translate Steamship's streaming media blocks into equivalent Markdown.
 
-### 1. Create a Next.js app
+## Guide: A Steamship Chatbot
 
-Create a Next.js application and install `ai`:
+<Steps>
+
+### Create a Next.js app
+
+Create a Next.js application and install `ai` and `@steamship/client`.
 
 ```sh
 pnpm dlx create-next-app my-ai-app
 cd my-ai-app
-pnpm install ai
+pnpm install ai steamship-client
 ```
 
 ### Add your Steamship API Key to `.env`
+
+Create a `.env` file in your project root and add your Replicate API Key:
 
 ```env filename=".env"
 STEAMSHIP_API_KEY=xxxxxxx
@@ -28,52 +34,36 @@ STEAMSHIP_API_KEY=xxxxxxx
 
 ### Create a Route Handler
 
-Create a Next.js Route Handler that uses the Edge Runtime to generate a response to a series of messages via your Steamship Agent's API, and returns the response as a streaming text response.
+Create a Next.js Route Handler that uses the Edge Runtime to generate a response to a message via your Steamship Agent's API, and returns the response as a streaming text response.
 
 For this example, we'll create a route handler at `app/api/completion/route.ts` that accepts a `POST` request with a `prompt` string:
 
-```tsx filename="app/api/completion/route.ts" showLineNumbers
+```tsx filename="app/api/chat/route.ts" showLineNumbers
 import { StreamingTextResponse } from 'ai'
-import { SteamshipMarkdownStream } from '@steamship/react-components'
+import {Steamship, * as steamship} from '@steamship/client'
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = 'edge'
 
 export async function POST(req: Request) {
   // Extract the `prompt` from the body of the request
-  const { prompt } = await req.json()
+  const { prompt, context_id } = await req.json()
 
-  const body = JSON.stringify({
-    prompt,
-    stream: true
-  })
+  const client = new Steamship({apiKey: process.env.STEAMSHIP_API_KEY})
 
-  // Important! Fill out these variables for your agent!
-  const steamshipUsername = '';
-  const agentWorkspace = '';
-  const agentHandle = ''
-
-  // This is your Agent's Generate URL
-  const agentUrl = `https://${steamshipUsername}.steamship.run/${agentWorkspace}/${agentHandle}/generate`
-
-  const response = await fetch(agentUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.STEAMSHIP_API_KEY}`
+  // See https://docs.steamship.com/javascript_client for information about:
+  // - The BASE_URL where your running Agent lives
+  // - The context_id which mediates your Agent's server-side chat history
+  const response = await steamship.agent.respond_async({
+    url: BASE_URL
+    input: {
+        prompt,
+        context_id
     },
-    body
-  })
+  }, client)
 
-  // Check for errors
-  if (!response.ok) {
-    return new Response(await response.text(), {
-      status: response.status
-    })
-  }
-
-  // Extract the text response from the Cohere stream
-  const stream = SteamshipMarkdownStream(response)
+  // Adapt the Streamship Blockstream into a Markdown Stream
+  const stream = await SteamshipMarkdownStream(response, client)
 
   // Respond with a stream of Markdown
   return new StreamingTextResponse(stream)
@@ -126,3 +116,5 @@ export default function Completion() {
   )
 }
 ```
+
+</Steps>

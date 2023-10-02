@@ -41,29 +41,37 @@ export async function SteamshipMarkdownStream(
     client: Client,
     opts?: SteamshipStreamOptions,
 ): Promise<ReadableStream> {
+    try {
 
     // 1. Parse response from agent. This will contain information necessaty to get the stream URL
-    const chatFileId = res.file.id;
-    const responseId = res.task.requestId;
+    const chatFileId = res?.file?.id;
+    const requestId = res?.task?.requestId || (res?.task as any)["request_id"]
+
+    client = client.switchWorkspace({
+        workspace: undefined,
+        workspaceId: res?.file?.workspaceId || (res?.file as any).workspace_id
+    })
 
     // 2. Prepare the filter over the ChatHistory so that we only stream what we're interested in
-    let filterDict = {
+    let filterDict: Record<string, any> = {
         timeoutSeconds: opts?.streamTimeoutSeconds || 60
     }
-    if (opts?.tagKindFilter) {
-        filterDict["tagKindFilter"] = opts?.tagKindFilter
-    }
-    if (opts?.tagNameFilter) {
-        filterDict["tagNameFilter"] = opts?.tagNameFilter
+    if (requestId) {
+        filterDict["tagKindFilter"] = 'request-id'
+        filterDict["tagNameFilter"] = requestId
     }
     if (opts?.minDatetime) {
         filterDict["minDatetime"] = opts?.minDatetime
     }
     const queryArgs = _dictToURI(filterDict)
-
+    const _url = `file/${chatFileId}/stream?${queryArgs}`
 
     // 2. Create a stream of markdown wrapping.
-    const eventStream = await client.eventStream(`file/${chatFileId}/stream?${queryArgs}`, {});
-    const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
-    return blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
+        const eventStream = await client.eventStream(_url, {});
+        const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
+        return blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
+    } catch (ex) {
+        console.log(ex)
+        throw ex
+    }
 }
