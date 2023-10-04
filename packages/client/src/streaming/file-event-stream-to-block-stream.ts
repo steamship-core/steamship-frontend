@@ -8,10 +8,7 @@
  *
  * =========================================================================================*/
 
-import {FileEvent} from "../schema/event";
-import {Client} from "../client";
-import {Block} from "../schema/block";
-import steamship from "../operations"
+import {FileEvent, Block, Client} from "../schema";
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -23,7 +20,7 @@ function FileEventStreamToBlockStream(client: Client): TransformStream<FileEvent
                 controller.error(new Error("Empty Block ID"))
                 return;
             }
-            steamship.block.get({id: blockId}, client).then((block) => {
+            client.block.get({id: blockId}).then((block) => {
               return new Promise<void>((resolve, reject) => {
                   if (!block) {
                       controller.error(new Error(`Block ID did not appear to exist ${blockId}`))

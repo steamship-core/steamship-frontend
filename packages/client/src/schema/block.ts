@@ -1,5 +1,7 @@
 import {IsWorkspaceContained, IsSteamshipModel, IsUserOwned, IsFileOwned} from "./util"
 import {Tag} from './tag'
+import {Client} from "./client";
+import {AgentRespondParams, StreamingResponse} from "./agent";
 
 /**
  * Block
@@ -20,3 +22,8 @@ export type Block = IsSteamshipModel & IsWorkspaceContained & IsUserOwned & IsFi
 }
 
 export type PartialBlock = Partial<Block>
+
+export interface IBlockClient {
+    raw(params: {id: string}): Promise<Response>;
+    get(params: {id: string}): Promise<Block>
+}

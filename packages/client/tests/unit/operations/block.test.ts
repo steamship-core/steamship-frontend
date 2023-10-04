@@ -9,7 +9,7 @@ describe('operations',  () => {
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
                 for (const block of file.blocks || []) {
-                    const raw = await steamship.block.raw({id: block.id!}, client)
+                    const raw = await client.block.raw({id: block.id!})
                     expect(await raw.text()).toBe(block.text)
                 }
             }
@@ -20,7 +20,7 @@ describe('operations',  () => {
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
                 for (const block of file.blocks || []) {
-                    const got = await steamship.block.get({id: block.id!}, client)
+                    const got = await client.block.get({id: block.id!})
                     expect(got.id).toBe(block.id)
                 }
             }

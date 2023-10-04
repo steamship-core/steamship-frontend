@@ -49,21 +49,21 @@ export async function POST(req: Request) {
   // Extract the `prompt` from the body of the request
   const { prompt, context_id } = await req.json()
 
-  const client = new Steamship({apiKey: process.env.STEAMSHIP_API_KEY})
+  const steamship = new Steamship({apiKey: process.env.STEAMSHIP_API_KEY})
 
   // See https://docs.steamship.com/javascript_client for information about:
   // - The BASE_URL where your running Agent lives
   // - The context_id which mediates your Agent's server-side chat history
-  const response = await steamship.agent.respond_async({
+  const response = await steamship.agent.respondAsync({
     url: BASE_URL
     input: {
         prompt,
         context_id
     },
-  }, client)
+  })
 
   // Adapt the Streamship Blockstream into a Markdown Stream
-  const stream = await SteamshipMarkdownStream(response, client)
+  const stream = await SteamshipMarkdownStream(response, steamship)
 
   // Respond with a stream of Markdown
   return new StreamingTextResponse(stream)

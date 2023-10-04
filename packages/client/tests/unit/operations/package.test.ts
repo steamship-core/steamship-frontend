@@ -8,9 +8,9 @@ describe('operations',  () => {
         it('create_instance', async () => {
             let client = new MockClient();
 
-            let pkg = await steamship.package.create_instance({
+            let pkg = await client.package.createInstance({
                 package: TEST_PACKAGE_INSTANCE.handle!
-            }, client)
+            })
 
             expect(pkg.handle).toBe(TEST_PACKAGE_INSTANCE.handle)
             expect(pkg.invocationUrl).toBe(TEST_PACKAGE_INSTANCE.invocationUrl)
@@ -19,17 +19,17 @@ describe('operations',  () => {
         it('invoke_instance', async () => {
             let client = new MockClient();
 
-            let pkg = await steamship.package.create_instance({
+            let pkg = await client.package.createInstance({
                 package: TEST_PACKAGE_INSTANCE.handle!
-            }, client)
+            })
 
             const hi = {"hello": "world"}
 
-            let resp = await steamship.package.invoke({
+            let resp = await client.package.invoke({
                 base_url: pkg.invocationUrl,
                 method: "echo",
                 payload: hi
-            }, client)
+            })
 
             let json = await resp.json()
 

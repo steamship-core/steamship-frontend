@@ -5,7 +5,7 @@ describe('operations',  () => {
     describe('workspace', () => {
         it('create', async () => {
             let client = new MockClient()
-            const workspace = await steamship.workspace.create({}, client)
+            const workspace = await client.workspace.create({})
             expect(workspace.id).toEqual(TEST_WORKSPACE.id)
             expect(workspace.handle).toEqual(TEST_WORKSPACE.handle)
         })

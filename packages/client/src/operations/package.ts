@@ -2,11 +2,7 @@
  * Parameters for creating an instance of an agent.
  *
  */
-import {Client} from "../client";
-import {AgentInstance, PackageInstance} from "../schema";
-import workspace from "./workspace"
-import {StreamingResponse} from "../schema/agent";
-import {AgentRespondParams} from "./agent";
+import {Client, AgentInstance, IPackageClient, PackageInstance} from "../schema";
 
 type CreatePackageInstanceParams = {
      /**
@@ -36,52 +32,55 @@ type CreatePackageInstanceParams = {
     fetchIfExists?: boolean
 }
 
-
-const create_instance = async (params: CreatePackageInstanceParams, client: Client): Promise<PackageInstance> => {
-    if (!params.handle) {
-        // We'll need to create a workspace for this agent so we can make sure to get/fetch the Agent in its own
-        // workspace.
-        const workspace_ = await workspace.create({}, client)
-        params.handle = workspace_.handle;
-    }
-
-    const {version, handle, fetchIfExists=true, config} = params
-    const response = await client.post('package/instance/create', {
-        packageHandle: params.package,
-        packageVersionHandle: version,
-        handle: handle,
-        fetchIfExists: fetchIfExists,
-        config: config
-    })
-    const json = await response.json()
-    return json?.packageInstance as PackageInstance
-}
-
-
-/**
- * Invoke a method on a package using its base_url.
- *
- * @param params
- * @param client
- */
-const invoke = async (params: {
-    base_url: string,
-    method: string,
-    payload?: Record<string, any>
-    verb?: "GET" | "POST"
-}, client: Client): Promise<Response> => {
-    return await client.invokePackageMethod(params.base_url, params.method, {
-        method: params.verb || "POST",
-        body: JSON.stringify(params.payload || {}),
-        json: true
-    })
-}
-
-
 export type { CreatePackageInstanceParams }
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
-    create_instance,
-    invoke
+export class PackageClient implements IPackageClient {
+    private client: Client;
+
+    constructor(client: Client) {
+        this.client = client
+    }
+
+    public async createInstance(params: CreatePackageInstanceParams): Promise<PackageInstance> {
+        if (!params.handle) {
+            // We'll need to create a workspace for this agent so we can make sure to get/fetch the Agent in its own
+            // workspace.
+            const workspace_ = await this.client.workspace.create({})
+            params.handle = workspace_.handle;
+        }
+
+        const {version, handle, fetchIfExists=true, config} = params
+        const response = await this.client.post('package/instance/create', {
+            packageHandle: params.package,
+            packageVersionHandle: version,
+            handle: handle,
+            fetchIfExists: fetchIfExists,
+            config: config
+        })
+        const json = await response.json()
+        return json?.packageInstance as PackageInstance
+    }
+
+    /**
+     * Invoke a method on a package using its base_url.
+     *
+     * @param params
+     * @param client
+     */
+    public async invoke(params: {
+        base_url: string,
+        method: string,
+        payload?: Record<string, any>
+        verb?: "GET" | "POST"
+    }): Promise<Response> {
+        return await this.client.invokePackageMethod(params.base_url, params.method, {
+            method: params.verb || "POST",
+            body: JSON.stringify(params.payload || {}),
+            json: true
+        })
+    }
+
 }
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default PackageClient

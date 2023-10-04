@@ -1,55 +1,60 @@
-import {Client} from "../client";
-import {Block} from "../schema";
+import {Client, Block, IBlockClient} from "../schema";
 
-/**
- * Fetch the raw content of the block.
- *
- * @param params
- * @param client
- */
-const raw = async (params: {
-    id: string
-}, client: Client): Promise<Response> => {
-    return await client.get(`block/${params.id}/raw`, {});
-}
+export class BlockClient implements IBlockClient {
+    private client: Client;
 
-/**
- * Fetch the raw content of the block.
- *
- * @param params
- * @param client
- */
-const get = async (params: {
-    id: string
-}, client: Client): Promise<Block> => {
-    try {
-        let response = await client.post(`block/get`, {id: params.id});
-        let json = await response.json()
-        const block = (json?.block || json?.data?.block) as Block;
-        if (!block) {
+    constructor(client: Client) {
+        this.client = client
+    }
+
+    /**
+     * Fetch the raw content of the block.
+     *
+     * @param params
+     * @param client
+     */
+    public async raw(params: {
+        id: string
+    }): Promise<Response> {
+        return await this.client.get(`block/${params.id}/raw`, {});
+    }
+
+    /**
+     * Fetch the raw content of the block.
+     *
+     * @param params
+     * @param client
+     */
+    public async get(params: {
+        id: string
+    }): Promise<Block> {
+        try {
+            let response = await this.client.post(`block/get`, {id: params.id});
+            let json = await response.json()
+            const block = (json?.block || json?.data?.block) as Block;
+            if (!block) {
+                const delay = (ms:number) => new Promise(res => setTimeout(res, ms));
+                await delay(5000);
+                let response = await this.client.post(`block/get`, {id: params.id});
+                let json = await response.json()
+                return (json?.block || json?.data?.block) as Block;
+            }
+            return block
+        } catch (ex) {
+            // Wait for 2s
             const delay = (ms:number) => new Promise(res => setTimeout(res, ms));
             await delay(5000);
-            let response = await client.post(`block/get`, {id: params.id});
+            let response = await this.client.post(`block/get`, {id: params.id});
             let json = await response.json()
             return (json?.block || json?.data?.block) as Block;
+
+
+            // console.log(ex)
+            // throw ex
         }
-        return block
-    } catch (ex) {
-        // Wait for 2s
-        const delay = (ms:number) => new Promise(res => setTimeout(res, ms));
-        await delay(5000);
-        let response = await client.post(`block/get`, {id: params.id});
-        let json = await response.json()
-        return (json?.block || json?.data?.block) as Block;
-
-
-        // console.log(ex)
-        // throw ex
     }
+
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {
-    raw,
-    get
-}
+export default BlockClient

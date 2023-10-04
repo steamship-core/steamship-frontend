@@ -2,8 +2,8 @@ import {FILES, MockClient} from "../mock-client";
 import {File as SteamshipFile} from "../../../src/schema/file";
 import {streamToArray} from "../../../src/streaming/utils";
 import {FileEventStreamToBlockStream} from "../../../src";
-import {API_BASE_STAGING, Steamship} from "../../../src/client";
-import steamship from "../../../src";
+import {Steamship} from "../../../src/client";
+import {API_BASE_STAGING} from "../../../src/schema/client";
 
 describe('file-block-stream',  () => {
 
@@ -13,7 +13,7 @@ describe('file-block-stream',  () => {
             for (const fileId in FILES) {
                 const file = FILES[fileId] as SteamshipFile;
 
-                const eventStream = await steamship.file.stream({id: file.id!}, client)
+                const eventStream = await client.file.stream({id: file.id!})
                 const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
 
                 const blockArray = await streamToArray(blockStream, false)
@@ -31,31 +31,6 @@ describe('file-block-stream',  () => {
                 }
             }
         })
-    })
-
-    describe('file-markdown-stream',  () => {
-        it('should return streams be able to get it', async () => {
-            let client = new Steamship({
-                apiKey: '',
-                apiBase: API_BASE_STAGING
-            })
-
-            const fileId = '91FCBF70-3920-44DC-A742-7FF3146B06B5';
-            const eventStream = await client.eventStream(`file/${fileId}/stream?timeoutSeconds=3`, {});
-            const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
-
-            const reader = blockStream.getReader()
-            const read = async (): Promise<void> => {
-                const {done, value} = await reader.read();
-                if (done) {
-                    return;
-                } else if (value) {
-                    console.log(value)
-                }
-                return read()
-            }
-            await read();
-        }, 1000 * 10)
     })
 
 })

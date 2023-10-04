@@ -1,7 +1,6 @@
 import {FILES, MockClient} from "../mock-client";
 import {File as SteamshipFile} from "../../../src/schema/file";
 import {streamToArray, streamToString} from "../../../src/streaming/utils";
-import {API_BASE_STAGING, Steamship} from "../../../src/client";
 import {BlockStreamToMarkdownStream} from "../../../src";
 import {FileEventStreamToBlockStream} from "../../../src";
 
@@ -27,24 +26,6 @@ describe('file-block-stream',  () => {
                 expect(outputString).toBe(expectedString)
             }
         })
-    })
-
-    describe('file-markdown-stream',  () => {
-        it('should return streams be able to get it', async () => {
-            let client = new Steamship({
-                apiKey: '',
-                apiBase: API_BASE_STAGING
-            })
-
-            const fileId = '91FCBF70-3920-44DC-A742-7FF3146B06B5';
-            const eventStream = await client.eventStream(`file/${fileId}/stream?timeoutSeconds=3`, {});
-            const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
-            const markdownStream = blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
-
-            const outputString = await streamToString(markdownStream)
-
-            console.log(outputString)
-        }, 1000 * 10)
     })
 
 })

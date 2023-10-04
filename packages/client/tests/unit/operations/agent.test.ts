@@ -8,9 +8,9 @@ describe('operations',  () => {
         it('respond', async () => {
             let client = new MockClient();
 
-            let pkg = await steamship.package.create_instance({
+            let pkg = await client.package.createInstance({
                 package: TEST_PACKAGE_INSTANCE.handle!
-            }, client)
+            })
 
             let url = pkg.invocationUrl
             let input = {url, input: {
@@ -18,7 +18,7 @@ describe('operations',  () => {
                 context_id: "context_id"
             }}
 
-            let blocks = await steamship.agent.respond(input, client)
+            let blocks = await client.agent.respond(input)
 
             expect(blocks).toEqual(TEST_FILE.blocks)
         })
@@ -26,9 +26,9 @@ describe('operations',  () => {
         it('respond_async', async () => {
             let client = new MockClient();
 
-            let pkg = await steamship.package.create_instance({
+            let pkg = await client.package.createInstance({
                 package: TEST_PACKAGE_INSTANCE.handle!
-            }, client)
+            })
 
             let url = pkg.invocationUrl
             let input = {url, input: {
@@ -36,7 +36,7 @@ describe('operations',  () => {
                     context_id: "context_id"
                 }}
 
-            let {file, task} = await steamship.agent.respond_async(input, client)
+            let {file, task} = await client.agent.respondAsync(input)
 
             expect(file).not.toBeUndefined()
             expect(task).not.toBeUndefined()

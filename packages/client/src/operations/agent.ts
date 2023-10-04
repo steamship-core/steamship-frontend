@@ -2,125 +2,80 @@
  * Parameters for creating an instance of an agent.
  *
  */
-import {Client} from "../client";
-import {Block} from "../schema";
-import {StreamingResponse} from "../schema/agent";
+import {Block, Client} from "../schema";
+import {IAgentClient, AgentPostGetParams, StreamingResponse, AgentRespondParams, AgentInstance} from "../schema";
 import package_ from "./package"
 
-type AgentRespondParams = {
-    /**
-     * The base URL of the running agent instance.
-     */
-    url: string
 
-    /**
-     * Input for the agent.
-     */
-    input: {
-        /**
-         * The new user message to respond to.
-         */
-        prompt: string
+export class AgentClient implements IAgentClient {
+    private client: Client;
 
-        /**
-         * The ID of the conversation context for conversation history retrieval.
-         */
-        context_id: string
+    constructor(client: Client) {
+        this.client = client
     }
-}
-
-
-type AgentPostGetParams = {
-    /**
-     * The base URL of the running agent instance.
-     */
-    url: string
 
     /**
-     * The method to invoke
+     * Respond to the provided input asynchronously, returning a Task representing completion and a File object
+     * in which the response will be asynchronously streamed.
+     *
+     * @param params
      */
-    path: string
+    public async respondAsync(params: AgentRespondParams): Promise<StreamingResponse> {
+        const resp = await this.client.package.invoke({
+            base_url: params.url,
+            method: "async_prompt",
+            payload: params.input,
+            verb: "POST"
+        })
+        const json = await resp.json()
+        return json as StreamingResponse;
+    }
 
     /**
-     * Input for the agent.
+     * Respond to the provided input synchronously, returning a list of Block objects.
+     *
+     * @param params
      */
-    arguments: Record<string, any>
+    public async respond(params: AgentRespondParams): Promise<Block[]> {
+        const resp = await this.client.package.invoke({
+            base_url: params.url,
+            method: "prompt",
+            payload: params.input,
+            verb: "POST"
+        })
+        const json = await resp.json()
+        return json as Block[];
+    }
+
+    /**
+     * Respond to the provided input synchronously, returning a list of Block objects.
+     *
+     * @param params
+     */
+    public async post(params: AgentPostGetParams): Promise<Response> {
+        return await this.client.package.invoke({
+            base_url: params.url,
+            method: params.path,
+            payload: params.arguments,
+            verb: "POST"
+        })
+    }
+
+    /**
+     * Respond to the provided input synchronously, returning a list of Block objects.
+     *
+     * @param params
+     */
+    public async get(params: AgentPostGetParams): Promise<Response> {
+        return await this.client.package.invoke({
+            base_url: params.url,
+            method: params.path,
+            payload: params.arguments,
+            verb: "GET"
+        })
+    }
+
 }
-
-/**
- * Respond to the provided input asynchronously, returning a Task representing completion and a File object
- * in which the response will be asynchronously streamed.
- *
- * @param params
- * @param client
- */
-const respond_async = async (params: AgentRespondParams, client: Client): Promise<StreamingResponse> => {
-    const resp = await package_.invoke({
-        base_url: params.url,
-        method: "async_prompt",
-        payload: params.input,
-        verb: "POST"
-    }, client)
-    const json = await resp.json()
-    return json as StreamingResponse;
-}
-
-
-/**
- * Respond to the provided input synchronously, returning a list of Block objects.
- *
- * @param params
- * @param client
- */
-const respond = async (params: AgentRespondParams, client: Client): Promise<Block[]> => {
-    const resp = await package_.invoke({
-        base_url: params.url,
-        method: "prompt",
-        payload: params.input,
-        verb: "POST"
-    }, client)
-    const json = await resp.json()
-    return json as Block[];
-}
-
-
-/**
- * Respond to the provided input synchronously, returning a list of Block objects.
- *
- * @param params
- * @param client
- */
-const post = async (params: AgentPostGetParams, client: Client): Promise<Response> => {
-    return await package_.invoke({
-        base_url: params.url,
-        method: params.path,
-        payload: params.arguments,
-        verb: "POST"
-    }, client)
-}
-
-/**
- * Respond to the provided input synchronously, returning a list of Block objects.
- *
- * @param params
- * @param client
- */
-const get = async (params: AgentPostGetParams, client: Client): Promise<Response> => {
-    return await package_.invoke({
-        base_url: params.url,
-        method: params.path,
-        payload: params.arguments,
-        verb: "GET"
-    }, client)
-}
-
-
-export type { AgentRespondParams }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {
-    respond,
-    post,
-    get,
-    respond_async
-}
+export default AgentClient

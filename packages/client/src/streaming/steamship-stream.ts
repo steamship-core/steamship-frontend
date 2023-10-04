@@ -30,7 +30,7 @@ function _dictToURI(dict: Record<string, any>): string {
  *    prompt: messages.join('\n'),
  *    context_id: "my-chat-session-id"
  *  },
- * }, client)
+ * })
  *
  * const stream = await SteamshipStream(response)
  * return new StreamingTextResponse(stream)

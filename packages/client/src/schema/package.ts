@@ -1,4 +1,6 @@
 import {HasHandle, IsSteamshipModel, IsUserOwned, IsWorkspaceContained} from "./util"
+import workspace from "../operations/workspace";
+import {CreatePackageInstanceParams} from "../operations/package";
 
 /**
  * Steamship Package Instance.
@@ -41,3 +43,12 @@ export type PackageInstance = IsSteamshipModel & IsWorkspaceContained & IsUserOw
 
 export type PartialPackageInstance = Partial<PackageInstance>
 
+export interface IPackageClient {
+    createInstance(params: CreatePackageInstanceParams): Promise<PackageInstance>
+    invoke(params: {
+        base_url: string,
+        method: string,
+        payload?: Record<string, any>
+        verb?: "GET" | "POST"
+    }): Promise<Response>
+}

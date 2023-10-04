@@ -1,6 +1,8 @@
 import {HasHandle, IsSteamshipModel, IsUserOwned, IsWorkspaceContained} from "./util"
 import {Tag, PartialTag} from "./tag"
 import {Block, PartialBlock} from "./block"
+import {Client} from "./client";
+import {FileEvent} from "./event";
 
 /**
  * File
@@ -21,3 +23,9 @@ export type File = IsSteamshipModel & IsWorkspaceContained & IsUserOwned & HasHa
 }
 
 export type PartialFile = Partial<File>
+
+export interface IFileClient {
+    stream(params: {id: string}): Promise<ReadableStream<FileEvent>>
+    raw(params: {id: string}): Promise<Response>
+    get(params: {id: string}): Promise<File>
+}

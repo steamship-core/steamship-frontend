@@ -1,5 +1,4 @@
 import {
-    Client,
     Steamship
 } from "./client";
 
@@ -7,8 +6,6 @@ import {
     BlockStreamToMarkdownStream,
     FileEventStreamToBlockStream,
 } from "./streaming"
-
-import operations from "./operations"
 
 import type {
     Block,
@@ -25,11 +22,8 @@ import type {
     HasHandle,
     PackageInstance,
     AgentInstance,
-} from './schema'
-
-export type {
     Client
-}
+} from './schema'
 
 export {
     Steamship,
@@ -38,6 +32,7 @@ export {
 }
 
 export type {
+    Client,
     Block,
     ServerSentEvent,
     BlockCreatedPayload,
@@ -54,11 +49,4 @@ export type {
     AgentInstance,
 }
 
-/**
- * This permits usage like:
- *
- * steamship.agents.create(..)
- * steamship.workspace.create(..)
- *
- */
-export default operations
+export default Steamship

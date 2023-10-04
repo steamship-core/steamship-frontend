@@ -42,7 +42,7 @@ const response = await steamship.agent.respond({
         prompt: "Hi there! Tell me a story!",
         context_id: CONTEXT_ID     // Think of this as the chatroom name.
     },
-}, client)
+})
 ```
 
 Steamship Agents are stateful.
@@ -54,15 +54,15 @@ Instead, provide a `CONTEXT_ID` which looks up this history on the server side.
 Chat with an Agent in streaming mode like so:
 
 ```javascript
-const response = await steamship.agent.respond_async({
+const response = await steamship.agent.respondAsync({
     url: BASE_URL
     input: {
         prompt: "Hi there! Tell me a story!",
         context_id: CONTEXT_ID     // Think of this as the chatroom name.
     },
-}, client)
+})
 
-const stream = await SteamshipMarkdownStream(response, client)
+const stream = await SteamshipMarkdownStream(response, steamship)
 ```
 
 You can parse the streaming response in a number of ways.
@@ -87,7 +87,7 @@ const response = await steamship.agent.post({
         arg1: "Value 1",
         arg2: "Value 2",
     },
-}, client)
+})
 
 // The response is a web Fetch response.
 const json = await response.json()

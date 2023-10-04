@@ -8,9 +8,7 @@
  *
  * =========================================================================================*/
 
-import {Client} from "../client";
-import {Block} from "../schema";
-import steamship from "../operations"
+import {Client, Block} from "../schema";
 
 const decoder = new TextDecoder();
 
@@ -36,13 +34,13 @@ function BlockStreamToMarkdownStream(client: Client): TransformStream<Block, str
                 return
             } else {
                 if (block.text) {
-                    controller.enqueue(block.text)
+                    controller.enqueue(block.text + '\n\n')
                     return
                 }
 
                 return new Promise<void>(async (resolve, reject) => {
                     try {
-                        const response = await steamship.block.raw({id: blockId}, client)
+                        const response = await client.block.raw({id: blockId})
                         if (! response.ok) {
                             const error = new Error(`Got back error streaming block: ${await response.text()}`)
                             controller.error(error)

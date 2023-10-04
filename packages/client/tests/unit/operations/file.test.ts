@@ -12,7 +12,7 @@ describe('operations',  () => {
                 expect(file.id).not.toBeUndefined()
 
                 // Test getting the file
-                const stream = await steamship.file.stream({id: file.id!}, client)
+                const stream = await client.file.stream({id: file.id!})
                 const events = await streamToArray(stream, false)
                 expect(events?.length).toBe(file?.blocks!.length)
             }

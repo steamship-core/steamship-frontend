@@ -1,11 +1,12 @@
 import {File, PartialFile} from "../../src/schema/file";
 import {Block, PartialBlock} from "../../src/schema/block";
 import {FileEvent} from "../../src/schema/event";
-import {Client, RequestOptions} from "../../src/client";
+import {Client} from "../../src";
 import {stringToStream} from "../../src/streaming/utils";
 import {PartialWorkspace} from "../../src/schema/workspace";
 import {PartialPackageInstance} from "../../src/schema/package";
 import {PartialTask} from "../../src/schema/task";
+import {ClientBase} from "../../src/base"
 
 const MOCK_API_URL = "https://mock.steamship.com/api/v1/"
 
@@ -134,7 +135,7 @@ export class MockResponse {
 }
 
 
-export class MockClient implements Client {
+export class MockClient extends ClientBase {
     private FILE_STREAM = /\/api\/v1\/file\/(.*)\/stream$/g;
     private BLOCK_GET = /\/api\/v1\/block\/get$/g;
     private BLOCK_STREAM = /\/api\/v1\/block\/(.*)\/raw$/g;
@@ -246,6 +247,10 @@ export class MockClient implements Client {
         }
 
         return new MockResponse(opts.body) as unknown as Response
+    }
+
+    switchWorkspace({workspace, workspaceId}: { workspace?: string; workspaceId?: string }): Client {
+        return this;
     }
 }
 
