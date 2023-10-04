@@ -1,11 +1,9 @@
 {
-  "name": "@steamship/react",
-  "version": "0.13.0",
+  "name": "@steamship/client",
+  "version": "3.0.0",
   "main": "./dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./styles.css": "./dist/index.css",
-    "./next/client": "./dist/next/client.js"
+    ".": "./dist/index.js"
   },
   "typesVersions": {
     "*": {
@@ -17,7 +15,6 @@
       ]
     }
   },
-  "style": "./dist/index.css",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -29,33 +26,21 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@radix-ui/react-separator": "^1.0.3",
-    "@radix-ui/react-slot": "^1.0.2",
-    "@vercel/analytics": "^1.0.1",
-    "ai": "^2.1.22",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.0.0",
-    "lucide-react": "^0.262.0",
-    "next": "13.4.19",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "tailwind-merge": "^1.14.0",
+    "@microsoft/fetch-event-source": "^2.0.1",
+    "eventsource": "^2.0.2",
+    "eventsource-parser": "^1.1.1",
+    "sse-ts": "^1.0.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.10",
+    "@types/eventsource": "^1.1.12",
     "@types/jest": "^29.5.4",
-    "@types/react": "^18.2.17",
-    "@types/react-dom": "^18.2.7",
-    "@types/react-syntax-highlighter": "^15.5.7",
     "@types/uuid": "^9.0.2",
     "babel-jest": "^29.6.4",
     "eslint": "^7.32.0",
     "eslint-config-custom": "workspace:*",
     "jest": "^29.6.4",
-    "markdown-to-jsx": "^7.2.1",
-    "react-syntax-highlighter": "^15.5.0",
-    "tailwind-config": "workspace:*",
     "ts-jest": "^29.1.1",
     "tsconfig": "workspace:*",
     "tsup": "^7.1.0",

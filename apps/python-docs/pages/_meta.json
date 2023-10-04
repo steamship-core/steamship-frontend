@@ -25,8 +25,14 @@
     "type": "separator",
     "title": "Web SDK"
   },
+  "javascript_client": {
+    "title": "Javascript Client"
+  },
+  "vercel": {
+    "title": "@vercel/ai"
+  },
   "react": {
-    "title": "React (Beta)"
+    "title": "React"
   },
   "--": {
     "type": "separator",
