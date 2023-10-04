@@ -6,7 +6,7 @@ Steamship is made for building, scaling, and managing Agents in the cloud.
 
 A full tutorial for getting started with Agents is available here:
 
-[Agent Guidebook](https://docs.steamship.com/agent-guidebook)
+[Agent Guidebook](https://www.steamship.com/learn/agent-guidebook)
 
 If you’re new to building Agents, we highly recommend following the above tutorial.
 
@@ -44,5 +44,5 @@ Many tools are available pre-packaged within the SDK:
 
 The AgentService class provides a convenient way to deploy an Agent as a Steamship [Package](/agents/../packages#packages).
 
-All [`steamship.agents.service.agent_service.AgentService`](/agents/../api-reference/steamship.agents.service.md#steamship.agents.service.agent_service.AgentService) instances contain a `prompt(self, prompt: str, **kwargs) -> List[Block]` method from thier base class.
+All  [`steamship.agents.service.agent_service.AgentService`](/agents/../api-reference/steamship.agents.service.md#steamship.agents.service.agent_service.AgentService) instances contain a `prompt(self, prompt: str, **kwargs) -> List[Block]` method from thier base class.
 This method is the core `chat` loop: it accepts an inbound `str` in the form of a user message, and it produces a list of multimodal `Block` objects that contain the response.

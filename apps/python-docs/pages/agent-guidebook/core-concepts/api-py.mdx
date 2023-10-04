@@ -1,9 +1,17 @@
+import { Callout } from 'nextra/components';
+
 # AgentService, aka api.py
 
 The `src/api.py` file contains the `AgentService` that houses your agent.
 
-* Run it on localhost with `ship run local`
-* Deploy it to the cloud with `ship deploy`
+- Run it on localhost with `ship run local`
+
+<Callout emoji="⚠️">
+  **An ngrok account is required to run `ship run local`.** You can connect your account by running:
+  `ngrok config add-authtoken YOUR_NGROK_AUTH_TOKEN`
+</Callout>
+
+- Deploy it to the cloud with `ship deploy`
 
 Once deployed to the cloud, you can create multiple instances of it, each with its own private data, logging, and billing.
 
@@ -23,7 +31,7 @@ class MyAssistant(AgentService):
 
 But you'll probably want an agent you can talk to on the web and via a chat app.
 
-To add both web and Telegram support, just you can use **Transport Mixins**. 
+To add both web and Telegram support, just you can use **Transport Mixins**.
 Mixins are like plugins for your agent -- they add capabilities that define endpoints, webhooks, and async task queues.
 Transport mixins add ways to connect to different kinds of chat services.
 
@@ -73,4 +81,3 @@ class MyAssistant(AgentService):
             )
         )
 ```
-

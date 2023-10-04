@@ -1,4 +1,5 @@
-import {Definition, VersionRequirement} from "@/components/markdown/callout"
+import { Definition, VersionRequirement } from '@/components/markdown/callout';
+import { Callout } from 'nextra/components';
 
 # Add your agent to Slack
 
@@ -42,7 +43,13 @@ You do not need to deploy your agent to test the Slack connection -- you can tes
 
 Run `ship run local` to run a local copy of your Agent with the provided configuration.
 
-It will automatically create a public URL using Ngrok that enables it to receive Slack notifications. Then follow the instructions above as if it were running in production.
+<Callout emoji="⚠️">
+  **An ngrok account is required to run `ship run local`.** You can connect your account by running:
+  `ngrok config add-authtoken YOUR_NGROK_AUTH_TOKEN`
+</Callout>
+
+It will automatically create a public URL using Ngrok that enables it to receive Slack notifications.
+Then follow the instructions above as if it were running in production.
 
 Note that you will have to repeat the entire Slack installation process every time you stop your development server to update your agent's code.
 For this reason, we recommend **testing your agent via the REPL, not Slack** and then only testing against Slack just prior to final deployment. There is no need to use Slack in your Agent development loop.
