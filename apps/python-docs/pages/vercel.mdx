@@ -21,7 +21,7 @@ Create a Next.js application and install `ai` and `@steamship/client`.
 ```sh
 pnpm dlx create-next-app my-ai-app
 cd my-ai-app
-pnpm install ai steamship-client
+pnpm install ai @steamship/client
 ```
 
 ### Add your Steamship API Key to `.env`
@@ -40,7 +40,7 @@ For this example, we'll create a route handler at `app/api/completion/route.ts` 
 
 ```tsx filename="app/api/chat/route.ts" showLineNumbers
 import { StreamingTextResponse } from 'ai'
-import {Steamship, * as steamship} from '@steamship/client'
+import Steamship from '@steamship/client'
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = 'edge'
