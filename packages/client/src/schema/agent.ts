@@ -12,6 +12,8 @@ import {Block} from "./block";
  */
 export type AgentInstance = PackageInstance;
 
+export type NonStreamingResponse = Block[]
+
 export type StreamingResponse = {
     task: Task;
     file: File;

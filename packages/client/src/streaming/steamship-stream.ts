@@ -1,7 +1,6 @@
 import {FileEventStreamToBlockStream} from "./file-event-stream-to-block-stream";
 import {BlockStreamToMarkdownStream} from "./block-stream-to-markdown-stream";
-import {StreamingResponse} from "../schema/agent";
-import {Client} from "../client";
+import {StreamingResponse, Client} from "../schema";
 
 export type SteamshipStreamOptions = {
     streamTimeoutSeconds?: number
@@ -42,31 +41,34 @@ export async function SteamshipMarkdownStream(
     opts?: SteamshipStreamOptions,
 ): Promise<ReadableStream> {
     try {
+        if (((res as any) || {}).status?.state == 'failed') {
+            throw Error(`Exception from server: ${JSON.stringify(res)}`)
+        }
 
-    // 1. Parse response from agent. This will contain information necessaty to get the stream URL
-    const chatFileId = res?.file?.id;
-    const requestId = res?.task?.requestId || (res?.task as any)["request_id"]
+        // 1. Parse response from agent. This will contain information necessary to get the stream URL
+        const chatFileId = res?.file?.id;
+        const requestId = res?.task?.requestId || ((res?.task as any) || {})["request_id"]
 
-    client = client.switchWorkspace({
-        workspace: undefined,
-        workspaceId: res?.file?.workspaceId || (res?.file as any).workspace_id
-    })
+        client = client.switchWorkspace({
+            workspace: undefined,
+            workspaceId: res?.file?.workspaceId || ((res?.file as any) || {}).workspace_id
+        })
 
-    // 2. Prepare the filter over the ChatHistory so that we only stream what we're interested in
-    let filterDict: Record<string, any> = {
-        timeoutSeconds: opts?.streamTimeoutSeconds || 60
-    }
-    if (requestId) {
-        filterDict["tagKindFilter"] = 'request-id'
-        filterDict["tagNameFilter"] = requestId
-    }
-    if (opts?.minDatetime) {
-        filterDict["minDatetime"] = opts?.minDatetime
-    }
-    const queryArgs = _dictToURI(filterDict)
-    const _url = `file/${chatFileId}/stream?${queryArgs}`
+        // 2. Prepare the filter over the ChatHistory so that we only stream what we're interested in
+        let filterDict: Record<string, any> = {
+            timeoutSeconds: opts?.streamTimeoutSeconds || 60
+        }
+        if (requestId) {
+            filterDict["tagKindFilter"] = 'request-id'
+            filterDict["tagNameFilter"] = requestId
+        }
+        if (opts?.minDatetime) {
+            filterDict["minDatetime"] = opts?.minDatetime
+        }
+        const queryArgs = _dictToURI(filterDict)
+        const _url = `file/${chatFileId}/stream?${queryArgs}`
 
-    // 2. Create a stream of markdown wrapping.
+        // 2. Create a stream of markdown wrapping.
         const eventStream = await client.eventStream(_url, {});
         const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
         return blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
