@@ -73,7 +73,12 @@ export class PackageClient implements IPackageClient {
         payload?: Record<string, any>
         verb?: "GET" | "POST"
     }): Promise<Response> {
-        return await this.client.invokePackageMethod(params.base_url, params.method, {
+        // Ensure a trailing slash.
+        let base_url: string = params.base_url
+        if (base_url[base_url.length - 1] != "/") {
+            base_url = `${base_url}/`
+        }
+        return await this.client.invokePackageMethod(base_url, params.method, {
             method: params.verb || "POST",
             body: JSON.stringify(params.payload || {}),
             json: true

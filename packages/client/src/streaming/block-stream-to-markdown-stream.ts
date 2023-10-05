@@ -33,8 +33,10 @@ function BlockStreamToMarkdownStream(client: Client): TransformStream<Block, str
                 controller.enqueue(`![image](${contentUrl})\n\n`)
                 return
             } else {
-                if (block.text) {
-                    controller.enqueue(block.text + '\n\n')
+                if (typeof block.text != "undefined") {
+                    if (block.text) {
+                        controller.enqueue(block.text + '\n\n')
+                    }
                     return
                 }
 

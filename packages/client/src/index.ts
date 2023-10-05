@@ -5,6 +5,8 @@ import {
 import {
     BlockStreamToMarkdownStream,
     FileEventStreamToBlockStream,
+    SteamshipMarkdownStream,
+    SteamshipStreamOptions,
 } from "./streaming"
 
 import type {
@@ -29,6 +31,11 @@ export {
     Steamship,
     BlockStreamToMarkdownStream,
     FileEventStreamToBlockStream,
+    SteamshipMarkdownStream,
+}
+
+export type {
+    SteamshipStreamOptions,
 }
 
 export type {
