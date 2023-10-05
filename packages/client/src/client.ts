@@ -171,13 +171,17 @@ export class Steamship extends ClientBase implements Client {
                         } catch (e) {
                             controller.error(e)
                         }
+                    } else {
+                        console.log("Parser encountered something other than an event")
                     }
                 }
+
                 const parser = createParser(onParse)
                 // [Asynchronously iterate](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of) the response's body
                 for await (const chunk of res.body as any) {
                     parser.feed(decoder.decode(chunk))
                 }
+                controller.close()
             }
         })
     }

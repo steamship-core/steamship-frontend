@@ -54,6 +54,7 @@ export async function SteamshipMarkdownStream(
             workspaceId: res?.file?.workspaceId || ((res?.file as any) || {}).workspace_id
         })
 
+
         // 2. Prepare the filter over the ChatHistory so that we only stream what we're interested in
         let filterDict: Record<string, any> = {
             timeoutSeconds: opts?.streamTimeoutSeconds || 60

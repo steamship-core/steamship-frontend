@@ -34,13 +34,17 @@ const streamToString = async (stream: ReadableStream<string>) => {
     let reader = stream.getReader()
 
     while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        if (done) {
-            break
+        try {
+            const { value, done: doneReading } = await reader.read();
+            done = doneReading;
+            if (done) {
+                break
+            }
+            ret += value
+            console.log("Streaming Chunk", value)
+        } catch (e) {
+            console.log(e)
         }
-        ret += value
-        console.log(value)
     }
 
     return ret

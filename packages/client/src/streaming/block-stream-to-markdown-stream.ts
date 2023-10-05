@@ -16,6 +16,7 @@ function BlockStreamToMarkdownStream(client: Client): TransformStream<Block, str
     return new TransformStream<Block, string>({
         transform(block: Block, controller) {
             const blockId = block.id;
+
             if (! blockId) {
                 controller.error(new Error("Empty Block ID"))
                 return;

@@ -16,21 +16,29 @@ function FileEventStreamToBlockStream(client: Client): TransformStream<FileEvent
     return new TransformStream<FileEvent, Block>({
         transform(event: FileEvent, controller) {
             const blockId = event.data.blockId;
+
             if (! blockId) {
                 controller.error(new Error("Empty Block ID"))
                 return;
             }
-            client.block.get({id: blockId}).then((block) => {
-              return new Promise<void>((resolve, reject) => {
-                  if (!block) {
-                      controller.error(new Error(`Block ID did not appear to exist ${blockId}`))
-                      reject()
-                      return
-                  }
-                  controller.enqueue(block)
-                  resolve()
-              })
-            })
+            try {
+                client.block.get({id: blockId}).then((block) => {
+                    return new Promise<void>((resolve, reject) => {
+                        if (!block) {
+                            controller.error(new Error(`Block ID did not appear to exist ${blockId}`))
+                            reject()
+                            return
+                        }
+                        controller.enqueue(block)
+                        resolve()
+                    })
+                })
+            } catch (e) {
+                console.log(e);
+                controller.error(e);
+                return;
+            }
+
         },
     });
 }
