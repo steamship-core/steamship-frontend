@@ -13,7 +13,7 @@ describe('file-block-stream',  () => {
             const context_id = "foo"
 
             // Create a Steamship client
-            const steamship = new Steamship({apiKey: "05334E32-D33B-19E0-AD73-FC75F5F36B24", apiBase: API_BASE_STAGING})
+            const steamship = new Steamship({apiKey: "REPLACE", apiBase: API_BASE_STAGING})
 
             // See https://docs.steamship.com/javascript_client for information about:
             // - The BASE_URL where your running Agent lives
