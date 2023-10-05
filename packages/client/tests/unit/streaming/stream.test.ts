@@ -2,18 +2,29 @@ import {Steamship, SteamshipMarkdownStream} from "../../../src";
 import {streamToString} from "../../../src/streaming/utils";
 import {API_BASE_STAGING} from "../../../src/schema/client";
 
+// // """
+// curl -i \
+//  -H "Accept: application/json" \
+//  -H "Content-Type: application/json" \
+//  -H "Authorization: Bearer 11637B07-25F4-4B26-99BA-C6D1EBFD3DD4" \
+//  -H "x-workspace-handle: ai-adventure-game-beta-39e-0v0bko" \
+//  https://api.steamship.com/api/v1/file/19AC272E-8F4D-40CE-8EA9-5A566D1ABA17/stream?timeoutSeconds=2&tagKindFilter=request-id&tagNameFilter=152A3036-140D-4327-9413-AD6DFC6E4C1D
+// // """'
+
+
+
 describe('file-block-stream',  () => {
 
     describe('File Block Stream', () => {
         it('should return a sequence of Block objects', async () => {
 
-            const BASE_URL = "https://foo-bar.apps.staging.steamship.com/ai-adventure-game-beta-e86-zl3tjv/ai-adventure-game-beta-e86/"
+            const BASE_URL = "https://ted.steamship.run/ai-adventure-game-beta-39e-0v0bko/ai-adventure-game-beta-39e/"
 
             const prompt = "hi"
-            const context_id = "foo"
+            const context_id = "foo-10"
 
             // Create a Steamship client
-            const steamship = new Steamship({apiKey: "REPLACE", apiBase: API_BASE_STAGING})
+            const steamship = new Steamship({apiKey: "YOUR_KEY"})
 
             // See https://docs.steamship.com/javascript_client for information about:
             // - The BASE_URL where your running Agent lives
@@ -27,11 +38,13 @@ describe('file-block-stream',  () => {
             })
 
             // Adapt the Streamship Blockstream into a Markdown Stream
-            const stream = await SteamshipMarkdownStream(response, steamship, {streamTimeoutSeconds: 2})
+            const stream = await SteamshipMarkdownStream(response, steamship, {streamTimeoutSeconds: 60})
 
             const str = await streamToString(stream)
             console.log(str)
-        }, 1000 * 20)
+
+            // const str = await streamToString(stream)
+        }, 1000 * 200)
     })
 
 })

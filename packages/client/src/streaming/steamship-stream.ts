@@ -54,6 +54,18 @@ export async function SteamshipMarkdownStream(
             workspaceId: res?.file?.workspaceId || ((res?.file as any) || {}).workspace_id
         })
 
+        console.log("ChatFile, Request", chatFileId, requestId)
+        console.log(`
+curl -i \\
+-H "Accept: application/json" \\
+-H "Content-Type: application/json" \\
+-H "Authorization: Bearer 11637B07-25F4-4B26-99BA-C6D1EBFD3DD4" \\
+-H "x-workspace-id: ${res?.file?.workspaceId}" \\
+https://api.steamship.com/api/v1/file/${chatFileId}/stream?timeoutSeconds=2&tagKindFilter=request-id&tagNameFilter=${requestId}
+        
+        `)
+
+
         // 2. Prepare the filter over the ChatHistory so that we only stream what we're interested in
         let filterDict: Record<string, any> = {
             timeoutSeconds: opts?.streamTimeoutSeconds || 60
@@ -70,8 +82,9 @@ export async function SteamshipMarkdownStream(
 
         // 2. Create a stream of markdown wrapping.
         const eventStream = await client.eventStream(_url, {});
-        const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
-        return blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
+        return eventStream;
+        // const blockStream = eventStream.pipeThrough(FileEventStreamToBlockStream(client))
+        // return blockStream.pipeThrough(BlockStreamToMarkdownStream(client))
     } catch (ex) {
         console.log(ex)
         throw ex

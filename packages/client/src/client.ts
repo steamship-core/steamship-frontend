@@ -155,11 +155,13 @@ export class Steamship extends ClientBase implements Client {
         const res = await this.invokeApi(path, opts)
         const decoder = new TextDecoder()
 
+
         return new ReadableStream({
             async start(controller): Promise<void> {
                 function onParse(event: any): void {
                     if (event.type === 'event') {
                         const data = event.data
+                        console.log("EVENT", data)
                         try {
                             let json = JSON.parse(data)
                             // The engine nests things. We don't want that.
