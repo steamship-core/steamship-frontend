@@ -41,7 +41,7 @@ const streamToString = async (stream: ReadableStream<string>) => {
                 break
             }
             ret += value
-            console.log("MKD -> STREAM", value)
+            console.log("Streaming Chunk", value)
         } catch (e) {
             console.log(e)
         }

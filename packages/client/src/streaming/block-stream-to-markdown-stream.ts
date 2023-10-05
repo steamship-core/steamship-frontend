@@ -17,7 +17,6 @@ function BlockStreamToMarkdownStream(client: Client): TransformStream<Block, str
         transform(block: Block, controller) {
             const blockId = block.id;
 
-            console.log("BLOCK -> MKD", block.id)
             if (! blockId) {
                 controller.error(new Error("Empty Block ID"))
                 return;
@@ -43,7 +42,6 @@ function BlockStreamToMarkdownStream(client: Client): TransformStream<Block, str
                 }
 
                 return new Promise<void>(async (resolve, reject) => {
-                    console.log("Warning: I'm about to start streaming from a block.")
                     try {
                         const response = await client.block.raw({id: blockId})
                         if (! response.ok) {

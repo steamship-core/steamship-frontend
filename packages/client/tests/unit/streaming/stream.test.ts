@@ -18,13 +18,13 @@ describe('file-block-stream',  () => {
     describe('File Block Stream', () => {
         it('should return a sequence of Block objects', async () => {
 
-            const BASE_URL = "https://ted.steamship.run/ai-adventure-game-beta-39e-0v0bko/ai-adventure-game-beta-39e/"
+            const BASE_URL = "https://ted.steamship.run/ai-adventure-game-beta-80e-h7vmhd/ai-adventure-game-beta-80e/"
 
             const prompt = "hi"
-            const context_id = "foo-10"
+            const context_id = "foo-14"
 
             // Create a Steamship client
-            const steamship = new Steamship({apiKey: "YOUR_KEY"})
+            const steamship = new Steamship({apiKey: ""})
 
             // See https://docs.steamship.com/javascript_client for information about:
             // - The BASE_URL where your running Agent lives
@@ -36,6 +36,11 @@ describe('file-block-stream',  () => {
                     context_id
                 },
             })
+
+            // const response: any = {
+            //     task: {requestId: "9A25A2D4-78DA-4C7C-B4E7-2A9526A5CEDA"},
+            //     file: {id: "250C68B5-103E-4D82-9C72-CA3E861F8031"}
+            // }
 
             // Adapt the Streamship Blockstream into a Markdown Stream
             const stream = await SteamshipMarkdownStream(response, steamship, {streamTimeoutSeconds: 60})

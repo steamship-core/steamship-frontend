@@ -17,8 +17,6 @@ function FileEventStreamToBlockStream(client: Client): TransformStream<FileEvent
         transform(event: FileEvent, controller) {
             const blockId = event.data.blockId;
 
-            console.log("EVENT -> BLOCK", event.data.blockId)
-
             if (! blockId) {
                 controller.error(new Error("Empty Block ID"))
                 return;
@@ -27,12 +25,10 @@ function FileEventStreamToBlockStream(client: Client): TransformStream<FileEvent
                 client.block.get({id: blockId}).then((block) => {
                     return new Promise<void>((resolve, reject) => {
                         if (!block) {
-                            console.log("EVENT -> BLOCK", event.data.blockId, "MISSING")
                             controller.error(new Error(`Block ID did not appear to exist ${blockId}`))
                             reject()
                             return
                         }
-                        console.log("EVENT -> BLOCK", event.data.blockId, block.mimeType, block.text)
                         controller.enqueue(block)
                         resolve()
                     })
