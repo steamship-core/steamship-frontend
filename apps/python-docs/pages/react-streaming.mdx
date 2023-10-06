@@ -1,5 +1,5 @@
 ---
-title: "@vercel/ai"
+title: '@vercel/ai'
 ---
 
 # React Streaming
@@ -33,28 +33,28 @@ Create a Next.js Route Handler that uses the Edge Runtime to generate a response
 For this example, we'll create a route handler at `app/api/completion/route.ts` that accepts a `POST` request with a `prompt` string:
 
 ```tsx filename="app/api/completion/route.ts" showLineNumbers
-import { StreamingTextResponse } from 'ai'
-import { SteamshipMarkdownStream } from '@steamship/react-components'
+import { StreamingTextResponse } from 'ai';
+import { SteamshipStream } from '@steamship/client';
 
 // IMPORTANT! Set the runtime to edge
-export const runtime = 'edge'
+export const runtime = 'edge';
 
 export async function POST(req: Request) {
   // Extract the `prompt` from the body of the request
-  const { prompt } = await req.json()
+  const { prompt } = await req.json();
 
   const body = JSON.stringify({
     prompt,
     stream: true
-  })
+  });
 
   // Important! Fill out these variables for your agent!
   const steamshipUsername = '';
   const agentWorkspace = '';
-  const agentHandle = ''
+  const agentHandle = '';
 
   // This is your Agent's Generate URL
-  const agentUrl = `https://${steamshipUsername}.steamship.run/${agentWorkspace}/${agentHandle}/generate`
+  const agentUrl = `https://${steamshipUsername}.steamship.run/${agentWorkspace}/${agentHandle}/generate`;
 
   const response = await fetch(agentUrl, {
     method: 'POST',
@@ -63,20 +63,20 @@ export async function POST(req: Request) {
       Authorization: `Bearer ${process.env.STEAMSHIP_API_KEY}`
     },
     body
-  })
+  });
 
   // Check for errors
   if (!response.ok) {
     return new Response(await response.text(), {
       status: response.status
-    })
+    });
   }
 
   // Extract the text response from the Cohere stream
-  const stream = SteamshipMarkdownStream(response)
+  const stream = SteamshipStream(response);
 
   // Respond with a stream of Markdown
-  return new StreamingTextResponse(stream)
+  return new StreamingTextResponse(stream);
 }
 ```
 
@@ -87,21 +87,14 @@ Create a Client component with a form that we'll use to gather the prompt from t
 By default, the [`useCompletion`](/docs/api-reference#usecompletion) hook will use the `POST` Route Handler we created above (it defaults to `/api/completion`). You can override this by passing a `api` prop to `useCompletion({ api: '...'})`.
 
 ```tsx filename="app/page.tsx" showLineNumbers
-'use client'
+'use client';
 
-import { useCompletion } from 'ai/react'
+import { useCompletion } from 'ai/react';
 
 export default function Completion() {
-  const {
-    completion,
-    input,
-    stop,
-    isLoading,
-    handleInputChange,
-    handleSubmit
-  } = useCompletion({
+  const { completion, input, stop, isLoading, handleInputChange, handleSubmit } = useCompletion({
     api: '/api/completion'
-  })
+  });
 
   return (
     <div className="mx-auto w-full max-w-md py-24 flex flex-col stretch">
@@ -123,6 +116,6 @@ export default function Completion() {
       </form>
       <output>Completion result: {completion}</output>
     </div>
-  )
+  );
 }
 ```

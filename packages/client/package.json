@@ -1,6 +1,6 @@
 {
   "name": "@steamship/client",
-  "version": "3.0.3",
+  "version": "3.0.6",
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js"
@@ -23,7 +23,8 @@
     "build": "tsup",
     "clean": "rm -rf .next .turbo node_modules",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prompt": "ts-node scripts/prompt.ts"
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
@@ -42,6 +43,7 @@
     "eslint-config-custom": "workspace:*",
     "jest": "^29.6.4",
     "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
     "tsconfig": "workspace:*",
     "tsup": "^7.1.0",
     "typescript": "^5.1.6"

@@ -1,7 +1,12 @@
-import {IsWorkspaceContained, IsSteamshipModel, IsUserOwned, IsFileOwned} from "./util"
-import {Tag} from './tag'
-import {Client} from "./client";
-import {AgentRespondParams, StreamingResponse} from "./agent";
+import {
+  IsWorkspaceContained,
+  IsSteamshipModel,
+  IsUserOwned,
+  IsFileOwned,
+} from "./util";
+import { Tag } from "./tag";
+import { Client } from "./client";
+import { AgentRespondParams, StreamingResponse } from "./agent";
 
 /**
  * Block
@@ -11,7 +16,10 @@ import {AgentRespondParams, StreamingResponse} from "./agent";
  *  Content of a block can either be in the `text` field or stored remotely in S3.
  *  Metadata of a block is added in an unordered list of Tags.
  */
-export type Block = IsSteamshipModel & IsWorkspaceContained & IsUserOwned & IsFileOwned & {
+export type Block = IsSteamshipModel &
+  IsWorkspaceContained &
+  IsUserOwned &
+  IsFileOwned & {
     text?: string;
     tags?: Tag[];
     contentUrl?: string;
@@ -19,11 +27,12 @@ export type Block = IsSteamshipModel & IsWorkspaceContained & IsUserOwned & IsFi
     url?: string;
     index: number;
     publicData: boolean;
-}
+    streamState?: "started" | "completed" | "aborted";
+  };
 
-export type PartialBlock = Partial<Block>
+export type PartialBlock = Partial<Block>;
 
 export interface IBlockClient {
-    raw(params: {id: string}): Promise<Response>;
-    get(params: {id: string}): Promise<Block>
+  raw(params: { id: string }): Promise<Response>;
+  get(params: { id: string }): Promise<Block>;
 }
