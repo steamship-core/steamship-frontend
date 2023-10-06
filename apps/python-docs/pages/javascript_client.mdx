@@ -39,12 +39,12 @@ Chat with an Agent using request/response fashion like so.
 
 ```javascript
 const response = await steamship.agent.respond({
-    url: BASE_URL,
-    input: {
-        prompt: "Hi there! Tell me a story!",
-        context_id: CONTEXT_ID     // Think of this as the chatroom name.
-    },
-})
+  url: BASE_URL,
+  input: {
+    prompt: 'Hi there! Tell me a story!',
+    context_id: CONTEXT_ID // Think of this as the chatroom name.
+  }
+});
 ```
 
 Steamship Agents are stateful.
@@ -64,35 +64,35 @@ const response = await steamship.agent.respondAsync({
     },
 })
 
-const stream = await SteamshipMarkdownStream(response, steamship)
+const stream = await SteamshipStream(response, steamship)
 ```
 
 You can parse the streaming response in a number of ways.
-We suggest starting with `SteamshipMarkdownStream`, which will provide you with a Markdown-formatted stream of media content.
+We suggest starting with `SteamshipStream`, which will provide you with a Markdown-formatted stream of media content.
 
 ### HTTP Endpoints
 
 Each running Steamship Agents provides its own HTTP API.
 What that API does depends on the Agent implementation, but in general, Steamship developers use this API to do things like:
 
-* Implement webhooks
-* Provide "learning APIs" to upload, e.g. PDFs or text documents
-* Provide settings endpoints
+- Implement webhooks
+- Provide "learning APIs" to upload, e.g. PDFs or text documents
+- Provide settings endpoints
 
 You can call an API method on an agent like so:
 
 ```javascript
 const response = await steamship.agent.post({
-    url: BASE_URL,
-    path: "set",
-    arguments: {
-        arg1: "Value 1",
-        arg2: "Value 2",
-    },
-})
+  url: BASE_URL,
+  path: 'set',
+  arguments: {
+    arg1: 'Value 1',
+    arg2: 'Value 2'
+  }
+});
 
 // The response is a web Fetch response.
-const json = await response.json()
+const json = await response.json();
 ```
 
 If you want to make a get request, use `steamship.agent.get` and append the query params to the `path` property.

@@ -1,21 +1,16 @@
-import {
-    BlockStreamToMarkdownStream
-} from "./block-stream-to-markdown-stream";
+import { BlockStreamToMarkdownStream } from "./block-stream-to-markdown-stream";
 
-import {
-    FileEventStreamToBlockStream
-} from "./file-event-stream-to-block-stream"
+import { FileEventStreamToBlockStream } from "./file-event-stream-to-block-stream";
 
-import {
-    SteamshipMarkdownStream, SteamshipStreamOptions
-} from "./steamship-stream"
+import { BlockStreamToStreamingBlockStream } from "./block-stream-to-streaming-block-stream";
+
+import { SteamshipStream, SteamshipStreamOptions } from "./steamship-stream";
 
 export {
-    BlockStreamToMarkdownStream,
-    FileEventStreamToBlockStream,
-    SteamshipMarkdownStream,
-}
+  BlockStreamToMarkdownStream,
+  BlockStreamToStreamingBlockStream,
+  FileEventStreamToBlockStream,
+  SteamshipStream,
+};
 
-export type {
-    SteamshipStreamOptions,
-}
+export type { SteamshipStreamOptions };

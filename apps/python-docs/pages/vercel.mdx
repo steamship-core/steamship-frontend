@@ -1,5 +1,5 @@
 ---
-title: "@vercel/ai"
+title: '@vercel/ai'
 ---
 
 import { Steps, Callout } from 'nextra-theme-docs';
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
   })
 
   // Adapt the Streamship Blockstream into a Markdown Stream
-  const stream = await SteamshipMarkdownStream(response, steamship)
+  const stream = await SteamshipStream(response, steamship)
 
   // Respond with a stream of Markdown
   return new StreamingTextResponse(stream)
@@ -77,21 +77,14 @@ Create a Client component with a form that we'll use to gather the prompt from t
 By default, the [`useCompletion`](/docs/api-reference#usecompletion) hook will use the `POST` Route Handler we created above (it defaults to `/api/completion`). You can override this by passing a `api` prop to `useCompletion({ api: '...'})`.
 
 ```tsx filename="app/page.tsx" showLineNumbers
-'use client'
+'use client';
 
-import { useCompletion } from 'ai/react'
+import { useCompletion } from 'ai/react';
 
 export default function Completion() {
-  const {
-    completion,
-    input,
-    stop,
-    isLoading,
-    handleInputChange,
-    handleSubmit
-  } = useCompletion({
+  const { completion, input, stop, isLoading, handleInputChange, handleSubmit } = useCompletion({
     api: '/api/completion'
-  })
+  });
 
   return (
     <div className="mx-auto w-full max-w-md py-24 flex flex-col stretch">
@@ -113,7 +106,7 @@ export default function Completion() {
       </form>
       <output>Completion result: {completion}</output>
     </div>
-  )
+  );
 }
 ```
 
