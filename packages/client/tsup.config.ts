@@ -8,7 +8,7 @@ const options: Options = {
   entry: {
     index: "index.ts",
   },
-  minify: true,
+  minify: false,
   sourcemap: true,
   target: "es2020",
 };
