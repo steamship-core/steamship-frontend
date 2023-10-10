@@ -5,8 +5,7 @@ import { StreamingResponse, Client } from "../schema";
 
 export type SteamshipStreamOptions = {
   streamTimeoutSeconds?: number;
-  tagKindFilter?: string;
-  tagNameFilter?: string;
+  requestId?: string;
   minDatetime?: string;
   format?: "markdown" | "json";
 };
@@ -50,7 +49,9 @@ export async function SteamshipStream(
     // 1. Parse response from agent. This will contain information necessary to get the stream URL
     const chatFileId = res?.file?.id;
     const requestId =
-      res?.task?.requestId || ((res?.task as any) || {})["request_id"];
+      res?.task?.requestId ||
+      ((res?.task as any) || {})["request_id"] ||
+      opts?.requestId;
 
     client = client.switchWorkspace({
       workspace: undefined,
@@ -63,8 +64,7 @@ export async function SteamshipStream(
       timeoutSeconds: opts?.streamTimeoutSeconds || 60,
     };
     if (requestId) {
-      filterDict["tagKindFilter"] = "request-id";
-      filterDict["tagNameFilter"] = requestId;
+      filterDict["requestId"] = requestId;
     }
     if (opts?.minDatetime) {
       filterDict["minDatetime"] = opts?.minDatetime;

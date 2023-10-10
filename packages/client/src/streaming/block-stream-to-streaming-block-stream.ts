@@ -46,8 +46,7 @@ function BlockStreamToStreamingBlockStream(
       }
 
       // Upon a new block, we always pass it right on through.
-      controller.enqueue(JSON.stringify(block));
-
+      controller.enqueue(JSON.stringify(block) + "\n");
       // For blocks that are either TEXT or MARKDOWN and also streaming, we will additionally set up an update stream.
       const isStreaming = block.streamState == "started";
       const isText =
@@ -84,7 +83,7 @@ function BlockStreamToStreamingBlockStream(
                 JSON.stringify({
                   id: blockId,
                   text: streamingBlocks[blockId].text,
-                })
+                }) + "\n"
               );
             }
 
