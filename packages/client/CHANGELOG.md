@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 3.1.0
+
+### Minor Changes
+
+- Pass through request id for streaming
+
 ## 0.13.0
 
 ### Minor Changes
