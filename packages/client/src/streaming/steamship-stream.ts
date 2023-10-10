@@ -63,8 +63,8 @@ export async function SteamshipStream(
       timeoutSeconds: opts?.streamTimeoutSeconds || 60,
     };
     if (requestId) {
-      filterDict["tagKindFilter"] = "request-id";
-      filterDict["tagNameFilter"] = requestId;
+      // filterDict["tagKindFilter"] = "request-id";
+      // filterDict["tagNameFilter"] = requestId;
     }
     if (opts?.minDatetime) {
       filterDict["minDatetime"] = opts?.minDatetime;
