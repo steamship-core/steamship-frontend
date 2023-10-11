@@ -166,9 +166,10 @@ export class Steamship extends ClientBase implements Client {
   ): Promise<ReadableStream<T>> {
     const res = await this.invokeApi(path, opts);
     const decoder = new TextDecoder();
+    const reader = res.body?.getReader();
 
     return new ReadableStream({
-      async start(controller): Promise<void> {
+      async pull(controller): Promise<void> {
         function onParse(event: any): void {
           if (event.type === "event") {
             const data = event.data;
@@ -189,11 +190,14 @@ export class Steamship extends ClientBase implements Client {
         }
 
         const parser = createParser(onParse);
-        // [Asynchronously iterate](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of) the response's body
-        for await (const chunk of res.body as any) {
-          parser.feed(decoder.decode(chunk));
+
+        const { value, done } = await reader!.read();
+
+        if (done) {
+          controller.close();
+        } else {
+          parser.feed(decoder.decode(value));
         }
-        controller.close();
       },
     });
   }
