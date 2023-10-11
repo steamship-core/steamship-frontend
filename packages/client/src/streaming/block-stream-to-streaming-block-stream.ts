@@ -31,7 +31,7 @@ function BlockStreamToStreamingBlockStream(
       // Only hang up if we're not still streaming any block updates.
       const maybeHangup = () => {
         if (Object.keys(streamingBlocks).length == 0) {
-          controller.terminate();
+          // controller.terminate();
           return true;
         }
         return false;
@@ -39,6 +39,7 @@ function BlockStreamToStreamingBlockStream(
 
       // If this block signals termination, remember.
       if (isStreamTerminatingBlock(block)) {
+        console.log("terminate");
         receivedStreamTermination = true;
         if (maybeHangup()) {
           return;
