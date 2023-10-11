@@ -1,5 +1,11 @@
 # @steamship/react
 
+## 3.1.1
+
+### Patch Changes
+
+- fixes an issue with backpressure and streaming
+
 ## 3.1.0
 
 ### Minor Changes
