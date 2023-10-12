@@ -6,14 +6,14 @@ import { isStreamTerminatingBlock } from "./utils";
  * @param client
  * @returns
  */
-function BlockStreamToBlockJsonStream(): TransformStream<Block, string> {
-  return new TransformStream<Block, string>({
+function BlockStreamToBlockJsonStream(): TransformStream<Block, Uint8Array> {
+  return new TransformStream<Block, Uint8Array>({
     transform(block: Block, controller) {
-      const json = JSON.stringify(block) + "\n";
-      console.log(json);
-      controller.enqueue(json);
+      const str = JSON.stringify(block) + "\n";
+      controller.enqueue(new TextEncoder().encode(str));
       // If this block signals termination, hang up!
       if (isStreamTerminatingBlock(block)) {
+        console.log("terminating block");
         controller.terminate();
         return;
       }
