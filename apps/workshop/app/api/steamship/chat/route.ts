@@ -37,8 +37,6 @@ export async function POST(req: Request) {
     },
   });
 
-  console.log(response);
-
   // Adapt the Steamship into a Markdown Stream
   //
   // Format options are

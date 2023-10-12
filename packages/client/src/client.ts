@@ -2,6 +2,7 @@ import { createParser } from "eventsource-parser";
 import { ClientBase } from "./base";
 import { Client } from "./schema";
 import { Configuration, DEFAULT_CONFIGURATION } from "./schema/client";
+import { isStreamTerminatingBlock } from "./streaming/utils";
 
 /**
  * Steamship API client.
@@ -167,23 +168,83 @@ export class Steamship extends ClientBase implements Client {
     const res = await this.invokeApi(path, opts);
     const decoder = new TextDecoder();
     const reader = res.body?.getReader();
+    let streamingPromises: Record<string, Promise<void>> = {};
+    const client = this;
 
     return new ReadableStream({
       async pull(controller): Promise<void> {
-        function onParse(event: any): void {
-          if (event.type === "event") {
-            const data = event.data;
-            try {
-              let json = JSON.parse(data);
-              // The engine nests things. We don't want that.
-              if (json[event.event]) {
-                json = json[event.event];
-              }
-              event.data = json as T;
-              controller.enqueue(event);
-            } catch (e) {
-              controller.error(e);
+        const handleEvent = async (event: any) => {
+          const data = event.data;
+          try {
+            let json = JSON.parse(data);
+            // The engine nests things. We don't want that.
+            if (json[event.event]) {
+              json = json[event.event];
             }
+            event.data = json as T;
+            const blockId = event.data.blockId;
+            console.log("blockId", blockId);
+            client.block.get({ id: blockId }).then((block) => {
+              if (isStreamTerminatingBlock(block)) {
+                console.log("terminating block", block.id);
+              }
+
+              if (block.streamState == "started") {
+                // @ts-ignore
+                console.log("streaming block", block.id);
+                streamingPromises[block.id] = new Promise<void>(
+                  async (resolve, reject) => {
+                    client.block
+                      .raw({ id: block.id })
+                      .then((response) => {
+                        console.log("response", response);
+                        resolve();
+                        delete streamingPromises[block.id];
+                      })
+                      .catch((ex) => {
+                        console.log("err fetching", ex);
+                        delete streamingPromises[block.id];
+                        reject();
+                      });
+                  }
+                );
+
+                // console.log("response", response);
+                // if (!response.ok) {
+                //   console.log("failed to get stream");
+                //   const error = new Error(
+                //     `Got back error streaming block: ${await response.text()}`
+                //   );
+                //   controller.error(error);
+                //   return;
+                // }
+                // let str = "";
+                // console.log("starting stream loop", block.id);
+                // for await (const chunk of response.body as any) {
+                //   console.log("chunk", chunk);
+                //   str += decoder.decode(chunk);
+                //   // Look up the block.
+                //   // Stream an update.
+                //   controller.enqueue(
+                //     (JSON.stringify({
+                //       id: blockId,
+                //       text: str,
+                //     }) + "\n") as T
+                //   );
+                // }
+              }
+              console.log("enqueueing block", block.id);
+
+              controller.enqueue((JSON.stringify(block) + "\n") as T);
+            });
+          } catch (e) {
+            controller.error(e);
+          }
+        };
+
+        function onParse(event: any) {
+          if (event.type === "event") {
+            handleEvent(event);
           } else {
             console.log("Parser encountered something other than an event");
           }
@@ -193,7 +254,9 @@ export class Steamship extends ClientBase implements Client {
 
         const { value, done } = await reader!.read();
 
-        if (done) {
+        // If we're done, and we have no more blocks to stream, close the stream.
+        if (done && Object.keys(streamingPromises).length == 0) {
+          console.log("closing");
           controller.close();
         } else {
           parser.feed(decoder.decode(value));
