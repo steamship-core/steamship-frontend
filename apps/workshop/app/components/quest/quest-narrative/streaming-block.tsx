@@ -31,10 +31,19 @@ export const StreamingBlock = ({ block }: { block: Block }) => {
           return;
         }
         // Otherwise do something here to process current chunk
+        try {
+          var txt = (innerBlock.text = new TextDecoder().decode(value));
 
-        var txt = (innerBlock.text = new TextDecoder().decode(value));
-        var newBlock = JSON.parse(txt);
-        setInnerBlock(newBlock);
+          // Sometimes an update has TWO updates.. as JSON-L
+          var lines = txt.split("\n");
+          var lastUpdate = lines[lines.length - 1];
+          var newBlock = JSON.parse(lastUpdate);
+          setInnerBlock(newBlock);
+        } catch (ex) {
+          console.log(ex);
+          var txt = (innerBlock.text = new TextDecoder().decode(value));
+          console.log(txt);
+        }
       }
     };
     readStream();
