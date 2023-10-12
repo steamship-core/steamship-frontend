@@ -17,7 +17,11 @@ export async function POST(req: Request) {
 
   const prompt = mostRecentUserMessage?.content || "";
 
-  const steamship = new Steamship({ apiKey: process.env.STEAMSHIP_API_KEY });
+  const steamship = new Steamship({
+    apiKey: process.env.STEAMSHIP_API_KEY,
+    appBase: "https://apps.staging.steamship.com/",
+    apiBase: "https://api.staging.steamship.com/api/v1/",
+  });
 
   // See https://docs.steamship.com/javascript_client for information about:
   // - The BASE_URL where your running Agent lives
@@ -39,9 +43,9 @@ export async function POST(req: Request) {
   //  - markdown: A single stream of Markdown with markdown-style media
   //  - json: A stream of Steamship Blocks. Streaming text will be a repeated block.
   const stream = await SteamshipStream(response, steamship, {
-    streamTimeoutSeconds: 30,
+    streamTimeoutSeconds: 60,
     // Use: "markdown" | "json"
-    format: "json",
+    format: "json-no-inner-stream",
   });
 
   // Respond with a stream of Markdown

@@ -6,10 +6,9 @@ import {
   SteamshipChatPrompt,
 } from "@steamship/react/next/client";
 import { Button, Separator } from "@steamship/react";
+import Quest from "./quest/quest";
 
-export const Steamship = () => (
-  <SteamshipChatBox placeholder="Start chatting" />
-);
+export const Steamship = () => <Quest />;
 
 export const SteamshipChatPromptContainer = () => {
   const [isOpen, setIsOpen] = useState(false);

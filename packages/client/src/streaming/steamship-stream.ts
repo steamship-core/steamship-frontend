@@ -7,7 +7,7 @@ export type SteamshipStreamOptions = {
   streamTimeoutSeconds?: number;
   requestId?: string;
   minDatetime?: string;
-  format?: "markdown" | "json";
+  format?: "markdown" | "json" | "json-no-inner-stream";
 };
 
 function _dictToURI(dict: Record<string, any>): string {
@@ -74,6 +74,9 @@ export async function SteamshipStream(
 
     // 2. Create a stream of markdown wrapping.
     const eventStream = await client.eventStream(_url, {});
+    if (opts?.format === "json-no-inner-stream") {
+      return eventStream;
+    }
     const blockStream = eventStream.pipeThrough(
       FileEventStreamToBlockStream(client)
     );
