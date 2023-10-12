@@ -1,6 +1,6 @@
 {
   "name": "@steamship/client",
-  "version": "3.3.0",
+  "version": "3.3.2",
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js"

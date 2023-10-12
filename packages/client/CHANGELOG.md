@@ -1,5 +1,17 @@
 # @steamship/react
 
+## 3.3.2
+
+### Patch Changes
+
+- terminate stream when end-block received
+
+## 3.3.1
+
+### Patch Changes
+
+- minor version bump
+
 ## 3.3.0
 
 ### Minor Changes
