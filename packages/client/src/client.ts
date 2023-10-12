@@ -242,9 +242,24 @@ export class Steamship extends ClientBase implements Client {
           }
         };
 
-        function onParse(event: any) {
+        async function onParse(event: any) {
           if (event.type === "event") {
-            handleEvent(event);
+            // handleEvent(event);
+            const data = event.data;
+            let json = JSON.parse(data);
+            // The engine nests things. We don't want that.
+            if (json[event.event]) {
+              json = json[event.event];
+            }
+            event.data = json as T;
+            const blockId = event.data.blockId;
+            console.log("Enqueuing blockId", blockId);
+            const block = await client.block.get({ id: blockId });
+            controller.enqueue((JSON.stringify(block) + "\n") as T);
+            if (isStreamTerminatingBlock(block)) {
+              console.log("terminating block", block.id);
+              controller.close();
+            }
           } else {
             console.log("Parser encountered something other than an event");
           }
@@ -255,7 +270,7 @@ export class Steamship extends ClientBase implements Client {
         const { value, done } = await reader!.read();
 
         // If we're done, and we have no more blocks to stream, close the stream.
-        if (done && Object.keys(streamingPromises).length == 0) {
+        if (done) {
           console.log("closing");
           controller.close();
         } else {

@@ -10,6 +10,7 @@ import {
   SystemBlock,
   UserMessageBlock,
 } from "./debug-blocks";
+import { StreamingBlock } from "./streaming-block";
 
 const DEBUG_MODE = false;
 
@@ -51,6 +52,8 @@ export const NarrativeBlock = ({ message }: { message: Message }) => {
           return DEBUG_MODE ? (
             <UserMessageBlock key={block.id} block={block} />
           ) : null;
+        case MessageTypes.STREAMING_BLOCK:
+          return <StreamingBlock key={block.id} block={block} />;
         default:
           return DEBUG_MODE ? (
             <FallbackBlock key={block.id} block={block} />
