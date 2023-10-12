@@ -74,15 +74,16 @@ export async function SteamshipStream(
 
     // 2. Create a stream of markdown wrapping.
     const eventStream = await client.eventStream(_url, {});
-    const blockStream = eventStream.pipeThrough(
-      FileEventStreamToBlockStream(client)
-    );
+    return eventStream;
+    // const blockStream = eventStream.pipeThrough(
+    //   FileEventStreamToBlockStream(client)
+    // );
 
-    if (opts?.format == "json") {
-      return blockStream.pipeThrough(BlockStreamToStreamingBlockStream(client));
-    } else {
-      return blockStream.pipeThrough(BlockStreamToMarkdownStream(client));
-    }
+    // if (opts?.format == "json") {
+    //   return blockStream.pipeThrough(BlockStreamToStreamingBlockStream(client));
+    // } else {
+    //   return blockStream.pipeThrough(BlockStreamToMarkdownStream(client));
+    // }
   } catch (ex) {
     console.log(ex);
     throw ex;
