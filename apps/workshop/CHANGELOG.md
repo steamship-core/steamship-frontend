@@ -1,5 +1,19 @@
 # workshop
 
+## 0.1.21
+
+### Patch Changes
+
+- Updated dependencies
+  - @steamship/client@3.3.0
+
+## 0.1.20
+
+### Patch Changes
+
+- Updated dependencies
+  - @steamship/client@3.2.0
+
 ## 0.1.19
 
 ### Patch Changes

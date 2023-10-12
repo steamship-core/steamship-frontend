@@ -1,5 +1,17 @@
 # @steamship/react
 
+## 3.3.0
+
+### Minor Changes
+
+- support for non nested streams
+
+## 3.2.0
+
+### Minor Changes
+
+- feat: support non nested stream
+
 ## 3.1.1
 
 ### Patch Changes
