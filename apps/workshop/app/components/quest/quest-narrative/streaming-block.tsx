@@ -1,11 +1,14 @@
 "use client";
 import { Block } from "@steamship/client";
 import { DebugBlock } from "./debug-blocks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const StreamingBlock = ({ block }: { block: Block }) => {
+  const [innerBlock, setInnerBlock] = useState<Block>(block);
+
   useEffect(() => {
     const readStream = async () => {
+      console.log("Streaming block!", block.id);
       const response = await fetch("/api/steamship/stream-block", {
         method: "POST",
         body: JSON.stringify({ blockId: block.id }),
@@ -28,13 +31,20 @@ export const StreamingBlock = ({ block }: { block: Block }) => {
           return;
         }
         // Otherwise do something here to process current chunk
-        console.log(value);
+
+        var txt = (innerBlock.text = new TextDecoder().decode(value));
+        var newBlock = JSON.parse(txt);
+        setInnerBlock(newBlock);
       }
     };
     readStream();
   }, [block.id]);
 
   return (
-    <DebugBlock block={block} className="border-pink-600" title="Streaming" />
+    <DebugBlock
+      block={innerBlock}
+      className="border-pink-600"
+      title="Streaming"
+    />
   );
 };
