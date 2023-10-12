@@ -114,6 +114,8 @@ const SteamshipAnswerAPIMessage = ({
 const SteamshipMessage = ({ message }: { message: string }) => {
   try {
     let messageJson = JSON.parse(message);
+    console.log(messageJson);
+
     // if messageJson is not an array
     if (!Array.isArray(messageJson)) {
       return (

@@ -6,10 +6,12 @@ import { BlockStreamToStreamingBlockStream } from "./block-stream-to-streaming-b
 
 import { SteamshipStream, SteamshipStreamOptions } from "./steamship-stream";
 
+import { BlockStreamToBlockJsonStream } from "./block-stream-to-block-json";
 export {
   BlockStreamToMarkdownStream,
   BlockStreamToStreamingBlockStream,
   FileEventStreamToBlockStream,
+  BlockStreamToBlockJsonStream,
   SteamshipStream,
 };
 

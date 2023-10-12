@@ -165,6 +165,17 @@ export class Steamship extends ClientBase implements Client {
     opts: any
   ): Promise<ReadableStream<T>> {
     const res = await this.invokeApi(path, opts);
+    if (!res.ok) {
+      console.log("Not ok");
+      var body = "";
+      try {
+        body = await res.text();
+      } catch (ex) {}
+      throw Error(
+        `Error creating stream: ${res.status} ${res.statusText} ${body}`
+      );
+    }
+
     const decoder = new TextDecoder();
     const reader = res.body?.getReader();
 
@@ -180,6 +191,7 @@ export class Steamship extends ClientBase implements Client {
                 json = json[event.event];
               }
               event.data = json as T;
+              console.log(event);
               controller.enqueue(event);
             } catch (e) {
               controller.error(e);

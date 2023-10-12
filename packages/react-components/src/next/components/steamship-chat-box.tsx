@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { useRef, useMemo, ReactNode } from "react";
+import { useRef, useMemo, ReactNode, useEffect } from "react";
 import {
   BotIcon,
   RotateCcwIcon,
@@ -43,6 +43,19 @@ const SteamshipChatBox = ({
     api: "/api/steamship/chat",
   });
 
+  let fixexMessages = messages;
+  var extraMessages = [];
+  try {
+    const lines = fixexMessages[fixexMessages.length - 1].content.split("\n");
+    for (const line of lines) {
+      if (line.length) {
+        extraMessages.push(JSON.parse(line));
+      }
+    }
+    fixexMessages.pop();
+    fixexMessages = [...fixexMessages, ...extraMessages];
+  } catch (e) {}
+
   return (
     <div className={cn("steamship-h-full steamship-w-full", dark && "dark")}>
       <div className="steamship-h-full steamship-flex-grow steamship-flex steamship-flex-col steamship-justify-between">
@@ -63,7 +76,7 @@ const SteamshipChatBox = ({
         </div>
         <div className="steamship-px-4 steamship-py-2 steamship-flex-grow steamship-overflow-scroll steamship-flex steamship-flex-col-reverse">
           <div>
-            {messages.map((m) => (
+            {fixexMessages.map((m) => (
               <SteamshipChatMessageContainer key={m.id}>
                 <SteamshipChatUser role={m.role} />
                 <SteamshipChatMessageContentsContainer>

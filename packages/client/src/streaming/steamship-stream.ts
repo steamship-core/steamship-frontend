@@ -2,12 +2,13 @@ import { FileEventStreamToBlockStream } from "./file-event-stream-to-block-strea
 import { BlockStreamToMarkdownStream } from "./block-stream-to-markdown-stream";
 import { BlockStreamToStreamingBlockStream } from "./block-stream-to-streaming-block-stream";
 import { StreamingResponse, Client } from "../schema";
+import { BlockStreamToBlockJsonStream } from "./block-stream-to-block-json";
 
 export type SteamshipStreamOptions = {
   streamTimeoutSeconds?: number;
   requestId?: string;
   minDatetime?: string;
-  format?: "markdown" | "json";
+  format?: "markdown" | "json" | "json-no-inner-stream";
 };
 
 function _dictToURI(dict: Record<string, any>): string {
@@ -74,13 +75,19 @@ export async function SteamshipStream(
 
     // 2. Create a stream of markdown wrapping.
     const eventStream = await client.eventStream(_url, {});
+
     const blockStream = eventStream.pipeThrough(
       FileEventStreamToBlockStream(client)
     );
 
     if (opts?.format == "json") {
+      // This is a stream of blocks, and if the blocks themselves are streaming, we stream updates.
       return blockStream.pipeThrough(BlockStreamToStreamingBlockStream(client));
+    } else if (opts?.format == "json-no-inner-stream") {
+      // This is a stream of blocks as they are created -- we do not stream the inner content.
+      return blockStream.pipeThrough(BlockStreamToBlockJsonStream());
     } else {
+      // This is a stream of blocks, converted to Markdown. If the block itself is text + streaming, we stream it.
       return blockStream.pipeThrough(BlockStreamToMarkdownStream(client));
     }
   } catch (ex) {
